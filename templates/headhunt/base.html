@@ -6,11 +6,15 @@
 </head>
 <body>
     <div class = "page-header">
-        {% if user.is_authenticated %}
-        <p class = "top-menu">Hello, {{ user.username }}
+        {% if request.session.login %}
+        <p>HELLO_anonymous: {{request.session.id}}</p>
         <a href = "{% url 'logout' %}">Logout</a></p>
         {% else %}
         <a href = "{% url 'login' %}">Login</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <p class = "top-menu">Hello, {{ user.username }}
+        <a href = "{% url 'logout' %}">Logout</a></p>
         {% endif %}
         <a href = "{% url 'register' %}">Register now</a>
         <h1><a href = "/">Code Hunter Site</a></h1>

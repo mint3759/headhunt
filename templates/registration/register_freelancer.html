@@ -2,14 +2,9 @@
 
 {% block content %}
     <h1>Registration</h1>
-    <a href="{%url 'register_client'%}">클라이언트로 가입</a>
-    <a href="{%url 'register_freelancer'%}">프리랜서로 가입</a>
-
-<!--
     <form method = "POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type = "submit" >Register</button>
     </form>
--->
 {% endblock %}
