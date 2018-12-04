@@ -1,0 +1,14 @@
+{% extends 'headhunt/base.html' %}
+
+{% block content %}
+    {% for user in users %}
+        <div>
+            <p>ID: {{ user.id }}</p>
+            <h2></h2>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block bye %}
+    <p> byr, byer, by,e</p>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "headhunt/base.html" %}
+
+{% block content %}
+    {% if form.errors %}
+        <p>ID가 없거나 ID와 비밀번호가 일치하지 않습니다. 다시 시도하시기 바랍니다.</p>
+    {% endif %}
+    <p>로그인하세요.</p>
+    <form method = "POST" action = "{% url 'login' %}">
+        {% csrf_token %}
+        <input type = "hidden" name = "ext" value = "" />
+        {{ form.as_p }}
+        <button type = "submit">로그인</button>
+    </form>
+    <br>
+    <p>아이디가 없을 때에는,<a href = "{% url 'register' %}">회원가입</a></p>
+{% endblock %}

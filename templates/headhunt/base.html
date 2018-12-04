@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <title>CodeHunters</title>
+</head>
+<body>
+    <div class = "page-header">
+        {% if user.is_authenticated %}
+        <p class = "top-menu">Hello, {{ user.username }}
+        <a href = "{% url 'logout' %}">Logout</a></p>
+        {% else %}
+        <a href = "{% url 'login' %}">Login</a>
+        {% endif %}
+        <a href = "{% url 'register' %}">Register now</a>
+        <h1><a href = "/">Code Hunter Site</a></h1>
+        <h6>-------------------------divide----------------------------</h6>
+    </div>
+
+    <div class = "content container">
+        <div class = "row">
+            <div class = "col-md-8">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <div class = "page-tail">
+        <p>this is tail of the page.</p>
+    </div>
+
+    <div class = "page-end">
+        {% block bye %}
+        {% endblock %}
+    </div>
+</body>
+</html>
