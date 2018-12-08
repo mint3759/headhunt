@@ -28,7 +28,6 @@ class FreelancerForm(forms.Form):
     age = forms.IntegerField()
     exp = forms.IntegerField()
     major = forms.CharField()
-    language = models.CharField()
 
 class ProficiencyForm(forms.Form):
     proficiency = models.DecimalField()

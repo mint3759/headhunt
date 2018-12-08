@@ -39,7 +39,7 @@ def register(request):
 
 def register_freelancer(request):
     if request.method == "POST":
-        form = UserForm(request.POST)
+        form = FreelancerForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_admin = 0
@@ -47,7 +47,7 @@ def register_freelancer(request):
             user.save()
             return redirect('/registration/register_success')
     else:
-        form = UserForm()
+        form = FreelancerForm()
     return render(request, 'registration/register_freelancer.html', {'form': form})
 
 def register_success(request):
