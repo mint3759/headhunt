@@ -34,6 +34,9 @@ def register_client(request):
         form = ClientForm()
     return render(request, 'registration/register_client.html', {'form': form})
 
+def register(request):
+    return render(request, 'registration/register.html', {})
+
 def register_freelancer(request):
     if request.method == "POST":
         form = UserForm(request.POST)
