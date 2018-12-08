@@ -78,4 +78,4 @@ def login(request):
 def logout(request):
     del request.session['login']
     del request.session['id']
-    return render(request, 'registration/logged_out.html', {})
+    return render(request, 'registration/logout.html', {})
