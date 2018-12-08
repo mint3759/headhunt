@@ -19,18 +19,57 @@ class ClientForm(forms.Form):
     phone_num_2 = forms.CharField()
 
 class FreelancerForm(forms.Form):
-    id = forms.CharField()
-    pw = forms.CharField()
-    uname = forms.CharField()
-    phone_num_0 = forms.CharField()
-    phone_num_1 = forms.CharField()
-    phone_num_2 = forms.CharField()
-    age = forms.IntegerField()
-    exp = forms.IntegerField()
-    major = forms.CharField()
-
-class ProficiencyForm(forms.Form):
-    proficiency = models.DecimalField()
-
-class PortfolioForm(forms.Form):
-    portfolio = models.FileField()
+    id = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    pw = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    uname = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    phone_num_0 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    phone_num_1 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    phone_num_2 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    age = forms.IntegerField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    exp = forms.IntegerField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    major = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )

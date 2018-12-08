@@ -6,55 +6,153 @@
     <form class="form-horizontal" method = "POST">
         {% csrf_token %}
         <div class="form-group">
-            <label class="control-label col-sm-2">ID:</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-2">ID</label>
+            <div class="col-sm-2">
               {{ form.id }}
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">비밀번호:</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-2">비밀번호</label>
+            <div class="col-sm-2">
               {{ form.pw }}
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">이름:</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-2">이름</label>
+            <div class="col-sm-2">
               {{ form.uname }}
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">휴대폰 번호:</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-2">휴대폰 번호</label>
+            <div class="col-sm-1">
                 {{ form.phone_num_0 }}
-                <span> - </span>
+            </div>
+            <div class="col-sm-1">
                 {{ form.phone_num_1 }}
-                <span> - </span>
+            </div>
+            <div class="col-sm-1">
                 {{ form.phone_num_2 }}
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">나이:</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-2">나이</label>
+            <div class="col-sm-2">
               {{ form.age }}
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">경력(년):</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-2">경력(년)</label>
+            <div class="col-sm-2">
               {{ form.exp }}
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">전공:</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-2">전공</label>
+            <div class="col-sm-2">
               {{ form.major }}
+            </div>
+        </div>
+        <div class="form-group" id="lang_freq">
+            <label class="control-label col-sm-2">언어별 능숙도</label>
+            <div name="langchoice">
+                <div class="col-sm-2">
+                    <select class="form-control" id="id_language">
+                        <option>﻿Java</option>
+                        <option>Python</option>
+                        <option>C</option>
+                        <option>C++</option>
+                        <option>Java</option>
+                        <option>PyPy</option>
+                        <option>Ruby</option>
+                        <option>Kotlin</option>
+                        <option>Swift</option>
+                        <option>Text</option>
+                        <option>C#</option>
+                        <option>node.js</option>
+                        <option>Go</option>
+                        <option>D</option>
+                        <option>F#</option>
+                        <option>PHP</option>
+                        <option>Rust</option>
+                        <option>Pascal</option>
+                        <option>Lua</option>
+                        <option>Perl</option>
+                        <option>R</option>
+                        <option>Objective-C</option>
+                        <option>Objective-C++</option>
+                        <option>Golfscript</option>
+                        <option>Assembly (32bit)</option>
+                        <option>Assembly (64bit)</option>
+                        <option>VB.NET</option>
+                        <option>Bash</option>
+                        <option>Fortran</option>
+                        <option>Scheme</option>
+                        <option>Ada</option>
+                        <option>awk</option>
+                        <option>OCaml</option>
+                        <option>Brainfuck</option>
+                        <option>Whitespace</option>
+                        <option>Tcl</option>
+                        <option>Rhino</option>
+                        <option>Cobol</option>
+                        <option>Pike</option>
+                        <option>sed</option>
+                        <option>Boo</option>
+                        <option>Intercal</option>
+                        <option>bc</option>
+                        <option>Nemerl</option>
+                        <option>Cobra</option>
+                        <option>Algol</option>
+                        <option>Befunge</option>
+                        <option>Haxe</option>
+                        <option>LOLCODE</option>
+                        <option>아희</option>
+                    </select>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="optradio" value="1.0"checked>★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="optradio" value="2.0">★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="optradio" value="3.0">★★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="optradio" value="4.0">★★★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="optradio" value="5.0">★★★★★</label>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <button id = "add_lang" type = "button" class=""btn btn-default btn-xs  style="margin-top:5px; margin-left:10px;"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">포트폴리오</label>
+            <div class="col-sm-2">
+                <input type="file" id="portfolio1" class="form-control-file" style="margin-top:5px;" multiple>
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-default">Register</button>
+                <button type="submit" class="btn btn-success btn-md">Register</button>
             </div>
         </div>
     </form>
+{% endblock %}
+
+{% block javascript_tail %}
+<script type="text/javascript">
+
+$(function(){
+    var $cloned = $('div[name=langchoice]').clone();
+    $('#add_lang').click(function(){
+        alert(JSON.stringify($cloned));
+        //$cloned.appendTo('#lang_freq');
+    });
+});
+</script>
 {% endblock %}

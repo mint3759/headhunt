@@ -5,6 +5,8 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Headhunter</title>
+    {% block javascript_head %}
+    {% endblock %}
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -60,7 +62,7 @@
 
     <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    {% block javascript %}
+    {% block javascript_tail %}
     {% endblock %}
 </body>
 </html>
