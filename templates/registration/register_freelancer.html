@@ -202,7 +202,7 @@ function before_submit() {
 
 function uploadfile(){
     var x = document.getElementById('portfoliofile');
-    var txt = "";
+    var newfiles = [];
     if ('files' in x) {
         if (x.files.length == 0) {
             txt = "Select one or more files.";
@@ -210,24 +210,26 @@ function uploadfile(){
         else {
             var dup = false;
             for (var i = 0; i < x.files.length; i++) {
-               for (var j=0; i<pfiles.length; j++){
-                    if(x.files[i]==pfiles[j]){
+               for (var j=0; j<pfiles.length; j++){
+                    if(x.files[i].name==pfiles[j].name){
                         dup = true;
-                        alert('중복이야');
-                     }
+                        alert("이름이 같은 파일이 존재합니다.")
+                    }
                }
                if (dup==false){
+                    var txt = "";
                     pfiles.push(x.files[i]);
                     var div = document.createElement('div');
-                    div.setAttribute("class", "col-sm-10");
-                    div.innerHTML = x.files[i].name;
+                    div.setAttribute("class", "col-sm-offset-2 col-sm-10");
+                    div.setAttribute("style", "margin-top:5px;");
+                    txt += "<div class = 'col-sm-3'>" + x.files[i].name + "</div>";
+                    txt += "<div class = 'col-sm-1'><input type='button' class='btn btn-default btn-xs'  style='margin-top: 1px; margin-left:20px;' value='삭제' onclick='remove_file(this)'></div>";
+                    div.innerHTML = txt;
                     document.getElementById('pfolios').appendChild(div);
                 }
              }
          }
     }
-    //alert(pfiles);
-
 }
 
 </script>
