@@ -84,7 +84,7 @@ class RProficiency(models.Model):
 
 class Request(models.Model):
     req_id = models.IntegerField(db_column='Req_id', primary_key=True)  # Field name made lowercase.
-    req_title = models.CharField(db_column='Req_title', max_length=30)
+    req_title = models.CharField(db_column='Req_title', max_length=30, null = True)
     fund = models.IntegerField(db_column='Fund', blank=True, null=True)  # Field name made lowercase.
     start_date = models.DateField(db_column='Start_date', blank=True, null=True)  # Field name made lowercase.
     end_date = models.DateField(db_column='End_date', blank=True, null=True)  # Field name made lowercase.

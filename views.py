@@ -107,13 +107,14 @@ def make_request(request):
                 cursor.execute("SELECT COUNT(*) FROM REQUEST")
                 rows = cursor.fetchone()
                 req_id = rows[0]
-                team_only = False
+                team_only = 0
+                cid = request.session['id']
                 if form.cleaned_data['min_fre'] >= 2:
-                    team_only = True
-                cursor.execute("INSERT INTO REQUEST (Reqtitle, Req_id, Fund, Min_exp, Min_fre, Max_fre, Team_only, State) VALUES ('"
+                    team_only = 1
+                cursor.execute("INSERT INTO REQUEST (Req_title, Req_id, Fund, Min_exp, Min_fre, Max_fre, Team_only, State, Cid) VALUES ('"
                                + str(form.cleaned_data['reqtitle']) + "', '" + str(req_id) + "', '" + str(form.cleaned_data['fund']) + "', '"
                                + str(form.cleaned_data['min_exp']) + "', '" + str(form.cleaned_data['min_fre']) + "', '"
-                               + str(form.cleaned_data['max_fre']) + "', '" + str(team_only) + "', '0')")
+                               + str(form.cleaned_data['max_fre']) + "', '" + str(team_only) + "', '0', '" + str(cid) + "')")
                 rows = cursor.fetchall()
             return redirect('/request/request_success')
     else:
