@@ -84,13 +84,14 @@ class RProficiency(models.Model):
 
 class Request(models.Model):
     req_id = models.IntegerField(db_column='Req_id', primary_key=True)  # Field name made lowercase.
+    req_title = models.CharField(db_column='Req_title', max_length=30)
     fund = models.IntegerField(db_column='Fund', blank=True, null=True)  # Field name made lowercase.
     start_date = models.DateField(db_column='Start_date', blank=True, null=True)  # Field name made lowercase.
     end_date = models.DateField(db_column='End_date', blank=True, null=True)  # Field name made lowercase.
     min_exp = models.IntegerField(db_column='Min_exp', blank=True, null=True, default = 0)  # Field name made lowercase.
     min_fre = models.IntegerField(db_column='Min_fre', blank=True, null=True, default = 1)  # Field name made lowercase.
     max_fre = models.IntegerField(db_column='Max_fre', blank=True, null=True, default = 1)  # Field name made lowercase.
-    team_only = models.IntegerField(db_column='Team_only', blank=True, null=True, default = False)  # Field name made lowercase.
+    team_only = models.BooleanField(db_column='Team_only', blank=True, default = False)  # Field name made lowercase.
     state = models.IntegerField(db_column='State', blank=False, null=False, default = 0)  # Field name made lowercase.
     frating = models.DecimalField(db_column='Frating', max_digits=3, decimal_places=2, blank=True, null=True, default = None)  # Field name made lowercase.
     crating = models.DecimalField(db_column='Crating', max_digits=3, decimal_places=2, blank=True, null=True, default = None)  # Field name made lowercase.
