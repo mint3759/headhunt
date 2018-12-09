@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Registration</h1>
     <h2>프리랜서로 가입</h2>
-    <form class="form-horizontal" method = "POST">
+    <form class="form-horizontal" id="mainform" method = "POST">
         {% csrf_token %}
         <div class="form-group">
             <label class="control-label col-sm-2">ID</label>
@@ -55,7 +55,7 @@
         </div>
         <div class="form-group" id="lang_freq">
             <label class="control-label col-sm-2">언어별 능숙도</label>
-            <div name="langchoice">
+            <div id="langchoice">
                 <div class="col-sm-2">
                     <select class="form-control" id="id_language">
                         <option>﻿Java</option>
@@ -111,24 +111,25 @@
                     </select>
                 </div>
                 <div class="col-sm-1">
-                    <label class="radio-inline"><input type="radio" name="optradio" value="1.0"checked>★</label>
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="1.0"checked>★</label>
                 </div>
                 <div class="col-sm-1">
-                    <label class="radio-inline"><input type="radio" name="optradio" value="2.0">★★</label>
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="2.0">★★</label>
                 </div>
                 <div class="col-sm-1">
-                    <label class="radio-inline"><input type="radio" name="optradio" value="3.0">★★★</label>
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="3.0">★★★</label>
                 </div>
                 <div class="col-sm-1">
-                    <label class="radio-inline"><input type="radio" name="optradio" value="4.0">★★★★</label>
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="4.0">★★★★</label>
                 </div>
                 <div class="col-sm-1">
-                    <label class="radio-inline"><input type="radio" name="optradio" value="5.0">★★★★★</label>
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="5.0">★★★★★</label>
+                </div>
+                <div class="col-sm-1">
+                <button id = "add_lang" type = "button" class=""btn btn-default btn-xs  style="margin-top:5px; margin-left:10px;" onclick="add_language()"><span class="glyphicon glyphicon-plus"></span></button>
                 </div>
             </div>
-            <div class="col-sm-1">
-                <button id = "add_lang" type = "button" class=""btn btn-default btn-xs  style="margin-top:5px; margin-left:10px;"><span class="glyphicon glyphicon-plus"></span></button>
-            </div>
+
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2">포트폴리오</label>
@@ -136,7 +137,7 @@
                 <input type="file" id="portfolio1" class="form-control-file" style="margin-top:5px;" multiple>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="register-button">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-success btn-md">Register</button>
             </div>
@@ -146,13 +147,34 @@
 
 {% block javascript_tail %}
 <script type="text/javascript">
+var langdict = {}
 
-$(function(){
-    var $cloned = $('div[name=langchoice]').clone();
-    $('#add_lang').click(function(){
-        alert(JSON.stringify($cloned));
+function add_language(){
+    var lang = document.getElementById('id_language').value;
+    var prof = document.querySelector('input[name="proficiency"]:checked').value;
+    if(lang in langdict)
+        alert("이미 등록된 언어입니다.");
+     else{
+        langdict[lang] = prof;
+        var div = document.createElement('div');
+        div.setAttribute("class", "col-sm-10");
+        div.innerHTML = "<div class='col-sm-2'> " + lang + "</div>" + "<div class='col-sm-2'>" + prof + "</div>";
+        document.getElementById('langchoice').appendChild(div);
+     }
+}
+
+function remove_lang(obj){
+    // obj.parentNode 를 이용하여 삭제
+    document.getElementsById('langchoice').removeChild(obj.parentNode);
+}
+
+
+//$(function(){
+//    var $cloned = $('div[name=langchoice]').clone();
+//    $('#add_lang').click(function(){
+//        alert(JSON.stringify($cloned));
         //$cloned.appendTo('#lang_freq');
-    });
-});
+//    });
+//});
 </script>
 {% endblock %}
