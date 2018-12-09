@@ -80,3 +80,5 @@ class FreelancerForm(forms.Form):
                 "class": "form-control"
             })
     )
+
+    language = forms.CharField()

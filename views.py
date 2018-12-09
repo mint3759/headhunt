@@ -43,7 +43,16 @@ def register_freelancer(request):
         form = FreelancerForm(request.POST)
         print(form)
         if form.is_valid():
-            #id, pw, uname, phone_num_0~2, age, exp, major
+            #id, pw, uname, phone_num_0~2, age, exp, major, lanauage
+            tmplangList = form.cleaned_data['language'].split(", ")
+            langName = []
+            rating = []
+            for langs in tmplangList:
+                if langs == 'dummy':
+                    break
+                tmpName, tmpRating = langs.split(":")
+                langName.append(tmpName)
+                rating.append(tmpRating)
             with connection.cursor() as cursor:
                 encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
                 phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
@@ -55,6 +64,10 @@ def register_freelancer(request):
                                + str(form.cleaned_data['id']) + "', '" + str(form.cleaned_data['age'])
                                + "', '" + str(form.cleaned_data['exp']) + "', '" + str(form.cleaned_data['major']) + "')")
                 rows = cursor.fetchall()
+                for i in range(len(langName)):
+                    cursor.execute("INSERT INTO F_PROFICIENCY (Language, Star_rating, Fid) VALUES ('"
+                                   + str(langName[i]) + "', '" + str(rating[i]) + "', '" + str(
+                        form.cleaned_data['id']) + "')")
             return redirect('/registration/register_success')
     else:
         form = FreelancerForm()
