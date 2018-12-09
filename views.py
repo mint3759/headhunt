@@ -82,3 +82,28 @@ def logout(request):
     del request.session['login']
     del request.session['id']
     return render(request, 'registration/logout.html', {})
+
+def make_request(request):
+    if request.method == "POST":
+        form = MakeRequestForm(request.POST)
+        if form.is_valid():
+            #reqtitle, fund, min_exp, min_fre, max_fre
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT COUNT(*) FROM REQUEST")
+                rows = cursor.fetchone()
+                req_id = rows[0]
+                team_only = False
+                if form.cleaned_data['min_fre'] >= 2:
+                    team_only = True
+                cursor.execute("INSERT INTO REQUEST (Reqtitle, Req_id, Fund, Min_exp, Min_fre, Max_fre, Team_only, State) VALUES ('"
+                               + str(form.cleaned_data['reqtitle']) + "', '" + str(req_id) + "', '" + str(form.cleaned_data['fund']) + "', '"
+                               + str(form.cleaned_data['min_exp']) + "', '" + str(form.cleaned_data['min_fre']) + "', '"
+                               + str(form.cleaned_data['max_fre']) + "', '" + str(team_only) + "', '0')")
+                rows = cursor.fetchall()
+            return redirect('/request/request_success')
+    else:
+        form = MakeRequestForm()
+    return render(request, 'request/make_request.html', {'form': form})
+
+def request_success(request):
+    return render(request, 'request/request_success.html', {})
