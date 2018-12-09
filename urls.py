@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^registration/register_client/$', views.register_client, name = 'register_client'),
     url(r'^registration/register_freelancer/$', views.register_freelancer, name = 'register_freelancer'),
     url(r'^registration/register_success/$', views.register_success, name = 'register_success'),
+    url(r'^request/request_success/$', views.request_success, name = 'request_success'),
+    url(r'^request/make_request/$', views.make_request, name = 'make_request'),
     #url(r'^$', views.IndexView.as_view(), name = 'index'),
     # /headhunt 로 접속시 (include 됨)
     # CBV의 generic view를 이용하여 url을 처리하겠다는 말

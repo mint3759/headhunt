@@ -18,6 +18,13 @@ class ClientForm(forms.Form):
     phone_num_1 = forms.CharField()
     phone_num_2 = forms.CharField()
 
+class MakeRequestForm(forms.Form):
+    reqtitle = forms.CharField()
+    fund = forms.IntegerField()
+    min_exp = forms.IntegerField()
+    min_fre = forms.IntegerField()
+    max_fre = forms.IntegerField()
+
 class FreelancerForm(forms.Form):
     id = forms.CharField(
         widget=forms.TextInput(
