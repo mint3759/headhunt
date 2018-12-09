@@ -62,12 +62,10 @@
                         <option>Python</option>
                         <option>C</option>
                         <option>C++</option>
-                        <option>Java</option>
                         <option>PyPy</option>
                         <option>Ruby</option>
                         <option>Kotlin</option>
                         <option>Swift</option>
-                        <option>Text</option>
                         <option>C#</option>
                         <option>node.js</option>
                         <option>Go</option>
@@ -132,8 +130,8 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2">포트폴리오</label>
-            <div class="col-sm-2">
-                <input type="file" id="portfoliofile" class="form-control-file" style="margin-top:5px;" onclick='uploadfile()' multiple>
+            <div class="col-sm-2" id="pfolios">
+                <input type="file" id="portfoliofile" class="form-control-file" style="margin-top:5px;" onchange='uploadfile()' multiple>
             </div>
         </div>
         <div class="form-group" id="register-button">
@@ -150,6 +148,7 @@
 {% block javascript_tail %}
 <script type="text/javascript">
 var langdict = {}
+var pfiles = [];
 
 function add_language(){
     var lang = document.getElementById('id_language').value;
@@ -184,11 +183,34 @@ function remove_lang(obj){
 }
 
 function uploadfile(){
-    var file = document.getElementById('portfoliofile').value;
-    var filedata = new FormData(); // FormData 인스턴스 생성
+    var x = document.getElementById('portfoliofile');
+    var txt = "";
+    if ('files' in x) {
+        if (x.files.length == 0) {
+            txt = "Select one or more files.";
+        }
+        else {
+            var dup = false;
+            for (var i = 0; i < x.files.length; i++) {
+               for (var j=0; i<pfiles.length; j++){
+                    if(x.files[i]==pfiles[j]){
+                        dup = true;
+                        alert('중복이야');
+                     }
+               }
+               if (dup==false){
+                    pfiles.push(x.files[i]);
+                    var div = document.createElement('div');
+                    div.setAttribute("class", "col-sm-10");
+                    div.innerHTML = x.files[i].name;
+                    document.getElementById('pfolios').appendChild(div);
+                }
+             }
+         }
+    }
+    //alert(pfiles);
 
-    filedata.append(
-    alert(file);
 }
+
 </script>
-{% endblock %}s
+{% endblock %}
