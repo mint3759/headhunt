@@ -11,12 +11,42 @@ class LoginForm(forms.Form):
     pw = forms.CharField()
 
 class ClientForm(forms.Form):
-    id = forms.CharField()
-    pw = forms.CharField()
-    uname = forms.CharField()
-    phone_num_0 = forms.CharField()
-    phone_num_1 = forms.CharField()
-    phone_num_2 = forms.CharField()
+    id = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    pw = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    uname = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    phone_num_0 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    phone_num_1 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    phone_num_2 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
 
 class MakeRequestForm(forms.Form):
     reqtitle = forms.CharField()
