@@ -148,10 +148,11 @@
 <script type="text/javascript">
 
 $(function(){
-    var $cloned = $('div[name=langchoice]').clone();
+    var langNum = 1;
     $('#add_lang').click(function(){
-        alert(JSON.stringify($cloned));
-        //$cloned.appendTo('#lang_freq');
+        langNum++;
+        var $cloned = $('div[name=langchoice]').clone();
+        $cloned.appendTo('#lang_freq');
     });
 });
 </script>

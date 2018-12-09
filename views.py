@@ -20,6 +20,7 @@ def register_client(request):
     if request.method == "POST":
         form = ClientForm(request.POST)
         if form.is_valid():
+            # id, pw, uname, phone_num_0~2
             with connection.cursor() as cursor:
                 encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
                 phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
@@ -40,11 +41,20 @@ def register(request):
 def register_freelancer(request):
     if request.method == "POST":
         form = FreelancerForm(request.POST)
+        print(form)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_admin = 0
-            #c, f 처리가 필요함
-            user.save()
+            #id, pw, uname, phone_num_0~2, age, exp, major
+            with connection.cursor() as cursor:
+                encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
+                phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
+                cursor.execute("INSERT INTO USERS (Id, Pw, Is_admin, UName, Phone_num, User_type) VALUES ('"
+                               + str(form.cleaned_data['id']) + "', '" + str(encrypt_pw) + "', "
+                               + "False" + ", '" + str(form.cleaned_data['uname']) + "', '" + str(phone_num)
+                               + "', " +  "'f'" + ")")
+                cursor.execute("INSERT INTO FREELANCERS (Id, Age, Exp, Major) VALUES ('"
+                               + str(form.cleaned_data['id']) + "', '" + str(form.cleaned_data['age'])
+                               + "', '" + str(form.cleaned_data['exp']) + "', '" + str(form.cleaned_data['major']) + "')")
+                rows = cursor.fetchall()
             return redirect('/registration/register_success')
     else:
         form = FreelancerForm()
@@ -66,8 +76,12 @@ def login(request):
                     messages.info(request, '아이디가 없거나 비밀번호가 틀렸습니다.')
                     return redirect('/accounts/login/')
                 elif encrypt_pw == rows[0]:
+                    cursor.execute("SELECT USER_TYPE FROM USERS WHERE ID='" + form.cleaned_data['id'] + "'")
+                    rows = cursor.fetchone()
+                    user_type = rows[0]
                     request.session['login'] = True
                     request.session['id'] = id
+                    request.session['user_type'] = user_type
                     return redirect('/')
                 else:
                     messages.info(request, '아이디가 없거나 비밀번호가 틀렸습니다.')
@@ -81,4 +95,5 @@ def login(request):
 def logout(request):
     del request.session['login']
     del request.session['id']
+    del request.session['user_type']
     return render(request, 'registration/logout.html', {})
