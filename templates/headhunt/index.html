@@ -3,7 +3,6 @@
 {% block content %}
     {% if request.session.user_type == "c" %}
         <!--클라이언트로 로그인했을 때-->
-        <a href="{%url 'register_client'%}"><button type="button" class="btn btn-default btn-lg">클라이언트로 가입</button></a>
     {% else %}
         <!--프리랜서로 로그인했을 때-->
     {% endif %}

@@ -15,16 +15,19 @@
                 <a class="navbar-brand" href="{% url 'index' %}">Coding Freelancer Headhunter</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'index' %}">Home</a></li>
-                <li><a href="#">Page 1</a></li>
-                <li><a href="#">Page 2</a></li>
-                <li><a href="#">Page 3</a></li>
+                <li class="{{home_page}}"><a href="{% url 'index' %}">홈</a></li>
+                {% if request.session.login %}
+                <li class="nav-item {{make_request}}"><a href="{% url 'make_request' %}">의뢰 작성</a></li>
+                {% else %}
+                <li class="{{make_request}}"><a href="#">의뢰 작성</a></li>
+                {% endif %}
+                <li class=""><a href="#">의뢰 목록</a></li>
+                <li class=""><a href="#">관리자 페이지</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if request.session.login %}
-                <li>{{request.session.id}}</li>
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{request.session.id}}</a></li>
                 <li><a href = "{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
-                <li><a href = "{% url 'make_request' %}"><span class="glyphicon glyphicon-make-request"></span> Make request</a></li>
                 {% else %}
                 <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
                 <li><a href = "{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>

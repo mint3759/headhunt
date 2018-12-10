@@ -11,7 +11,8 @@ import hashlib
 
 def index(request):
     users = Users.objects.all()
-    return render(request, 'headhunt/index.html', {'users': users})
+    context = {"home_page": "active"}
+    return render(request, 'headhunt/index.html', {'users': users}, context)
 
 def register(request):
     return render(request, 'registration/register.html', {})
@@ -112,6 +113,7 @@ def logout(request):
     return render(request, 'registration/logout.html', {})
 
 def make_request(request):
+    context = {"make_request": "active"}
     if request.method == "POST":
         form = MakeRequestForm(request.POST)
         if form.is_valid():
@@ -132,7 +134,7 @@ def make_request(request):
             return redirect('/request/request_success')
     else:
         form = MakeRequestForm()
-    return render(request, 'request/make_request.html', {'form': form})
+    return render(request, 'request/make_request.html', {'form': form}, context)
 
 def request_success(request):
     return render(request, 'request/request_success.html', {})
