@@ -167,12 +167,8 @@ def update_client(request):
             with connection.cursor() as cursor:
                 encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
                 phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
-                cursor.execute("UPDATE USERS SET ")
-                cursor.execute("INSERT INTO USERS (Id, Pw, Is_admin, UName, Phone_num, User_type) VALUES ('"
-                               + str(form.cleaned_data['id']) + "', '" + str(encrypt_pw) + "', "
-                               + "False" + ", '" + str(form.cleaned_data['uname']) + "', '" + str(phone_num)
-                               + "', " +  "'c'" + ")")
-                cursor.execute("INSERT INTO CLIENTS VALUES ('" + str(form.cleaned_data['id']) + "')")
+                cursor.execute("UPDATE USERS SET Pw = '" + str(encrypt_pw) + "', UName = '" + str(form.cleaned_data['uname']
+                               + "', Phone_num = '" + str(phone_num)) + "' WHERE Id = '" + request.session['id'] + "'")
                 rows = cursor.fetchall()
             return redirect('/mypage/mypage')
     else:

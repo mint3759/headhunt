@@ -6,19 +6,13 @@
     <form class="form-horizontal" method = "POST">
         {% csrf_token %}
         <div class="form-group">
-            <label class="control-label col-sm-2">ID</label>
-            <div class="col-sm-2">
-              {{ form.id }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2">비밀번호</label>
+            <label class="control-label col-sm-2">변경할 비밀번호</label>
             <div class="col-sm-2">
               {{ form.pw }}
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2">비밀번호 확인</label>
+            <label class="control-label col-sm-2">변경할 비밀번호 확인</label>
             <div class="col-sm-2">
                 <input type="password" class="form-control" id="pwconfirm">
             </div>
