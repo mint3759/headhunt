@@ -28,6 +28,7 @@ class ClientForm(forms.Form):
         max_length=16,
         widget=forms.TextInput(
             attrs={
+                "type": "password",
                 "class": "form-control"
             })
     )
@@ -140,7 +141,8 @@ class FreelancerForm(forms.Form):
         max_value=100,
         widget=forms.TextInput(
             attrs={
-                "class": "form-control"
+                "class": "form-control",
+                "onchange" : "age_check()"
             })
     )
     exp = forms.IntegerField(
@@ -148,7 +150,9 @@ class FreelancerForm(forms.Form):
         max_value=100,
         widget=forms.TextInput(
             attrs={
-                "class": "form-control"
+                "class": "form-control",
+                "onchange" : "exp_check()"
+
             })
     )
     major = forms.CharField(
