@@ -55,18 +55,6 @@
 var pwconfirmcheck=false;
 var iddupcheck = false;
 
-$(document).on("change", "#pwconfirm", function(){ //비밀번호 일치 검사
-        var userPW = $("#id_pw").val();
-        var pwConfirm = $("#pwconfirm").val();
-        if(pwConfirm.localeCompare(userPW)!=0){
-            document.getElementById("pwconfirmerror").innerHTML="입력된 비밀번호가 일치하지 않습니다.";
-            pwconfirmcheck=false;
-        }
-        else{
-            document.getElementById("pwconfirmerror").innerHTML="";
-            pwconfirmcheck=true;
-        }
-    });
 
 </script>
 {% endblock %}
