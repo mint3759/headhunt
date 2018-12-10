@@ -1,27 +1,24 @@
 {% extends 'headhunt/base.html' %}
 
-{% block sidebar %}
-<div class="container">
-      <div class="row row-offcanvas row-offcanvas-left active">
-        <!-- sidebar -->
-        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
-            <ul class="nav">
-                <li><a href="/maintenance/"><i class="fa fa-fw fa-cog"></i>내 정보</a></li>
-                <li><a href="/coolants/"><i class="fa fa-fw fa-flask"></i>의뢰 관리</a></li>
-                {% if request.session.user_type == "f" %}
-                <li><a href="/scrap/"><i class="fa fa-fw fa-trash-o"></i>포트폴리오</a></li>
-                <li><a href="/labor/"><i class="fa fa-fw fa-user"></i>팀 관리</a></li>
-                {% endif %}
-            </ul>
-        </div>
-      </div>
-</div>
-{% endblock %}
-
 {% block content %}
-<div class="col-xs-12 col-sm-9">
-{% block innercontent %}
-    <!-- 본문 내용 -->
-{% endblock %}
-</div>
+  <div class="row row-offcanvas row-offcanvas-left active">
+    <!-- sidebar -->
+    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+        <ul class="nav">
+            <li><a href=""><i class="fa fa-fw fa-cog"></i>내 정보</a></li>
+            <li><a href=""><i class="fa fa-fw fa-flask"></i>의뢰 관리</a></li>
+            {% if request.session.user_type == "f" %}
+            <li><a href=""><i class="fa fa-fw fa-trash-o"></i>포트폴리오</a></li>
+            <li><a href=""><i class="fa fa-fw fa-user"></i>팀 관리</a></li>
+            {% endif %}
+        </ul>
+    </div>
+      <!-- content -->
+    <div class="col-xs-12 col-sm-9">
+    {% block innercontent %}
+        <!-- 본문 내용 -->
+    {% endblock %}
+    </div>
+  </div>
+
 {% endblock %}
