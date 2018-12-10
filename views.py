@@ -173,7 +173,10 @@ def update_client(request):
             return redirect('/mypage/mypage')
     else:
         form = updateClientForm()
-    return render(request, 'mypage/update_client.html', {'form': form})
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT UName, Phone_num from USERS WHERE Id = '" + str(request.session['id']) + "'")
+            info = cursor.fetchall()
+    return render(request, 'mypage/update_client.html', {'form': form, 'info': info})
 
 def update_freelancer(request):
     return render(request, 'mypage/update_freelancer.html', {})
