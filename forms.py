@@ -186,7 +186,7 @@ class FreelancerForm(forms.Form):
 
     language = forms.CharField()
 
-class alterClientForm(forms.Form):
+class updateClientForm(forms.Form):
     pw = forms.CharField(
         max_length=16,
         widget=forms.TextInput(
@@ -199,6 +199,7 @@ class alterClientForm(forms.Form):
         max_length=20,
         widget=forms.TextInput(
             attrs={
+                "value": "",
                 "class": "form-control"
             })
     )

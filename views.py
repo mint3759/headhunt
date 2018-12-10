@@ -160,7 +160,7 @@ def mypage(request):
 
 def update_client(request):
     if request.method == "POST":
-        form = alterClientForm(request.POST)
+        form = updateClientForm(request.POST)
         if form.is_valid():
             # id = request.session['id']
             # pw, uname, phone_num_0~2
@@ -172,7 +172,7 @@ def update_client(request):
                 rows = cursor.fetchall()
             return redirect('/mypage/mypage')
     else:
-        form = ClientForm()
+        form = updateClientForm()
     return render(request, 'mypage/update_client.html', {'form': form})
 
 def update_freelancer(request):

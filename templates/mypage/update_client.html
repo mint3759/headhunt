@@ -6,6 +6,12 @@
     <form class="form-horizontal" method = "POST">
         {% csrf_token %}
         <div class="form-group">
+            <label class="control-label col-sm-2">ID</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" value="{{request.session.id}}" disabled>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="control-label col-sm-2">변경할 비밀번호</label>
             <div class="col-sm-2">
               {{ form.pw }}
@@ -21,7 +27,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2">이름</label>
             <div class="col-sm-2">
-              {{ form.uname }}
+              {{ form.uname}}
             </div>
         </div>
         <div class="form-group">
@@ -47,8 +53,24 @@
 {% block javascript_tail %}
 <script type="text/javascript">
 var pwconfirmcheck=false;
-var iddupcheck = false;
 
+$(function(){
+    var uname = "{{info.0.0}}";
+    $("#id_uname").val(uname);
+});
+
+$(document).on("change", "#pwconfirm", function(){ //비밀번호 일치 검사
+        var userPW = $("#id_pw").val();
+        var pwConfirm = $("#pwconfirm").val();
+        if(pwConfirm.localeCompare(userPW)!=0){
+            document.getElementById("pwconfirmerror").innerHTML="입력된 비밀번호가 일치하지 않습니다.";
+            pwconfirmcheck=false;
+        }
+        else{
+            document.getElementById("pwconfirmerror").innerHTML="";
+            pwconfirmcheck=true;
+        }
+    });
 
 </script>
 {% endblock %}
