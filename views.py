@@ -46,6 +46,7 @@ def register(request):
 def register_freelancer(request):
     if request.method == "POST":
         form = FreelancerForm(request.POST)
+        print(request.POST)
         print(form)
         if form.is_valid():
             #id, pw, uname, phone_num_0~2, age, exp, major, lanauage
@@ -73,11 +74,13 @@ def register_freelancer(request):
                     cursor.execute("INSERT INTO F_PROFICIENCY (Language, Star_rating, Fid) VALUES ('"
                                    + str(langName[i]) + "', '" + str(rating[i]) + "', '" + str(
                         form.cleaned_data['id']) + "')")
-            return redirect('/registration/register_success')
+            return redirect('/registration/register_portfolio')
     else:
         form = FreelancerForm()
     return render(request, 'registration/register_freelancer.html', {'form': form})
 
+def register_portfolio(request):
+    return render(request, 'registration/register_portfolio.html', {})
 def register_success(request):
     return render(request, 'registration/register_success.html', {})
 

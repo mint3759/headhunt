@@ -142,12 +142,14 @@
         </div>
         <div class="form-group" id = "hidden">
         </div>
+        <!--
         <div class="form-group" id="pfolios">
             <label class="control-label col-sm-2">포트폴리오</label>
             <div class="col-sm-2">
                 <input type="file" id="portfoliofile" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" onchange='uploadfile()' multiple>
             </div>
         </div>
+        -->
         <div class="form-group" id="register-button">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-success btn-md" onclick='before_submit()'>Register</button>
@@ -163,7 +165,7 @@ var iddupcheck = false;
 var agecheck = false;
 var expcheck = false;
 var langdict = {}
-var pfiles = [];
+//var pfiles = [];
 
 $(document).on("click", "#idcheck", function(){
         if($("#id_id").val() != ""){
@@ -257,7 +259,6 @@ function remove_lang(obj){
 
 function before_submit() {
     var param = document.getElementById('hidden');
-    //for (lang in langdict) {
     var langs = document.createElement('input');
     langs.type='hidden';
     langs.name='language';
@@ -270,7 +271,7 @@ function before_submit() {
     param.appendChild(langs);
     return true;
 }
-
+/*
 function uploadfile(){
     var x = document.getElementById('portfoliofile');
     var newfiles = [];
@@ -310,6 +311,6 @@ function remove_file(obj){
     if (idx > -1) pfiles.splice(idx, 1);
     document.getElementById('pfolios').removeChild(obj.parentNode.parentNode);
 }
-
+*/
 </script>
 {% endblock %}

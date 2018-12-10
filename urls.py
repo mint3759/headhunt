@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^registration/id_dup_check/$', views.id_dup_check, name = 'id_dup_check'),
     url(r'^registration/register_client/$', views.register_client, name = 'register_client'),
     url(r'^registration/register_freelancer/$', views.register_freelancer, name = 'register_freelancer'),
+    url(r'^registration/register_portfolio/$', views.register_portfolio, name='register_portfolio'),
     url(r'^registration/register_success/$', views.register_success, name = 'register_success'),
     url(r'^request/request_success/$', views.request_success, name = 'request_success'),
     url(r'^request/make_request/$', views.make_request, name = 'make_request'),
