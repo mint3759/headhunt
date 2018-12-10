@@ -61,11 +61,36 @@ class ClientForm(forms.Form):
     )
 
 class MakeRequestForm(forms.Form):
-    reqtitle = forms.CharField()
-    fund = forms.IntegerField()
-    min_exp = forms.IntegerField()
-    min_fre = forms.IntegerField()
-    max_fre = forms.IntegerField()
+    reqtitle = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    fund = forms.IntegerField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    min_exp = forms.IntegerField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    min_fre = forms.IntegerField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    max_fre = forms.IntegerField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
 
 class FreelancerForm(forms.Form):
     id = forms.CharField(

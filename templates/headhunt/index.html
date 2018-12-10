@@ -8,9 +8,9 @@
     {% endif %}
     {% if request.session.user_type %}
         {{request.session.user_type}}
-        <p>hello</p>
+        <p>hello.</p>
     {% else %}
-        <p>not hello</p>
+        <p>로그인해주세요.</p>
     {% endif %}
     {% for user in users %}
         <div>

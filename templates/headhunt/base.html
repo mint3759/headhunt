@@ -16,12 +16,12 @@
             </div>
             <ul class="nav navbar-nav">
                 <li class="{{home_page}}"><a href="{% url 'index' %}">홈</a></li>
-                {% if request.session.login %}
+                {% if request.session.login and request.session.user_type == "c" %}
                 <li class="{{make_request}}"><a href="{% url 'make_request' %}">의뢰 작성</a></li>
                 {% else %}
                 <li class="{{make_request}}"><a href="#">의뢰 작성</a></li>
                 {% endif %}
-                <li class=""><a href="#">의뢰 목록</a></li>
+                <li class=""><a href="#">의뢰 수락</a></li>
                 <li class=""><a href="#">관리자 페이지</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
