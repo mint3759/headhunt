@@ -14,7 +14,9 @@
     {% endif %}
     {% for user in users %}
         <div>
-            <p>ID: {{ user.id }}</p>
+            <p>ID: {{ user.0 }}</p>
+            <p>UserName: {{ user.1 }}</p>
+            <p>User_type: {{ user.2 }}</p>
         </div>
     {% endfor %}
 {% endblock %}

@@ -10,9 +10,12 @@ import hashlib
 # Create your views here.
 
 def index(request):
-    users = Users.objects.all()
+    with connection.cursor() as cursor:
+        cursor.execute("Select Id, UName, User_type from Users")
+        rows = cursor.fetchall()
+        print(rows)
     context = {"home_page": "active"}
-    return render(request, 'headhunt/index.html', {'users': users}, context)
+    return render(request, 'headhunt/index.html', {'users': rows}, context)
 
 def register(request):
     return render(request, 'registration/register.html', {})
