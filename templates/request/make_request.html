@@ -137,7 +137,6 @@ function remove_file(obj){
     const idx = rfiles.findIndex(function(item) {return item.name === file})
     if (idx > -1) rfiles.splice(idx, 1);
     document.getElementById('rdocs').removeChild(obj.parentNode.parentNode);
-    document.getElementbyId('rdocs').innerHTML = "";
 }
 </script>
 {% endblock %}
