@@ -148,10 +148,15 @@ def mypage(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT Rating from USERS WHERE Id = '" + str(request.session['id']) + "'")
         rating = cursor.fetchall()
-        rating = str(rating).split('\'')
+        print(rating[0][0])
+        if (rating[0][0] == None):
+            rating = 'None'
+        else:
+            rating = str(rating).split('\'')
+            rating = rating[1]
         cursor.execute("SELECT UName, Phone_num from USERS WHERE Id = '" + str(request.session['id']) + "'")
         info = cursor.fetchall()
-    return render(request, 'mypage/mypage.html', {'rating': rating[1], 'info': info})
+    return render(request, 'mypage/mypage.html', {'rating': rating, 'info': info})
 
 def update_client(request):
     if request.method == "POST":
