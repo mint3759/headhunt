@@ -62,7 +62,7 @@ $(document).on("click", "#idcheck", function(){ //id 중복 검사
         if($("#id_id").val() != ""){
             $.ajax({
                 type: 'POST',
-                url : '../id_dup_check',
+                url : '../id_dup_check/',
                 data : {USER_ID: $('#id_id').val(),
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){
