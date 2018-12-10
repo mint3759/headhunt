@@ -144,6 +144,39 @@ def make_request(request):
 def request_success(request):
     return render(request, 'request/request_success.html', {})
 
+def mypage(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT Rating from USERS WHERE Id = '" + str(request.session['id']) + "'")
+        rating = cursor.fetchall()
+        rating = str(rating).split('\'')
+        cursor.execute("SELECT UName, Phone_num from USERS WHERE Id = '" + str(request.session['id']) + "'")
+        info = cursor.fetchall()
+    return render(request, 'mypage/mypage.html', {'rating': rating[1], 'info': info})
+
+def update_client(request):
+    if request.method == "POST":
+        form = alterClientForm(request.POST)
+        if form.is_valid():
+            # id = request.session['id']
+            # pw, uname, phone_num_0~2
+            with connection.cursor() as cursor:
+                encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
+                phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
+                cursor.execute("UPDATE USERS SET ")
+                cursor.execute("INSERT INTO USERS (Id, Pw, Is_admin, UName, Phone_num, User_type) VALUES ('"
+                               + str(form.cleaned_data['id']) + "', '" + str(encrypt_pw) + "', "
+                               + "False" + ", '" + str(form.cleaned_data['uname']) + "', '" + str(phone_num)
+                               + "', " +  "'c'" + ")")
+                cursor.execute("INSERT INTO CLIENTS VALUES ('" + str(form.cleaned_data['id']) + "')")
+                rows = cursor.fetchall()
+            return redirect('/mypage/mypage')
+    else:
+        form = ClientForm()
+    return render(request, 'mypage/update_client.html', {'form': form})
+
+def update_freelancer(request):
+    return render(request, 'mypage/update_freelancer.html', {})
+
 def id_dup_check(request):
     with connection.cursor() as cursor:
         print(request.POST)

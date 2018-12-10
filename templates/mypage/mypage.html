@@ -1,0 +1,43 @@
+{% extends 'headhunt/base.html' %}
+
+{% block content %}
+    {% if request.session.user_type == "c" %}
+        <!--클라이언트로 로그인했을 때-->
+        <p>클라이언트 마이페이지</p>
+        <div>
+            <h2>정보조회 및 수정</h2>
+            <div>
+                <h3>평판 조회</h3>
+                <p>Your Rating: {{rating}} </p>
+            </div>
+            <div>
+                <h3>개인정보 조회</h3>
+                <p>UserName: {{ info.0.0 }}</p>
+                <p>Phon_num: {{ info.0.1 }}</p>
+                <a href="{%url 'update_client'%}"><button type="button" class="btn btn-default btn-lg">개인정보 수정</button></a>
+            </div>
+            <p></p>
+        </div>
+        <div>
+            <h2>의뢰 관리</h2>
+        </div>
+    {% else %}
+        <!--프리랜서로 로그인했을 때-->
+        <p>프리랜서 마이페이지</p>
+    {% endif %}
+    {% if request.session.user_type %}
+        {{request.session.id}}
+        <p>hello.</p>
+    {% else %}
+        <p>로그인해주세요.</p>
+    {% endif %}
+    {% for user in users %}
+        <div>
+            <p>ID: {{ user.id }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block bye %}
+    <p> byr, byer, by,e</p>
+{% endblock %}

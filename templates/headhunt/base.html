@@ -26,7 +26,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if request.session.login %}
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{request.session.id}}</a></li>
+                <li><a href="{% url 'mypage' %}"><span class="glyphicon glyphicon-user"></span>{{request.session.id}}</a></li>
                 <li><a href = "{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
                 {% else %}
                 <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>

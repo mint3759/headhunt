@@ -1,0 +1,72 @@
+{% extends "headhunt/base.html" %}
+
+{% block content %}
+    <h1>개인정보 수정</h1>
+    <h2>클라이언트 정보 수정</h2>
+    <form class="form-horizontal" method = "POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="control-label col-sm-2">ID</label>
+            <div class="col-sm-2">
+              {{ form.id }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">비밀번호</label>
+            <div class="col-sm-2">
+              {{ form.pw }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">비밀번호 확인</label>
+            <div class="col-sm-2">
+                <input type="password" class="form-control" id="pwconfirm">
+            </div>
+            <div id="pwconfirmerror" style="color:red; margin-top:10px;"></div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">이름</label>
+            <div class="col-sm-2">
+              {{ form.uname }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">휴대폰 번호</label>
+            <div class="col-sm-1">
+                {{ form.phone_num_0 }}
+            </div>
+            <div class="col-sm-1">
+                {{ form.phone_num_1 }}
+            </div>
+            <div class="col-sm-1">
+                {{ form.phone_num_2 }}
+            </div>
+        </div>
+        <div class="form-group" id="register-button">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-success btn-md">Register</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascript_tail %}
+<script type="text/javascript">
+var pwconfirmcheck=false;
+var iddupcheck = false;
+
+$(document).on("change", "#pwconfirm", function(){ //비밀번호 일치 검사
+        var userPW = $("#id_pw").val();
+        var pwConfirm = $("#pwconfirm").val();
+        if(pwConfirm.localeCompare(userPW)!=0){
+            document.getElementById("pwconfirmerror").innerHTML="입력된 비밀번호가 일치하지 않습니다.";
+            pwconfirmcheck=false;
+        }
+        else{
+            document.getElementById("pwconfirmerror").innerHTML="";
+            pwconfirmcheck=true;
+        }
+    });
+
+</script>
+{% endblock %}
