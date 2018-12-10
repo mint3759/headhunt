@@ -1,0 +1,17 @@
+{% extends "headhunt/base.html" %}
+
+{% block content %}
+    <h1>의뢰 수락</h1>
+        {% for req in myRequest %}
+        <div>
+            <p>제목: {{ tuple.0 }} </p>
+            <p>의뢰 금액(원): {{ req.1 }} </p>
+            <p>최소 경력(년): {{ req.2 }}</p>
+            <p>최소 인원(명): {{ req.3 }}</p>
+            <p>최대 인원(명): {{ req.4 }}</p>
+            <p>모집 시작 날짜: {{ req.5 }}</p>
+            <p>모집 마감 날짜: {{ req.6 }}</p>
+            <a href="{%url 'request_accept'%}"><button type="button" class="btn btn-default btn-lg">의뢰 수락하기</button></a>
+        </div>
+        {% endfor %}
+{% endblock %}

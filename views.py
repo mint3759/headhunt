@@ -190,3 +190,14 @@ def id_dup_check(request):
                 return HttpResponse("True")
         else:
             return HttpResponse("Fail")
+
+def show_request(request):
+    with connection.cursor() as cursor:
+        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date from Request")
+        rows = cursor.fetchall()
+        print(rows)
+    context = {"show_request": "active"}
+    return render(request, 'request/show_request.html', {'myRequest': rows}, context)
+
+def request_accept(request):
+    return render(request, 'request/request_accept.html', {})

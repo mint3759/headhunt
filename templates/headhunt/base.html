@@ -21,12 +21,16 @@
                 {% else %}
                 <li class="{{make_request}}"><a href="#">의뢰 작성</a></li>
                 {% endif %}
-                <li class=""><a href="#">의뢰 수락</a></li>
+                {% if request.session.login and request.session.user_type == "f" %}
+                <li class="{{show_request}}"><a href="{% url 'show_request' %}">의뢰 수락</a></li>
+                {% else %}
+                <li class="{{show_request}}"><a href="#">의뢰 수락</a></li>
+                {% endif %}
                 <li class=""><a href="#">관리자 페이지</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if request.session.login %}
-                <li><a href="{% url 'mypage' %}"><span class="glyphicon glyphicon-user"></span>{{request.session.id}}</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{request.session.id}}</a></li>
                 <li><a href = "{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
                 {% else %}
                 <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
