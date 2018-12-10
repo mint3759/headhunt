@@ -126,6 +126,7 @@ class FreelancerForm(forms.Form):
         max_length=16,
         widget=forms.TextInput(
             attrs={
+                "type": "password",
                 "class": "form-control"
             })
     )
