@@ -188,14 +188,16 @@ class FreelancerForm(forms.Form):
 
 class updateClientForm(forms.Form):
     pw = forms.CharField(
+        required=False,
         max_length=16,
         widget=forms.TextInput(
             attrs={
                 "type": "password",
-                "class": "form-control"
+                "class": "form-control",
             })
     )
     uname = forms.CharField(
+        required=False,
         max_length=20,
         widget=forms.TextInput(
             attrs={
@@ -204,6 +206,7 @@ class updateClientForm(forms.Form):
             })
     )
     phone_num_0 = forms.CharField(
+        required=False,
         max_length=3,
         widget=forms.TextInput(
             attrs={
@@ -211,6 +214,7 @@ class updateClientForm(forms.Form):
             })
     )
     phone_num_1 = forms.CharField(
+        required=False,
         max_length=4,
         widget=forms.TextInput(
             attrs={
@@ -218,6 +222,7 @@ class updateClientForm(forms.Form):
             })
     )
     phone_num_2 = forms.CharField(
+        required=False,
         max_length=4,
         widget=forms.TextInput(
             attrs={
