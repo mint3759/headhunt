@@ -17,7 +17,7 @@
             <ul class="nav navbar-nav">
                 <li class="{{home_page}}"><a href="{% url 'index' %}">홈</a></li>
                 {% if request.session.login %}
-                <li class="nav-item {{make_request}}"><a href="{% url 'make_request' %}">의뢰 작성</a></li>
+                <li class="{{make_request}}"><a href="{% url 'make_request' %}">의뢰 작성</a></li>
                 {% else %}
                 <li class="{{make_request}}"><a href="#">의뢰 작성</a></li>
                 {% endif %}
