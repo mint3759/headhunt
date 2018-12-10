@@ -4,6 +4,7 @@ from .forms import *
 from django.forms.utils import ErrorList
 from django.db import connection
 from django.contrib import messages
+from django.http import HttpResponseRedirect, HttpResponse
 import base64
 import hashlib
 
@@ -142,3 +143,17 @@ def make_request(request):
 
 def request_success(request):
     return render(request, 'request/request_success.html', {})
+
+def id_dup_check(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            cursor.execute("SELECT PW FROM USERS WHERE ID='" + uid + "'")
+            rows = cursor.fetchone()
+            if rows is None:
+                return HttpResponse("False")
+            else:
+                return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")

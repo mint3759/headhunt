@@ -169,14 +169,15 @@ $(document).on("click", "#idcheck", function(){
         if($("#id_id").val() != ""){
             $.ajax({
                 type: 'POST',
-                url : "register_check.py",
-                data : {"USER_ID": $('#userid').val()},
+                url : '../id_dup_check',
+                data : {USER_ID: $('#id_id').val(),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){
-                    if(result==true){
+                    if(result=="True"){
                         alert("이미 존재하는 아이디입니다.");
                         iddupcheck = false;
                     }
-                    else{
+                    else if(result=="False"){
                         alert("사용 가능한 아이디입니다.");
                         iddupcheck = true;
                     }
