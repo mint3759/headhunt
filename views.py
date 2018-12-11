@@ -233,6 +233,21 @@ def myteam(request):
             #end of 내가 속한 팀 조회 코드
         return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo})
 
+def myrequest(request):
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from request")
+        rows = cursor.fetchall()
+    return render(request, 'mypage/myrequest.html', {'myrequest': rows})
+
+def remove_myrequest(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            rid = request.POST['REQ_ID']
+            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
 def id_dup_check(request):
     with connection.cursor() as cursor:
         print(request.POST)
