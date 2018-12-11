@@ -138,7 +138,11 @@ def make_request(request):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT MAX(req_id) FROM REQUEST")
                 rows = cursor.fetchone()
-                req_id = rows[0] + 1
+                print(rows)
+                if rows[0] is None:
+                    req_id = 1
+                else:
+                    req_id = rows[0] + 1
                 team_only = 0
                 cid = request.session['id']
                 if form.cleaned_data['min_fre'] >= 2:
