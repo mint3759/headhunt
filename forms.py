@@ -230,3 +230,22 @@ class updateClientForm(forms.Form):
                 "class": "form-control"
             })
     )
+
+class MakeTeamForm(forms.Form):
+
+    tName = forms.CharField(
+        max_length = 20,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+    id = forms.CharField(
+        max_length = 14,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
+
+    teammate = forms.CharField()

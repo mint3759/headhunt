@@ -188,7 +188,23 @@ def myportfolio(request):
     return render(request, 'mypage/myportfolio.html', {})
 
 def myteam(request):
-    return render(request, 'mypage/myteam.html', {})
+    if request.method == "POST":
+        form = MakeTeamForm(request.POST)
+        if form.is_valid():
+            print(form)
+            tmpIdList = form.cleaned_data['teammate'].split(",")
+            teammates = []
+            for tmpId in tmpIdList:
+                print(tmpIdList)
+                teammates.append(tmpId)
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO TEAMS (Tname, Leader) VALUES ('" + form.cleaned_data['tName'] + "', '" + request.session['id'] + "')")
+                for i in range(len(teammates)):
+                    cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + form.cleaned_data['tName'] + "', '" + teammates[i] + "')")
+            return redirect('/mypage/myteam', {'form': form})
+    else:
+        form = MakeTeamForm()
+        return render(request, 'mypage/myteam.html', {'form': form})
 
 def id_dup_check(request):
     with connection.cursor() as cursor:
@@ -201,6 +217,35 @@ def id_dup_check(request):
                 return HttpResponse("False")
             else:
                 return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def id_free_check(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
+            rows = cursor.fetchone()
+            if rows is None:
+                return HttpResponse("False")
+            else:
+                return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def tName_check(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'tName' in request.POST:
+            tname = request.POST['tName']
+            cursor.execute("SELECT * FROM TEAMS WHERE Tname='" + tname + "'")
+            rows = cursor.fetchone()
+            print(rows)
+            if rows is None:
+                return HttpResponse("True")
+            else:
+                return HttpResponse("False")
         else:
             return HttpResponse("Fail")
 

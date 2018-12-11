@@ -1,0 +1,136 @@
+{% extends 'mypage/mypage_base.html' %}
+
+{% block innercontent %}
+    <!--프리랜서로 로그인했을 때-->
+    <p>프리랜서 마이페이지</p>
+    <h2>팀 생성</h2>
+    <form class="form-horizontal" id="mainform" method = "POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="control-label col-sm-2">팀 이름</label>
+            <div class="col-sm-4">
+              {{ form.tName }}
+            </div>
+            <div class="col-sm-1">
+                <button id = "tNameCheck" type = "button" class="btn btn-default btn-xs"  style="margin-top:7px; margin-left:10px;"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">팀장</label>
+            <div class='col-sm-2' name = 'userid' style='margin-top:1px; margin-left:10px;'>
+                {{ request.session.id }}
+            </div>
+        </div>
+        <div class="form-group" id="team_users">
+            <label class="control-label col-sm-2">ID 추가</label>
+            <div id = 'idChoice'>
+                <div class="col-sm-4">
+                  {{ form.id }}
+                </div>
+                <div class="col-sm-1">
+                <button id = "idCheck" type = "button" class="btn btn-default btn-xs"  style="margin-top:7px; margin-left:10px;"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id = "hidden">
+        </div>
+        <div class="form-group" id="register-button">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-success btn-md" onclick='before_submit()'>팀 생성</button>
+            </div>
+        </div>
+        <h2>팀 관리</h2>
+        <div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block bye %}
+    <p> bye, bye, bye</p>
+{% endblock %}
+
+{% block javascript_tail %}
+<script type="text/javascript">
+
+var idList = []
+var tNameCheck = false;
+var tmpId
+
+function before_submit() {
+    var param = document.getElementById('hidden');
+    var ids = document.createElement('input');
+    ids.type='hidden';
+    ids.name='teammate';
+    ids.value = idList;
+    param.appendChild(ids);
+    return true;
+}
+
+function add_id() {
+    var dupCheck = false
+    for (i in idList) {
+        if (tmpId == idList[i]) {
+            alert("이미 입력된 아이디입니다.");
+            dupCheck = true;
+            break;
+        }
+    }
+    if (dupCheck == false) {
+        idList.push(tmpId);
+        var div = document.createElement('div');
+        div.setAttribute("class", "col-sm-10");
+        div.innerHTML = "<div class='col-sm-offset-2 col-sm-5' style='margin-top:5px;'><div class='col-sm-2' name = 'userid' style='margin-top:1px; margin-left:10px;'>" + tmpId + "</div><div class = 'col-sm-1'><input type='button' class='btn btn-default btn-xs'  style='margin-top: 1px; margin-left:20px;' value='삭제' onclick='remove_id(this)'></div></div>";
+        document.getElementById('idChoice').appendChild(div);
+        alert("팀에 추가합니다.");
+    }
+}
+
+function remove_id(obj){
+    // obj.parentNode 를 이용하여 삭제
+    var id = obj.parentNode.parentNode.parentNode.childNodes[0].childNodes[0].innerHTML;
+    idList.pop(id);
+    document.getElementById('idChoice').removeChild(obj.parentNode.parentNode.parentNode);
+}
+
+$(document).on("click", "#idCheck", function(){
+    if($("#id_id").val() != ""){
+        $.ajax({
+            type: 'POST',
+            url : '../id_free_check/',
+            data : {USER_ID: $('#id_id').val(),
+                    csrfmiddlewaretoken : '{{ csrf_token }}' },
+            success : function(result){
+                if(result=="True"){
+                    tmpId = $('#id_id').val()
+                    add_id();
+                }
+                else if(result=="False"){
+                    alert("해당 아이디가 없습니다.");
+                }
+            }
+        });
+    }
+});
+
+$(document).on("click", "#tNameCheck", function(){
+    if($("#id_tName").val() != ""){
+        $.ajax({
+            type: 'POST',
+            url : '../tName_check/',
+            data : {tName: $('#id_tName').val(),
+                    csrfmiddlewaretoken : '{{ csrf_token }}' },
+            success : function(result){
+                if(result=="True"){
+                    alert("사용가능한 팀 이름입니다.");
+                    tNameCheck = true;
+                }
+                else if(result=="False"){
+                    alert("팀 이름이 이미 있습니다.");
+                    tNameCheck = false;
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

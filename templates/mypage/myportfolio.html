@@ -18,7 +18,7 @@
             </div>
             <p></p>
         </div>
-    {% elif request.session.user_type == "f" %}
+    {% else %}
         <!--프리랜서로 로그인했을 때-->
         <p>프리랜서 마이페이지</p>
         <div>
@@ -35,10 +35,6 @@
             </div>
             <p></p>
         </div>
-    {% elif request.session.user_type == "a" %}
-        <p>관리자입니다.</p>
-    {% else %}
-        <p>로그인하세요.</p>
     {% endif %}
 {% endblock %}
 
