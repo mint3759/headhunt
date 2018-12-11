@@ -335,16 +335,16 @@ def remove_request(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST:
             rid = request.POST['REQ_ID']
-            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'" + "and ")
+            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
 
-def remove_rej_request(request):
+def remove_request_rej(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST:
             rid = request.POST['REQ_ID']
-            cursor.execute("DELETE FROM MESSAGE WHERE Req_id='" + rid + "'")
+            cursor.execute("DELETE FROM MESSAGE WHERE Rid='" + rid + "'")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")

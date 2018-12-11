@@ -93,20 +93,17 @@
 
     $(document).on("click", "button[name=removing_2]", function(){
 
-            alert($(this).parent().parent().children().first().text());
-            /*
            $.ajax({
                 type: 'POST',
-                url : '../remove_rej_request/',
+                url : '../remove_request_rej/',
                 data : {REQ_ID: $(this).parent().parent().children().first().text(),
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){
                     alert("삭제 완료");
                 }
             });
-            */
 
-            //$(this).parent().parent().remove();
+            $(this).parent().parent().remove();
     });
 
 </script>
