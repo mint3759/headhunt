@@ -2,22 +2,25 @@
 
 {% block content %}
     <h1>의뢰 수락</h1>
-        <table border="'1">
+    <h3>의뢰 목록</h3>
+        <table class="table table-hover">
+            <thead>
             <tr>
-                <th>제목:</th>
+                <th>제목</th>
                 <th>의뢰 금액(원)</th>
                 <th>최소 인원(명)</th>
                 <th>모집 시작 날짜</th>
-                <th>의뢰 수락하기</th>
             </tr>
+            </thead>
+            <tbody>
             {% for req in myRequest %}
             <tr>
-                <td> <a href="{%url 'request_content' req.8 %}"><button type="button" class="btn btn-default btn-lg">{{ req.0 }}</button></a></td>
+                <td> <a href="{%url 'request_content' req.8 %}">{{ req.0 }}</a></td>
                 <td>{{ req.1 }}</td>
                 <td>{{ req.3 }}</td>
                 <td>{{ req.5 }}</td>
-                <td> <a href="{%url 'request_accept'%}"><button type="button" class="btn btn-default btn-lg">수락하기</button></a></td>
             </tr>
         {% endfor %}
+            </tbody>
         </table>
 {% endblock %}

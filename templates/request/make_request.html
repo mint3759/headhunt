@@ -210,6 +210,7 @@ function remove_lang(obj){
 }
 
 function before_submit() {
+    alert("저도요");
     var param = document.getElementById('hidden');
     var langs = document.createElement('input');
     langs.type='hidden';
@@ -223,6 +224,12 @@ function before_submit() {
     param.appendChild(langs);
     return true;
 }
+
+$(document).on("click", "#add_lang", function(){
+           alert("실행됨");
+    });
+
+
 
 </script>
 {% endblock %}
