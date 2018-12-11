@@ -121,8 +121,10 @@
             <td>{{ req.1 }}</td>
             <td>
             {%if req.8 != 4 %}
+                {%for req in myrequest%}
                 <button type = "button" id = "{{req.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
-                <a href="{% url 'show_freelancer' %}"><button type="button" class="btn btn-default btn-lg">수락</button></a>
+                <a href="{% url 'show_freelancer'%}"><button type="button" class="btn btn-default btn-lg">수락</button></a>
+                {%endfor%}
             {% endif %}
             </td>
         </tr>
@@ -171,7 +173,7 @@ $(document).ready(function() {
 
            $.ajax({
                 type: 'POST',
-                url : '../remove_myrequest/',
+                url : '../remove_myrequest_client/',
                 data : {REQ_ID: $(this).attr('id'),
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){

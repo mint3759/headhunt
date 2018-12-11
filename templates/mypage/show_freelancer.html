@@ -1,0 +1,20 @@
+{% extends 'mypage/mypage_base.html' %}
+
+{% block content %}
+    <h1>의뢰를 수락한 프리렌서들</h1>
+        <table border="'1">
+            <tr>
+                <th>나이(세):</th>
+                <th>경력(년):</th>
+                <th>전공:</th>
+            </tr>
+            {% for free in Freelancer %}
+            <tr>
+                <td>{{ free.1 }}</td>
+                <td>{{ free.2 }}</td>
+                <td>{{ free.3 }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+
+{% endblock %}

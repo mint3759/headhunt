@@ -230,6 +230,23 @@ def myrequest_client(request):
         rows = cursor.fetchall()
     return render(request, 'mypage/myrequest_client.html', {'myrequest': rows})
 
+def remove_myrequest_client(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            rid = request.POST['REQ_ID']
+            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def show_freelancer(request):
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from Freelancers")
+        rows = cursor.fetchall()
+        print(rows)
+    context = {"show_freelancer": "active"}
+    return render(request, 'mypage/show_freelancer.html', {'Freelancer': rows}, context)
+
 def myrequest_freelancer(request):
     with connection.cursor() as cursor:
         cursor.execute("Select * from request")
