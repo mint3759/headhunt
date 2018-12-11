@@ -2,13 +2,17 @@
 
 {% block content %}
     <h1>의뢰 상세 정보</h1>
-    <div>
-        <p>의뢰 금액(원): {{ req.1 }} </p>
-        <p>최소 경력(년): {{ req.2 }}</p>
-        <p>최소 인원(명): {{ req.3 }}</p>
-        <p>최대 인원(명): {{ req.4 }}</p>
-        <p>모집 시작 날짜: {{ req.5 }}</p>
-        <p>모집 마감 날짜: {{ req.6 }}</p>
-        <a href="{%url 'request_accept'%}"><button type=""button class="btn btn-default btn-lg">의뢰 수락하기</button></a>
-    </div>
+        <div>
+            <p>의뢰이 ID: {{ req.0 }}</p>
+            <p>제목: {{ req.12 }} </p>
+            <p>의뢰 금액(원): {{ req.1 }} </p>
+            <p>최소 경력(년): {{ req.4 }}</p>
+            <p>최소 인원(명): {{ req.5 }}</p>
+            <p>최대 인원(명): {{ req.6 }}</p>
+            <p>모집 시작 날짜: {{ req.2 }}</p>
+            <p>모집 마감 날짜: {{ req.3 }}</p>
+            <p>의뢰자의 평점: {{ req.10 }}</p>
+            <p>의뢰자의 ID: {{ req.11 }}</p>
+        </div>
+
 {% endblock %}

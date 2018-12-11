@@ -206,7 +206,7 @@ def id_dup_check(request):
 
 def show_request(request):
     with connection.cursor() as cursor:
-        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date from Request")
+        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request")
         rows = cursor.fetchall()
         print(rows)
     context = {"show_request": "active"}
@@ -215,8 +215,14 @@ def show_request(request):
 def request_accept(request):
     return render(request, 'request/request_accept.html', {})
 
-def request_content(request):
-    return render(request, 'request/request_content.html', {})
+def request_content(request, pk):
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from Request where Req_id = '" + pk + "'")
+        rows = cursor.fetchall()
+        print(rows)
+        #Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id
+    context = {"request_content": "active"}
+    return render(request, 'request/request_content.html', {'req': rows[0]}, context)
 
 def admin_account(request):
     with connection.cursor() as cursor:
