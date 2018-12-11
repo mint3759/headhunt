@@ -79,6 +79,20 @@ def register_freelancer(request):
         form = FreelancerForm()
     return render(request, 'registration/register_freelancer.html', {'form': form})
 
+def id_dup_check(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "'")
+            rows = cursor.fetchone()
+            if rows is None:
+                return HttpResponse("False")
+            else:
+                return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
 def register_portfolio(request):
     return render(request, 'registration/register_portfolio.html', {})
 def register_success(request):
@@ -164,6 +178,15 @@ def make_request(request):
 def request_success(request):
     return render(request, 'request/request_success.html', {})
 
+def remove_myrequest(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            rid = request.POST['REQ_ID']
+            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
 def mypage(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT Rating from USERS WHERE Id = '" + str(request.session['id']) + "'")
@@ -200,6 +223,18 @@ def update_client(request):
 
 def update_freelancer(request):
     return render(request, 'mypage/update_freelancer.html', {})
+
+def myrequest_client(request):
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from request")
+        rows = cursor.fetchall()
+    return render(request, 'mypage/myrequest_client.html', {'myrequest': rows})
+
+def myrequest_freelancer(request):
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from request")
+        rows = cursor.fetchall()
+    return render(request, 'mypage/myrequest_freelancer.html', {'myrequest': rows})
 
 def myportfolio(request):
     return render(request, 'mypage/myportfolio.html', {})
@@ -264,30 +299,6 @@ def myteam(request):
             # end of 내가 만든 팀 관리 코드
         return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo, 'teamInfoLeader': teamInfoLeader})
 
-
-def remove_myrequest(request):
-    with connection.cursor() as cursor:
-        if 'REQ_ID' in request.POST:
-            rid = request.POST['REQ_ID']
-            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'")
-            return HttpResponse("True")
-        else:
-            return HttpResponse("Fail")
-
-def id_dup_check(request):
-    with connection.cursor() as cursor:
-        print(request.POST)
-        if 'USER_ID' in request.POST:
-            uid = request.POST['USER_ID']
-            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "'")
-            rows = cursor.fetchone()
-            if rows is None:
-                return HttpResponse("False")
-            else:
-                return HttpResponse("True")
-        else:
-            return HttpResponse("Fail")
-
 def id_free_check(request):
     with connection.cursor() as cursor:
         print(request.POST)
@@ -298,6 +309,26 @@ def id_free_check(request):
             if rows is None:
                 return HttpResponse("False")
             else:
+                return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def member_check(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST and 'TEAM_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            tid = request.POST['TEAM_ID']
+            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
+            rows = cursor.fetchone()
+            if rows is None:
+                return HttpResponse("no_id")
+            else:
+                cursor.execute("SELECT * FROM PARTICIPATE_IN WHERE Tname = '" + tid + "' AND Fid='" + uid + "'")
+                rows = cursor.fetchone()
+                if rows is not None:
+                    return HttpResponse("exist_member")
+                cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + tid + "', '" + uid + "')")
                 return HttpResponse("True")
         else:
             return HttpResponse("Fail")
@@ -417,49 +448,3 @@ def remove_team_admin(request):
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
-
-def id_free_check(request):
-    with connection.cursor() as cursor:
-        print(request.POST)
-        if 'USER_ID' in request.POST:
-            uid = request.POST['USER_ID']
-            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
-            rows = cursor.fetchone()
-            if rows is None:
-                return HttpResponse("False")
-            else:
-                return HttpResponse("True")
-        else:
-            return HttpResponse("Fail")
-
-def member_check(request):
-    with connection.cursor() as cursor:
-        print(request.POST)
-        if 'USER_ID' in request.POST and 'TEAM_ID' in request.POST:
-            uid = request.POST['USER_ID']
-            tid = request.POST['TEAM_ID']
-            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
-            rows = cursor.fetchone()
-            if rows is None:
-                return HttpResponse("no_id")
-            else:
-                cursor.execute("SELECT * FROM PARTICIPATE_IN WHERE Tname = '" + tid + "' AND Fid='" + uid + "'")
-                rows = cursor.fetchone()
-                if rows is not None:
-                    return HttpResponse("exist_member")
-                cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + tid + "', '" + uid + "')")
-                return HttpResponse("True")
-        else:
-            return HttpResponse("Fail")
-
-def myrequest_client(request):
-    with connection.cursor() as cursor:
-        cursor.execute("Select * from request")
-        rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest_client.html', {'myrequest': rows})
-
-def myrequest_freelancer(request):
-    with connection.cursor() as cursor:
-        cursor.execute("Select * from request")
-        rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest_freelancer.html', {'myrequest': rows})
