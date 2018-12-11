@@ -184,6 +184,12 @@ def update_client(request):
 def update_freelancer(request):
     return render(request, 'mypage/update_freelancer.html', {})
 
+def myportfolio(request):
+    return render(request, 'mypage/myportfolio.html', {})
+
+def myteam(request):
+    return render(request, 'mypage/myteam.html', {})
+
 def id_dup_check(request):
     with connection.cursor() as cursor:
         print(request.POST)
