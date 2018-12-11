@@ -215,6 +215,9 @@ def show_request(request):
 def request_accept(request):
     return render(request, 'request/request_accept.html', {})
 
+def request_content(request):
+    return render(request, 'request/request_content.html', {})
+
 def admin_account(request):
     return render(request, 'administrator/admin_account.html', {})
 

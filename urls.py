@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^mypage/update_freelancer/$', views.update_freelancer, name = 'update_freelancer'),
     url(r'^request/show_request/$', views.show_request, name = 'show_request'),
     url(r'^request/request_accept/$', views.request_accept, name = 'request_accept'),
+    url(r'^request/request_content/$', views.request_content, name = 'request_content'),
     url(r'^administrator/admin_account/$', views.admin_account, name = 'admin_account'),
     url(r'^administrator/admin_req/$', views.admin_req, name = 'admin_req'),
     url(r'^administrator/admin_team/$', views.admin_team, name = 'admin_team'),
