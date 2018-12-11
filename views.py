@@ -152,7 +152,6 @@ def make_request(request):
             with connection.cursor() as cursor:
                 cursor.execute("SELECT MAX(req_id) FROM REQUEST")
                 rows = cursor.fetchone()
-                print(rows)
                 if rows[0] is None:
                     req_id = 1
                 else:
@@ -249,9 +248,47 @@ def show_freelancer(request):
 
 def myrequest_freelancer(request):
     with connection.cursor() as cursor:
-        cursor.execute("Select * from request")
+        #수락 요청 중인 의뢰
+        #개인
+        cursor.execute("SELECT * FROM REQUEST_ASK WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest_freelancer.html', {'myrequest': rows})
+        #rows[i][0]은 해당하는 request의 req_id
+        myRequestAsk = []
+        for i in range(len(rows)):
+            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
+            tmp_myRequestAsk = cursor.fetchall()
+            for j in range(len(tmp_myRequestAsk)):
+                myRequestAsk.append((tmp_myRequestAsk[j], 'X'))
+        print(myRequestAsk)
+        #팀
+        cursor.execute("SELECT * FROM TEAMS WHERE Leader = '" + request.session['id'] + "'")
+        teams = cursor.fetchall()
+        print(teams)
+        for i in range(len(teams)):
+            tName = teams[i][0]
+            cursor.execute("SELECT * FROM REQUEST_TEAM_ASK WHERE Tname = '" + tName + "'")
+            rows = cursor.fetchall()
+            # rows[i][0]은 해당하는 request의 req_id
+            for j in range(len(rows)):
+                cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
+                tmp_myRequestAsk = cursor.fetchall()
+                for k in range(len(tmp_myRequestAsk)):
+                    myRequestAsk.append((tmp_myRequestAsk[k], 'O', tName))
+        print(myRequestAsk)
+
+        #진행 중인 의뢰
+        
+    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk})
+
+def remove_requestAsk_freelancer(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 0 WHERE Req_id = '" + req_id + "'")
+            cursor.execute("DELETE REQUEST_ASK WHERE Rid = '" + req_id + "' AND Fid = '" + request.session['id'] + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
 
 def myportfolio(request):
     return render(request, 'mypage/myportfolio.html', {})

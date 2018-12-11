@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^mypage/update_freelancer/$', views.update_freelancer, name = 'update_freelancer'),
     url(r'^mypage/myrequest_client/$', views.myrequest_client, name='myrequest_client'),
     url(r'^mypage/myrequest_freelancer/$', views.myrequest_freelancer, name='myrequest_freelancer'),
+    url(r'^mypage/remove_requestAsk_freelancer/$', views.remove_requestAsk_freelancer, name='remove_requestAsk_freelancer'),
     url(r'^mypage/show_freelancer/$', views.show_freelancer, name='show_freelancer'),
     url(r'^mypage/remove_myrequest_client/$', views.remove_myrequest_client, name='remove_myrequest_client'),
     url(r'^request/show_request/$', views.show_request, name = 'show_request'),
