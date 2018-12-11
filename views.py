@@ -29,9 +29,9 @@ def register_client(request):
             with connection.cursor() as cursor:
                 encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
                 phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
-                cursor.execute("INSERT INTO USERS (Id, Pw, Is_admin, UName, Phone_num, User_type) VALUES ('"
+                cursor.execute("INSERT INTO USERS (Id, Pw, UName, Phone_num, User_type) VALUES ('"
                                + str(form.cleaned_data['id']) + "', '" + str(encrypt_pw) + "', "
-                               + "False" + ", '" + str(form.cleaned_data['uname']) + "', '" + str(phone_num)
+                               + str(form.cleaned_data['uname']) + "', '" + str(phone_num)
                                + "', " +  "'c'" + ")")
                 cursor.execute("INSERT INTO CLIENTS VALUES ('" + str(form.cleaned_data['id']) + "')")
                 rows = cursor.fetchall()
@@ -62,9 +62,9 @@ def register_freelancer(request):
             with connection.cursor() as cursor:
                 encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
                 phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
-                cursor.execute("INSERT INTO USERS (Id, Pw, Is_admin, UName, Phone_num, User_type) VALUES ('"
+                cursor.execute("INSERT INTO USERS (Id, Pw, UName, Phone_num, User_type) VALUES ('"
                                + str(form.cleaned_data['id']) + "', '" + str(encrypt_pw) + "', "
-                               + "False" + ", '" + str(form.cleaned_data['uname']) + "', '" + str(phone_num)
+                               + str(form.cleaned_data['uname']) + "', '" + str(phone_num)
                                + "', " +  "'f'" + ")")
                 cursor.execute("INSERT INTO FREELANCERS (Id, Age, Exp, Major) VALUES ('"
                                + str(form.cleaned_data['id']) + "', '" + str(form.cleaned_data['age'])

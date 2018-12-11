@@ -175,7 +175,6 @@ class Teams(models.Model):
 class Users(models.Model):
     id = models.CharField(db_column='Id', primary_key=True, max_length=14)  # Field name made lowercase.
     pw = models.CharField(db_column='Pw', max_length=50)  # Field name made lowercase.
-    is_admin = models.BooleanField(db_column='Is_admin', blank=True, default = False)  # Field name made lowercase.
     uname = models.CharField(db_column='UName', max_length=20)  # Field name made lowercase.
     phone_num = models.CharField(db_column='Phone_num', max_length=11, blank=True, null=True)  # Field name made lowercase.
     rating = models.DecimalField(db_column='Rating', max_digits=3, decimal_places=2, blank=True, null=True, default=None)  # Field name made lowercase.
