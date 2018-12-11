@@ -287,7 +287,19 @@ def remove_account(request):
             return HttpResponse("Fail")
 
 def admin_req(request):
-    return render(request, 'administrator/admin_req.html', {})
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from request")
+        rows = cursor.fetchall()
+    return render(request, 'administrator/admin_req.html', {'requests' : rows})
+
+def remove_request(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            rid = request.POST['REQ_ID']
+            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
 
 def admin_team(request):
     return render(request, 'administrator/admin_team.html', {})

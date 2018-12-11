@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^administrator/admin_req/$', views.admin_req, name = 'admin_req'),
     url(r'^administrator/admin_team/$', views.admin_team, name = 'admin_team'),
     url(r'^administrator/remove_account/$', views.remove_account, name = 'remove_account'),
+    url(r'^administrator/remove_request/$', views.remove_account, name='remove_request'),
     #url(r'^$', views.IndexView.as_view(), name = 'index'),url(r'^request/show_request/$', views.show_request, name='show_request'),
     # /headhunt 로 접속시 (include 됨)
     # CBV의 generic view를 이용하여 url을 처리하겠다는 말
