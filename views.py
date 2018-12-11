@@ -199,12 +199,39 @@ def myteam(request):
                 teammates.append(tmpId)
             with connection.cursor() as cursor:
                 cursor.execute("INSERT INTO TEAMS (Tname, Leader) VALUES ('" + form.cleaned_data['tName'] + "', '" + request.session['id'] + "')")
+                cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + form.cleaned_data['tName'] + "', '" + request.session['id'] + "')")
                 for i in range(len(teammates)):
                     cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + form.cleaned_data['tName'] + "', '" + teammates[i] + "')")
-            return redirect('/mypage/myteam', {'form': form})
+            return redirect('/mypage/myteam', {})
     else:
         form = MakeTeamForm()
-        return render(request, 'mypage/myteam.html', {'form': form})
+        with connection.cursor() as cursor:
+            #start of 내가 속한 팀 조회 코드
+            cursor.execute("SELECT Tname FROM PARTICIPATE_IN WHERE Fid = '" + request.session['id'] + "'")
+            myteams = cursor.fetchall()
+            tmpTeamInfo = []
+            for i in range(len(myteams)):
+                cursor.execute("SELECT * FROM TEAMS WHERE Tname = '" + myteams[i][0] + "'")
+                tmpTeamInfo.append(cursor.fetchone())
+            tmpTeamMates = []
+            for i in range(len(tmpTeamInfo)):
+                cursor.execute("SELECT * FROM PARTICIPATE_IN WHERE Tname = '" + tmpTeamInfo[i][0] + "'")
+                tmpTeamMates.append(cursor.fetchall())
+            teamMates = []
+            teamMateNr = []
+            for i in range(len(tmpTeamMates)):
+                str = []
+                tmpLen = len(tmpTeamMates[i])
+                for j in range(tmpLen):
+                    str.append(tmpTeamMates[i][j][1])
+                teamMates.append(str)
+                teamMateNr.append(tmpLen)
+            teamInfo = []
+            for i in range(len(myteams)):
+                teamInfo.append((tmpTeamInfo[i][0], tmpTeamInfo[i][1], teamMateNr[i], teamMates[i]))
+            print(teamInfo)
+            #end of 내가 속한 팀 조회 코드
+        return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo})
 
 def id_dup_check(request):
     with connection.cursor() as cursor:
@@ -246,6 +273,16 @@ def tName_check(request):
                 return HttpResponse("True")
             else:
                 return HttpResponse("False")
+        else:
+            return HttpResponse("Fail")
+
+def remove_teammate(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            cursor.execute("DELETE FROM PARTICIPATE_IN WHERE Fid='" + uid + "'")
+            return HttpResponse("True")
         else:
             return HttpResponse("Fail")
 

@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^mypage/myteam/$', views.myteam, name='myteam'),
     url(r'^mypage/id_free_check/$', views.id_free_check, name='id_free_check'),
     url(r'^mypage/tName_check/$', views.tName_check, name='tName_check'),
+    url(r'^mypage/remove_teammate/$', views.remove_teammate, name = 'remove_teammate'),
     url(r'^mypage/update_client/$', views.update_client, name = 'update_client'),
     url(r'^mypage/update_freelancer/$', views.update_freelancer, name = 'update_freelancer'),
     url(r'^request/show_request/$', views.show_request, name = 'show_request'),
