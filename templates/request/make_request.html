@@ -46,15 +46,92 @@
               {{ form.end_date }}
             </div>
         </div>
+        <div class="form-group" id="lang_prof">
+            <label class="control-label col-sm-2">언어별 능숙도</label>
+            <div id="langchoice">
+                <div class="col-sm-2">
+                    <select class="form-control" id="id_language">
+                        <option>﻿Java</option>
+                        <option>Python</option>
+                        <option>C</option>
+                        <option>C++</option>
+                        <option>PyPy</option>
+                        <option>Ruby</option>
+                        <option>Kotlin</option>
+                        <option>Swift</option>
+                        <option>C#</option>
+                        <option>node.js</option>
+                        <option>Go</option>
+                        <option>D</option>
+                        <option>F#</option>
+                        <option>PHP</option>
+                        <option>Rust</option>
+                        <option>Pascal</option>
+                        <option>Lua</option>
+                        <option>Perl</option>
+                        <option>R</option>
+                        <option>Objective-C</option>
+                        <option>Objective-C++</option>
+                        <option>Golfscript</option>
+                        <option>Assembly (32bit)</option>
+                        <option>Assembly (64bit)</option>
+                        <option>VB.NET</option>
+                        <option>Bash</option>
+                        <option>Fortran</option>
+                        <option>Scheme</option>
+                        <option>Ada</option>
+                        <option>awk</option>
+                        <option>OCaml</option>
+                        <option>Brainfuck</option>
+                        <option>Whitespace</option>
+                        <option>Tcl</option>
+                        <option>Rhino</option>
+                        <option>Cobol</option>
+                        <option>Pike</option>
+                        <option>sed</option>
+                        <option>Boo</option>
+                        <option>Intercal</option>
+                        <option>bc</option>
+                        <option>Nemerl</option>
+                        <option>Cobra</option>
+                        <option>Algol</option>
+                        <option>Befunge</option>
+                        <option>Haxe</option>
+                        <option>LOLCODE</option>
+                        <option>아희</option>
+                    </select>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="1.0"checked>★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="2.0">★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="3.0">★★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="4.0">★★★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="proficiency" value="5.0">★★★★★</label>
+                </div>
+                <div class="col-sm-1">
+                <button id = "add_lang" type = "button" class="btn btn-default btn-xs"  style="margin-top:7px; margin-left:10px;" onclick="add_language()"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id = "hidden">
+        </div>
         <div class="form-group" id="rdocs">
             <label class="control-label col-sm-2">의뢰 문서</label>
             <div class="col-sm-2">
-              <input type="file" id="reqdoc" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" onchange='uploadfile()' multiple>
+              <input type="file" id="reqdoc" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" multiple>
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-default">등록</button>
+              <button type="submit" class="btn btn-default" onclick='before_submit()'>등록</button>
             </div>
         </div>
     </form>
@@ -64,6 +141,7 @@
 <script type="text/javascript">
 var rfiles = [];
 var datecheck = false;
+var langdict = {}
 
 function todatecheck(){
     datecheck = false;
@@ -99,44 +177,52 @@ function fromdatecheck(){
     }
 }
 
-function uploadfile(){
-    var x = document.getElementById('reqdoc');
-    var newfiles = [];
-    if ('files' in x) {
-        if (x.files.length == 0) {
-            txt = "Select one or more files.";
-        }
-        else {
-            var dup = false;
-            for (var i = 0; i < x.files.length; i++) {
-               for (var j=0; j<rfiles.length; j++){
-                    if(x.files[i].name==rfiles[j].name){
-                        dup = true;
-                        alert("이름이 같은 파일이 존재합니다.")
-                    }
-               }
-               if (dup==false){
-                    var txt = "";
-                    rfiles.push(x.files[i]);
-                    var div = document.createElement('div');
-                    div.setAttribute("class", "col-sm-offset-2 col-sm-10");
-                    div.setAttribute("style", "margin-top:5px;");
-                    txt += "<div class = 'col-sm-3'>" + x.files[i].name + "</div>";
-                    txt += "<div class = 'col-sm-1'><input type='button' class='btn btn-default btn-xs'  style='margin-top: 1px; margin-left:20px;' value='삭제' onclick='remove_file(this)'></div>";
-                    div.innerHTML = txt;
-                    document.getElementById('rdocs').appendChild(div);
-                }
-             }
-         }
+function add_language(){
+    var lang = document.getElementById('id_language').value;
+    var prof = document.querySelector('input[name="proficiency"]:checked').value;
+    var prof_star = ""
+    if(prof==1.0)
+        prof_star = "★";
+    else if(prof==2.0)
+        prof_star = "★★";
+    else if(prof==3.0)
+        prof_star = "★★★";
+    else if(prof==4.0)
+        prof_star = "★★★★";
+    else if(prof==5.0)
+        prof_star = "★★★★★";
+    if(lang in langdict)
+        alert("이미 입력된 언어입니다.");
+    else{
+        langdict[lang] = prof;
+        var div = document.createElement('div');
+        div.setAttribute("class", "col-sm-10");
+        div.innerHTML = "<div class='col-sm-offset-2 col-sm-5' style='margin-top:5px;'><div class='col-sm-2' name = 'langname' style='margin-top:1px; margin-left:10px;'>" + lang + "</div>" + "<div class='col-sm-3' style-'margin-top:5px;'>" + prof_star + "</div><div class = 'col-sm-1'><input type='button' class='btn btn-default btn-xs'  style='margin-top: 1px; margin-left:20px;' value='삭제' onclick='remove_lang(this)'></div></div>";
+        document.getElementById('langchoice').appendChild(div);
     }
 }
 
-function remove_file(obj){
+function remove_lang(obj){
     // obj.parentNode 를 이용하여 삭제
-    var file = obj.parentNode.parentNode.childNodes[0].innerHTML;
-    const idx = rfiles.findIndex(function(item) {return item.name === file})
-    if (idx > -1) rfiles.splice(idx, 1);
-    document.getElementById('rdocs').removeChild(obj.parentNode.parentNode);
+    var lang = obj.parentNode.parentNode.parentNode.childNodes[0].childNodes[0].innerHTML;
+    delete langdict[lang];
+    document.getElementById('langchoice').removeChild(obj.parentNode.parentNode.parentNode);
 }
+
+function before_submit() {
+    var param = document.getElementById('hidden');
+    var langs = document.createElement('input');
+    langs.type='hidden';
+    langs.name='language';
+    var langstr = '';
+    for (lang in langdict) {
+        langstr = langstr + lang + ':' + langdict[lang] + ', ';
+    }
+    langstr = langstr + 'dummy';
+    langs.value = langstr;
+    param.appendChild(langs);
+    return true;
+}
+
 </script>
 {% endblock %}

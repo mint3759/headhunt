@@ -113,6 +113,7 @@ class MakeRequestForm(forms.Form):
 
             })
     )
+    language = forms.CharField()
 
 class FreelancerForm(forms.Form):
     id = forms.CharField(
@@ -184,7 +185,6 @@ class FreelancerForm(forms.Form):
                 "class": "form-control"
             })
     )
-
     language = forms.CharField()
 
 class updateClientForm(forms.Form):
@@ -248,11 +248,4 @@ class MakeTeamForm(forms.Form):
             })
     )
 
-#    memberId = forms.CharField(
-#        max_length = 14,
-#        widget=forms.TextInput(
-#            attrs={
-#                "class": "form-control"
-#            })
-#    )
     teammate = forms.CharField()

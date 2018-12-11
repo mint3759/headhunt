@@ -123,12 +123,22 @@ def make_request(request):
     context = {"make_request": "active"}
     if request.method == "POST":
         form = MakeRequestForm(request.POST)
+        print(request.POST)
         if form.is_valid():
             #reqtitle, fund, min_exp, min_fre, max_fre
+            tmplangList = form.cleaned_data['language'].split(", ")
+            langName = []
+            rating = []
+            for langs in tmplangList:
+                if langs == 'dummy':
+                    break
+                tmpName, tmpRating = langs.split(":")
+                langName.append(tmpName)
+                rating.append(tmpRating)
             with connection.cursor() as cursor:
-                cursor.execute("SELECT COUNT(*) FROM REQUEST")
+                cursor.execute("SELECT MAX(req_id) FROM REQUEST")
                 rows = cursor.fetchone()
-                req_id = rows[0]
+                req_id = rows[0] + 1
                 team_only = 0
                 cid = request.session['id']
                 if form.cleaned_data['min_fre'] >= 2:
@@ -138,7 +148,10 @@ def make_request(request):
                                + str(form.cleaned_data['min_exp']) + "', '" + str(form.cleaned_data['min_fre']) + "', '"
                                + str(form.cleaned_data['max_fre']) + "', '" + str(form.cleaned_data['start_date']) + "', '"
                                + str(form.cleaned_data['end_date']) + "', '" + str(team_only) + "', '0', '" + str(cid) + "')")
-                rows = cursor.fetchall()
+                for i in range(len(langName)):
+                    cursor.execute("INSERT INTO R_PROFICIENCY (Language, Star_rating, Req_id) VALUES ('"
+                                   + str(langName[i]) + "', '" + str(rating[i]) + "', '" + str(
+                        req_id) + "')")
             return redirect('/request/request_success')
     else:
         form = MakeRequestForm()
@@ -247,17 +260,11 @@ def myteam(request):
             # end of 내가 만든 팀 관리 코드
         return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo, 'teamInfoLeader': teamInfoLeader})
 
-def myrequest_client(request):
+def myrequest(request):
     with connection.cursor() as cursor:
         cursor.execute("Select * from request")
         rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest_client.html', {'myrequest': rows})
-
-def myrequest_freelancer(request):
-    with connection.cursor() as cursor:
-        cursor.execute("Select * from request")
-        rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest_freelancer.html', {'myrequest': rows})
+    return render(request, 'mypage/myrequest.html', {'myrequest': rows})
 
 def remove_myrequest(request):
     with connection.cursor() as cursor:
@@ -308,40 +315,6 @@ def tName_check(request):
                 return HttpResponse("True")
             else:
                 return HttpResponse("False")
-        else:
-            return HttpResponse("Fail")
-
-def id_free_check(request):
-    with connection.cursor() as cursor:
-        print(request.POST)
-        if 'USER_ID' in request.POST:
-            uid = request.POST['USER_ID']
-            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
-            rows = cursor.fetchone()
-            if rows is None:
-                return HttpResponse("False")
-            else:
-                return HttpResponse("True")
-        else:
-            return HttpResponse("Fail")
-
-def member_check(request):
-    with connection.cursor() as cursor:
-        print(request.POST)
-        if 'USER_ID' in request.POST and 'TEAM_ID' in request.POST:
-            uid = request.POST['USER_ID']
-            tid = request.POST['TEAM_ID']
-            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
-            rows = cursor.fetchone()
-            if rows is None:
-                return HttpResponse("no_id")
-            else:
-                cursor.execute("SELECT * FROM PARTICIPATE_IN WHERE Tname = '" + tid + "' AND Fid='" + uid + "'")
-                rows = cursor.fetchone()
-                if rows is not None:
-                    return HttpResponse("exist_member")
-                cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + tid + "', '" + uid + "')")
-                return HttpResponse("True")
         else:
             return HttpResponse("Fail")
 
