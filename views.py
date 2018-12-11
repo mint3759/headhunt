@@ -260,11 +260,6 @@ def myteam(request):
             # end of 내가 만든 팀 관리 코드
         return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo, 'teamInfoLeader': teamInfoLeader})
 
-def myrequest(request):
-    with connection.cursor() as cursor:
-        cursor.execute("Select * from request")
-        rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest.html', {'myrequest': rows})
 
 def remove_myrequest(request):
     with connection.cursor() as cursor:
