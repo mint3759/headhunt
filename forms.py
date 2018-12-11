@@ -248,4 +248,11 @@ class MakeTeamForm(forms.Form):
             })
     )
 
+#    memberId = forms.CharField(
+#        max_length = 14,
+#        widget=forms.TextInput(
+#            attrs={
+#                "class": "form-control"
+#            })
+#    )
     teammate = forms.CharField()

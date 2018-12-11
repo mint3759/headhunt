@@ -305,6 +305,40 @@ def tName_check(request):
         else:
             return HttpResponse("Fail")
 
+def id_free_check(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
+            rows = cursor.fetchone()
+            if rows is None:
+                return HttpResponse("False")
+            else:
+                return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def member_check(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST and 'TEAM_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            tid = request.POST['TEAM_ID']
+            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "' AND USER_TYPE='f'")
+            rows = cursor.fetchone()
+            if rows is None:
+                return HttpResponse("no_id")
+            else:
+                cursor.execute("SELECT * FROM PARTICIPATE_IN WHERE Tname = '" + tid + "' AND Fid='" + uid + "'")
+                rows = cursor.fetchone()
+                if rows is not None:
+                    return HttpResponse("exist_member")
+                cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + tid + "', '" + uid + "')")
+                return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
 def remove_member(request):
     with connection.cursor() as cursor:
         print(request.POST)

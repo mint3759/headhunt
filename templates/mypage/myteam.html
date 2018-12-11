@@ -84,13 +84,22 @@
                     <td>{{ info.1 }}</td>
                     <td>
                         {% for teammate in info.2 %}
-                        <div>
+                        <div id = "{{info.0.0}}member">
                         {% if teammate.0 != request.session.id %}
                             {{ teammate.0 }}
-                            <button type = "button" id = "" name = "removing_member" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">팀원 삭제</button>
+                            <button type = "button" id = "{{info.0.0}},{{teammate.0}}" name = "removing_member" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">팀원 삭제</button>
                         {% endif %}
                         </div>
                         {% endfor %}
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">팀원 추가</label>
+                            <div name = "{{info.0.0}}">
+                                <input type="text" class="form-control">
+                                <div class="col-sm-1" name = "{{info.0.0}}">
+                                <button id = "memberCheck" type = "button" class="btn btn-default btn-xs"  style="margin-top:7px; margin-left:10px;"><span class="glyphicon glyphicon-plus"></span></button>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <button type = "button" id = "{{info.0.0}}" name = "removing_team" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">팀 삭제</button>
@@ -98,9 +107,6 @@
                 </tr>
                 {% endfor %}
                 </table>
-            </div>
-            <div>
-                <h4>팀 삭제</h4>
             </div>
 
         </div>
@@ -114,9 +120,9 @@
 {% block javascript_tail %}
 <script type="text/javascript">
 
-var idList = ['{{request.session.id}}']
+var idList = ['{{request.session.id}}'];
 var tNameCheck = false;
-var tmpId
+var tmpId, tmpteamname, tmpmemberId;
 
 function before_submit() {
     var param = document.getElementById('hidden');
@@ -154,6 +160,14 @@ function remove_id(obj){
     document.getElementById('idChoice').removeChild(obj.parentNode.parentNode.parentNode);
 }
 
+function add_member() {
+    var div = document.createElement('div');
+    //div.setAttribute("class", "col-sm-10");
+    div.innerHTML = tmpId + '<button type = "button" id = ' + tmpteamname + ',' + tmpId + ' name = "removing_member" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">팀원 삭제</button>'
+    //div.innerHTML = "<div class='col-sm-offset-2 col-sm-5' style='margin-top:5px;'><div class='col-sm-2' name = 'userid' style='margin-top:1px; margin-left:10px;'>" + tmpId + "</div><div class = 'col-sm-1'><input type='button' class='btn btn-default btn-xs'  style='margin-top: 1px; margin-left:20px;' value='삭제' onclick='remove_id(this)'></div></div>";
+    document.getElementById(tmpmemberId).appendChild(div);
+}
+
 $(document).on("click", "#idCheck", function(){
     if($("#id_id").val() != ""){
         $.ajax({
@@ -168,6 +182,33 @@ $(document).on("click", "#idCheck", function(){
                 }
                 else if(result=="False"){
                     alert("해당 아이디가 없습니다.");
+                }
+            }
+        });
+    }
+});
+
+$(document).on("click", "#memberCheck", "button[name={{]", function(){
+    if($("#id_memberId").val() != ""){
+        $.ajax({
+            type: 'POST',
+            url : '../member_check/',
+            data : {TEAM_ID: $(this).parent().attr('name'),
+                    USER_ID: $(this).parent().parent().children('input').val(),
+                    csrfmiddlewaretoken : '{{ csrf_token }}' },
+            context: this,
+            success : function(result){
+                if(result=="True"){
+                    tmpId = $(this).parent().parent().children('input').val();
+                    tmpteamname = $(this).parent().attr('name');
+                    tmpmemberId = $(this).parent().attr('name') + 'member';
+                    add_member();
+                }
+                else if(result=="no_id"){
+                    alert("없는 아이디입니다.");
+                }
+                else if (result=="exist_member"){
+                    alert("이미 있는 팀원입니다.");
                 }
             }
         });
@@ -201,11 +242,13 @@ $(document).on("click", "button[name=removing_member]", function(){
             url : '../remove_member/',
             data : {USER_ID: $(this).attr('id'),
                     csrfmiddlewaretoken : '{{ csrf_token }}' },
+            context: this,
             success : function(result){
                 alert("삭제 완료");
+                $(this).parent().remove();
             }
         });
-        $(this).parent().remove();
+
 });
 
 $(document).on("click", "button[name=removing_team]", function(){
@@ -214,11 +257,12 @@ $(document).on("click", "button[name=removing_team]", function(){
             url : '../remove_team/',
             data : {Tname: $(this).attr('id'),
                     csrfmiddlewaretoken : '{{ csrf_token }}' },
+            context: this,
             success : function(result){
                 alert("삭제 완료");
+                $(this).parent().parent().remove();
             }
         });
-        $(this).parent().parent().remove();
 });
 </script>
 {% endblock %}
