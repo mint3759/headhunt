@@ -123,21 +123,27 @@
         </div>
         <div class="form-group" id = "hidden">
         </div>
+        <!--
         <div class="form-group" id="rdocs">
             <label class="control-label col-sm-2">의뢰 문서</label>
             <div class="col-sm-2">
               <input type="file" id="reqdoc" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" multiple>
             </div>
         </div>
+        -->
+        <form enctype="multipart/form-data" method = "post">
+            <input type="file" id="file" name="file[]" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" multiple>
+        </form>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-default" onclick='before_submit()'>등록</button>
+                <button type="submit" class="btn btn-default" onclick='uploadFile()'>등록</button>
             </div>
         </div>
     </form>
 {% endblock %}
 
 {% block javascript_tail %}
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script type="text/javascript">
 var rfiles = [];
 var datecheck = false;
@@ -207,6 +213,52 @@ function remove_lang(obj){
     var lang = obj.parentNode.parentNode.parentNode.childNodes[0].childNodes[0].innerHTML;
     delete langdict[lang];
     document.getElementById('langchoice').removeChild(obj.parentNode.parentNode.parentNode);
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+/*
+function uploadFile() {
+    var form_data = new FormData();
+    jQuery.each(jQuery('#file')[0].files, function(i, file) {
+        form_data.append('file-'+i, file);
+    });
+    $.ajax({
+        type: 'POST',
+        url: '',
+        data: {
+            form_data: form_data,
+            csrfmiddlewaretoken : '{{ csrf_token }}',
+        },
+
+        success: function(result){
+            alert("wow");
+            before_submit();
+        }
+    });
+}*/
+
+function uploadFile() {
+
+    $.ajax({
+        type: 'POST',
+        url: '',
+        data: function() {
+            var data = new FormData();
+            data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            jQuery.each(jQuery('#file')[0].files, function(i, file) {
+                form_data.append('file-'+i, file);
+            });
+            return data;
+        },
+        success: function(result){
+            alert("wow");
+            before_submit();
+        }
+    });
 }
 
 function before_submit() {

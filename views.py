@@ -277,8 +277,18 @@ def myrequest_freelancer(request):
         print(myRequestAsk)
 
         #진행 중인 의뢰
-        
-    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk})
+        #개인
+        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
+        rows = cursor.fetchall()
+        #rows[i][0]는 원하는 req_id
+        myWorkingRequest = []
+        for i in range(len(rows)):
+            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 2")
+            tmp_myWorkingRequest = cursor.fetchall()
+            for j in range(len(tmp_myWorkingRequest)):
+                myWorkingRequest.append((tmp_myWorkingRequest[j], 'X'))
+        print(myWorkingRequest)
+    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk, 'myWorkingRequest': myWorkingRequest})
 
 def remove_requestAsk_freelancer(request):
     with connection.cursor() as cursor:

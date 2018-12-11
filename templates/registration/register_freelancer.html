@@ -152,7 +152,7 @@
         -->
         <div class="form-group" id="register-button">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-success btn-md" onclick='before_submit()'>Register</button>
+                <button type="submit" id = "register" class="btn btn-success btn-md" onclick='before_submit()'>Register</button>
             </div>
         </div>
     </form>
@@ -271,6 +271,7 @@ function before_submit() {
     param.appendChild(langs);
     return true;
 }
+
 /*
 function uploadfile(){
     var x = document.getElementById('portfoliofile');
