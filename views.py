@@ -219,7 +219,11 @@ def request_content(request):
     return render(request, 'request/request_content.html', {})
 
 def admin_account(request):
-    return render(request, 'administrator/admin_account.html', {})
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from users")
+        rows = cursor.fetchall()
+        print(rows)
+    return render(request, 'administrator/admin_account.html', {'accounts': rows})
 
 def admin_req(request):
     return render(request, 'administrator/admin_req.html', {})
