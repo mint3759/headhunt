@@ -199,7 +199,6 @@ def myteam(request):
                 teammates.append(tmpId)
             with connection.cursor() as cursor:
                 cursor.execute("INSERT INTO TEAMS (Tname, Leader) VALUES ('" + form.cleaned_data['tName'] + "', '" + request.session['id'] + "')")
-                cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + form.cleaned_data['tName'] + "', '" + request.session['id'] + "')")
                 for i in range(len(teammates)):
                     cursor.execute("INSERT INTO PARTICIPATE_IN (Tname, Fid) VALUES ('" + form.cleaned_data['tName'] + "', '" + teammates[i] + "')")
             return redirect('/mypage/myteam', {})
@@ -213,17 +212,17 @@ def myteam(request):
             for i in range(len(myteams)):
                 cursor.execute("SELECT * FROM TEAMS WHERE Tname = '" + myteams[i][0] + "'")
                 tmpTeamInfo.append(cursor.fetchone())
-            tmpTeamMates = []
+            tmpTeammates = []
             for i in range(len(tmpTeamInfo)):
                 cursor.execute("SELECT * FROM PARTICIPATE_IN WHERE Tname = '" + tmpTeamInfo[i][0] + "'")
-                tmpTeamMates.append(cursor.fetchall())
+                tmpTeammates.append(cursor.fetchall())
             teamMates = []
             teamMateNr = []
-            for i in range(len(tmpTeamMates)):
+            for i in range(len(tmpTeammates)):
                 str = []
-                tmpLen = len(tmpTeamMates[i])
+                tmpLen = len(tmpTeammates[i])
                 for j in range(tmpLen):
-                    str.append(tmpTeamMates[i][j][1])
+                    str.append(tmpTeammates[i][j][1])
                 teamMates.append(str)
                 teamMateNr.append(tmpLen)
             teamInfo = []
@@ -231,7 +230,20 @@ def myteam(request):
                 teamInfo.append((tmpTeamInfo[i][0], tmpTeamInfo[i][1], teamMateNr[i], teamMates[i]))
             print(teamInfo)
             #end of 내가 속한 팀 조회 코드
-        return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo})
+            # start of 내가 만든 팀 관리 코드
+            cursor.execute("SELECT Tname FROM TEAMS WHERE LEADER = '" + request.session['id'] + "'")
+            teamNames = cursor.fetchall()
+            tmpTeammates2 = []
+            for i in range(len(teamNames)):
+                cursor.execute("SELECT Fid FROM PARTICIPATE_IN WHERE Tname = '" + teamNames[i][0] + "'")
+                tmpTeammates2.append(cursor.fetchall())
+            teamMateNr_L = []
+            for i in range(len(teamNames)):
+                teamMateNr_L.append(len(tmpTeammates2[i]))
+            teamInfoLeader = []
+            for i in range(len(teamNames)):
+                teamInfoLeader.append((teamNames[i], teamMateNr_L[i], tmpTeammates2[i]))
+        return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo, 'teamInfoLeader': teamInfoLeader})
 
 def myrequest(request):
     with connection.cursor() as cursor:
@@ -253,7 +265,7 @@ def id_dup_check(request):
         print(request.POST)
         if 'USER_ID' in request.POST:
             uid = request.POST['USER_ID']
-            cursor.execute("SELECT PW FROM USERS WHERE ID='" + uid + "'")
+            cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "'")
             rows = cursor.fetchone()
             if rows is None:
                 return HttpResponse("False")
@@ -296,7 +308,7 @@ def remove_teammate(request):
         print(request.POST)
         if 'USER_ID' in request.POST:
             uid = request.POST['USER_ID']
-            cursor.execute("DELETE FROM PARTICIPATE_IN WHERE Fid='" + uid + "'")
+            cursor.execute("DELETE FROM PARTICIPATE_IN WHERE Tname = '" + uid[0] + "' AND Fid='" + uid[1] + "'")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
