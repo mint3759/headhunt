@@ -24,7 +24,9 @@
     <td>{{ req.0.6 }}</td>
     <td>{{ req.0.7 }}</td>
     <td>
+    {%if req.8 != 2 %}
         <button type = "button" id = "{{req.0.0 }}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
+    {% endif %}
     </td>
 </tr>
 {% endfor %}
@@ -33,33 +35,6 @@
 
 <h3>진행 중인 의뢰</h3>
 <!--request.state == 2-->
-<table class="table table-hover">
-    <tbody id="myreqlist">
-    <tr>
-        <th>Req_title</th>
-        <th>Fund</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Min_exp</th>
-        <th>Min_freelancer</th>
-        <th>Max_freelancer</th>
-    </tr>
-{% for req in myWorkingRequest %}
-<tr>
-    <td>{{ req.0.1 }}</td>
-    <td>{{ req.0.2 }}</td>
-    <td>{{ req.0.3 }}</td>
-    <td>{{ req.0.4 }}</td>
-    <td>{{ req.0.5 }}</td>
-    <td>{{ req.0.6 }}</td>
-    <td>{{ req.0.7 }}</td>
-    <td>
-        <!--<button type = "button" id = "{{req.0.0 }}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>-->
-    </td>
-</tr>
-{% endfor %}
-    </tbody>
-</table>
 <h3>완료 요청 중인 의뢰</h3>
 <!--request.state == 3-->
 <h3>완료된 의뢰</h3>

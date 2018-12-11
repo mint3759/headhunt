@@ -288,40 +288,14 @@ def myrequest_freelancer(request):
             for j in range(len(tmp_myWorkingRequest)):
                 myWorkingRequest.append((tmp_myWorkingRequest[j], 'X'))
         print(myWorkingRequest)
-
-        #완료 요청 중인 의뢰
-        #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
-        rows = cursor.fetchall()
-        # rows[i][0]는 원하는 req_id
-        myCompleteAsk = []
-        for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 3")
-            tmp_myCompleteAsk = cursor.fetchall()
-            for j in range(len(tmp_myCompleteAsk)):
-                myCompleteAsk.append((tmp_myCompleteAsk[j], 'X'))
-        print(myCompleteAsk)
-
-        #완료된 의뢰
-        #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
-        rows = cursor.fetchall()
-        # rows[i][0]는 원하는 req_id
-        myCompleteRequest = []
-        for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 4")
-            tmp_myCompleteRequest = cursor.fetchall()
-            for j in range(len(tmp_myCompleteRequest)):
-                myCompleteRequest.append((tmp_myCompleteRequest[j], 'X'))
-        print(myCompleteRequest)
-    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk, 'myWorkingRequest': myWorkingRequest, 'myCompleteAsk': myCompleteAsk, 'myCompleteRequest': myCompleteRequest})
+    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk, 'myWorkingRequest': myWorkingRequest})
 
 def remove_requestAsk_freelancer(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST:
             req_id = request.POST['REQ_ID']
             cursor.execute("UPDATE REQUEST SET State = 0 WHERE Req_id = '" + req_id + "'")
-            cursor.execute("DELETE from REQUEST_ASK WHERE Rid = '" + req_id + "' AND Fid = '" + request.session['id'] + "'")
+            cursor.execute("DELETE REQUEST_ASK WHERE Rid = '" + req_id + "' AND Fid = '" + request.session['id'] + "'")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
