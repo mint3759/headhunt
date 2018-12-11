@@ -395,3 +395,13 @@ def admin_team(request):
         cursor.execute("Select * from t_contracts")
         rows2 = cursor.fetchall()
     return render(request, 'administrator/admin_team.html', {'teams':rows})
+
+
+def remove_team_admin(request):
+    with connection.cursor() as cursor:
+        if 'TEAM_NAME' in request.POST:
+            tname = request.POST['TEAM_NAME']
+            cursor.execute("DELETE FROM TEAMS WHERE Tname='" + tname + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
