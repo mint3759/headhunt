@@ -50,6 +50,27 @@
         </table>
 
 <h3>거부된 의뢰 완료 요청 목록</h3>
+<table class="table table-hover">
+    <thead>
+    <tr></tr>
+    <tr>
+        <th>Request Id</th>
+        <th>Reject Message</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="rej_reqlist">
+    {% for msg in rej_requests %}
+    <tr>
+        <td>{{ msg.0 }}</td>
+        <td>{{ msg.1 }}</td>
+        <td>
+            <button type = "button" name = "removing_2" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
 
@@ -68,6 +89,24 @@
             });
 
             $(this).parent().parent().remove();
+    });
+
+    $(document).on("click", "button[name=removing_2]", function(){
+
+            alert($(this).parent().parent().children().first().text());
+            /*
+           $.ajax({
+                type: 'POST',
+                url : '../remove_rej_request/',
+                data : {REQ_ID: $(this).parent().parent().children().first().text(),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("삭제 완료");
+                }
+            });
+            */
+
+            //$(this).parent().parent().remove();
     });
 
 </script>

@@ -29,8 +29,8 @@
 
             {%if account.0 != "admin"%}
                 <button type = "button" id = "{{account.0}}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
-
             {% endif %}
+
             </td>
         </tr>
         {% endfor %}
@@ -51,7 +51,6 @@
                     alert("삭제 완료");
                 }
             });
-
             $(this).parent().parent().remove();
     });
 

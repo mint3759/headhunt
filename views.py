@@ -327,13 +327,24 @@ def admin_req(request):
     with connection.cursor() as cursor:
         cursor.execute("Select * from request")
         rows = cursor.fetchall()
-    return render(request, 'administrator/admin_req.html', {'requests' : rows})
+        cursor.execute("SELECT * from Message")
+        rows2 = cursor.fetchall()
+    return render(request, 'administrator/admin_req.html', {'requests' : rows, 'rej_requests' : rows2}, )
 
 def remove_request(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST:
             rid = request.POST['REQ_ID']
-            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'")
+            cursor.execute("DELETE FROM REQUEST WHERE Req_id='" + rid + "'" + "and ")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def remove_rej_request(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            rid = request.POST['REQ_ID']
+            cursor.execute("DELETE FROM MESSAGE WHERE Req_id='" + rid + "'")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
