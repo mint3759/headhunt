@@ -1,4 +1,54 @@
 {% extends 'administrator/admin_base.html' %}
 {% block innercontent %}
+<h1>팀 관리</h1>
+<h3>팀 목록</h3>
 
+<table class="table table-hover">
+        <thead>
+        <tr></tr>
+            <tr>
+                <th>Team Name</th>
+                <th>Leader</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="userlist">
+        {% for team in teams %}
+        <tr>
+            <td>{{ team.0 }}</td>
+            <td>{{ team.1 }}</td>
+            <td>
+                {% if team.2 == 0 %}
+
+                <button type = "button" id = "{{team.0}}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
+
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}
+
+{% block javascript_tail %}
+<script type="text/javascript">
+   $(document).on("click", "button[name=removing]", function(){
+   /*
+
+           $.ajax({
+                type: 'POST',
+                url : '../remove_team/',
+                data : {REQ_ID: $(this).attr('id'),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("삭제 완료");
+                }
+            });
+
+    */
+            $(this).parent().parent().remove();
+    });
+
+
+</script>
 {% endblock %}
