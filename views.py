@@ -208,3 +208,12 @@ def show_request(request):
 
 def request_accept(request):
     return render(request, 'request/request_accept.html', {})
+
+def admin_account(request):
+    return render(request, 'administrator/admin_account.html', {})
+
+def admin_req(request):
+    return render(request, 'administrator/admin_req.html', {})
+
+def admin_team(request):
+    return render(request, 'administrator/admin_team.html', {})

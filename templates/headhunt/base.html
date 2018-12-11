@@ -26,7 +26,9 @@
                 {% else %}
                 <li class="{{show_request}}"><a href="#">의뢰 수락</a></li>
                 {% endif %}
-                <li class=""><a href="#">관리자 페이지</a></li>
+                {% if request.session.login and request.session.user_type == "a" %}
+                <li class="{{admin_account}}"><a href="{% url 'admin_account' %}">관리자 페이지</a></li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if request.session.login %}
