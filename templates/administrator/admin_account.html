@@ -3,7 +3,7 @@
 {% block innercontent %}
         <h1>계정 관리</h1>
         <h3>계정 목록</h3>
-        <table>
+        <table class="table table-hover">
             <tbody id="userlist">
             <tr>
                 <th>Id</th>
@@ -12,6 +12,7 @@
                 <th>Phone</th>
                 <th>Rating</th>
                 <th>UserType</th>
+                <th></th>
             </tr>
         {% for account in accounts %}
         <tr>
@@ -22,7 +23,11 @@
             <td>{{ account.4 }}</td>
             <td>{{ account.5 }}</td>
             <td>
+
+            {%if account.0 != "admin"%}
                 <button type = "button" id = "{{account.0}}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
+
+            {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -33,6 +38,7 @@
 {% block javascript_tail %}
 <script type="text/javascript">
    $(document).on("click", "button[name=removing]", function(){
+
            $.ajax({
                 type: 'POST',
                 url : '../remove_account/',
@@ -42,7 +48,8 @@
                     alert("삭제 완료");
                 }
             });
-            $(this).parent.parent.remove();
+
+            $(this).parent().parent().remove();
     });
 
 </script>
