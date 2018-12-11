@@ -247,11 +247,17 @@ def myteam(request):
             # end of 내가 만든 팀 관리 코드
         return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo, 'teamInfoLeader': teamInfoLeader})
 
-def myrequest(request):
+def myrequest_client(request):
     with connection.cursor() as cursor:
         cursor.execute("Select * from request")
         rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest.html', {'myrequest': rows})
+    return render(request, 'mypage/myrequest_client.html', {'myrequest': rows})
+
+def myrequest_freelancer(request):
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from request")
+        rows = cursor.fetchall()
+    return render(request, 'mypage/myrequest_freelancer.html', {'myrequest': rows})
 
 def remove_myrequest(request):
     with connection.cursor() as cursor:

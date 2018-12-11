@@ -6,8 +6,11 @@
     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
         <ul class="nav">
             <li><a href="{%url 'mypage' %}"><i class="fa fa-fw fa-cog"></i>내 정보</a></li>
-            <li><a href="{%url 'myrequest' %}"><i class="fa fa-fw fa-flask"></i>의뢰 관리</a></li>
+            {% if request.session.user_type == "c" %}
+            <li><a href="{%url 'myrequest_client' %}"><i class="fa fa-fw fa-flask"></i>의뢰 관리</a></li>
+            {% endif %}
             {% if request.session.user_type == "f" %}
+            <li><a href="{%url 'myrequest_freelancer' %}"><i class="fa fa-fw fa-flask"></i>의뢰 관리</a></li>
             <li><a href="{%url 'myportfolio' %}"><i class="fa fa-fw fa-trash-o"></i>포트폴리오</a></li>
             <li><a href="{%url 'myteam' %}"><i class="fa fa-fw fa-user"></i>팀 관리</a></li>
             {% endif %}
