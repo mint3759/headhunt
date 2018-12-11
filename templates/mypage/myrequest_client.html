@@ -2,37 +2,29 @@
 
 {% block innercontent %}
 <h1>의뢰 관리</h1>
-<h3>의뢰 목록</h3>
+
+<h3>구인 대기중인 의뢰 목록</h3>
+<!--% if myrequest.state == "0" %}-->
 <table class="table table-hover">
             <tbody id="myreqlist">
             <tr>
-                <th>Id</th>
                 <th>Req_title</th>
-                <th>Cid</th>
-                <th>State</th>
                 <th>Start</th>
                 <th>End</th>
                 <th>Min_exp</th>
                 <th>Min_freelancer</th>
                 <th>Max_freelancer</th>
                 <th>Fund</th>
-                <th>Frating</th>
-                <th>Crating</th>
             </tr>
         {% for req in myrequest %}
         <tr>
-            <td>{{ req.0 }}</td>
             <td>{{ req.12 }}</td>
-            <td>{{ req.11 }}</td>
-            <td>{{ req.8 }}</td>
             <td>{{ req.2 }}</td>
             <td>{{ req.3 }}</td>
             <td>{{ req.4 }}</td>
             <td>{{ req.5 }}</td>
             <td>{{ req.6 }}</td>
-            <td>{{ req.8 }}</td>
-            <td>{{ req.9 }}</td>
-            <td>{{ req.10 }}</td>
+            <td>{{ req.1 }}</td>
             <td>
                 <button type = "button" id = "{{req.1}}" name = "editing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수정</button>
             </td>
@@ -46,11 +38,135 @@
             </tbody>
         </table>
 
-<h3>거부된 의뢰 완료 요청 목록</h3>
+<h3>수락 요청중인 의뢰</h3>
+<!--% elif myrequest.state == "1" %}-->
+<table class="table table-hover">
+            <tbody id="myreqlist">
+            <tr>
+                <th>Req_title</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Min_exp</th>
+                <th>Min_freelancer</th>
+                <th>Max_freelancer</th>
+                <th>Fund</th>
+            </tr>
+        {% for req in myrequest %}
+        <tr>
+            <td>{{ req.12 }}</td>
+            <td>{{ req.2 }}</td>
+            <td>{{ req.3 }}</td>
+            <td>{{ req.4 }}</td>
+            <td>{{ req.5 }}</td>
+            <td>{{ req.6 }}</td>
+            <td>{{ req.1 }}</td>
+            <td>
+            {%if req.8 != 2 %}
+                <button type = "button" id = "{{req.0}}" name = "reqaccepting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">요청 수락</button>
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+
+<h3>진행중인 의뢰</h3>
+<!--% elif myrequest.state == "2" %}-->
+<table class="table table-hover">
+            <tbody id="myreqlist">
+            <tr>
+                <th>Req_title</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Min_exp</th>
+                <th>Min_freelancer</th>
+                <th>Max_freelancer</th>
+                <th>Fund</th>
+            </tr>
+        {% for req in myrequest %}
+        <tr>
+            <td>{{ req.12 }}</td>
+            <td>{{ req.2 }}</td>
+            <td>{{ req.3 }}</td>
+            <td>{{ req.4 }}</td>
+            <td>{{ req.5 }}</td>
+            <td>{{ req.6 }}</td>
+            <td>{{ req.1 }}</td>
+        </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+
+<h3>완료 요청이 온 의뢰</h3>
+<!--% elif myrequest.state == "3" %}-->
+<table class="table table-hover">
+            <tbody id="myreqlist">
+            <tr>
+                <th>Req_title</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Min_exp</th>
+                <th>Min_freelancer</th>
+                <th>Max_freelancer</th>
+                <th>Fund</th>
+            </tr>
+        {% for req in myrequest %}
+        <tr>
+            <td>{{ req.12 }}</td>
+            <td>{{ req.2 }}</td>
+            <td>{{ req.3 }}</td>
+            <td>{{ req.4 }}</td>
+            <td>{{ req.5 }}</td>
+            <td>{{ req.6 }}</td>
+            <td>{{ req.1 }}</td>
+            <td>
+            {%if req.8 != 4 %}
+                <button type = "button" id = "{{req.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
+                <a href="{% url 'show_freelancer' %}"><button type="button" class="btn btn-default btn-lg">수락</button></a>
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+
+<h3>완료된 의뢰</h3>
+<!--% else %}-->
+<table class="table table-hover">
+            <tbody id="myreqlist">
+            <tr>
+                <th>Req_title</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Min_exp</th>
+                <th>Min_freelancer</th>
+                <th>Max_freelancer</th>
+                <th>Fund</th>
+            </tr>
+        {% for req in myrequest %}
+        <tr>
+            <td>{{ req.12 }}</td>
+            <td>{{ req.2 }}</td>
+            <td>{{ req.3 }}</td>
+            <td>{{ req.4 }}</td>
+            <td>{{ req.5 }}</td>
+            <td>{{ req.6 }}</td>
+            <td>{{ req.1 }}</td>
+        </tr>
+        {% endfor %}
+            </tbody>
+        </table>
 {% endblock %}
 
 {% block javascript_tail %}
 <script type="text/javascript">
+
+$(document).ready(function() {
+    $('#myreqlist').DataTable( {
+        "order": [[ 1, "desc" ]]
+    } );
+} );
+
    $(document).on("click", "button[name=removing]", function(){
 
            $.ajax({
