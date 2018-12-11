@@ -76,6 +76,7 @@
                     <th>팀 이름</th>
                     <th>팀 인원</th>
                     <th>팀원</th>
+                    <th>팀 삭제</th>
                 </tr>
                 {% for info in teamInfoLeader %}
                 <tr>
@@ -86,10 +87,13 @@
                         <div>
                         {% if teammate.0 != request.session.id %}
                             {{ teammate.0 }}
-                            <button type = "button" id = "" name = "removing_member" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
+                            <button type = "button" id = "" name = "removing_member" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">팀원 삭제</button>
                         {% endif %}
                         </div>
                         {% endfor %}
+                    </td>
+                    <td>
+                        <button type = "button" id = "{{info.0.0}}" name = "removing_team" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">팀 삭제</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -208,13 +212,13 @@ $(document).on("click", "button[name=removing_team]", function(){
        $.ajax({
             type: 'POST',
             url : '../remove_team/',
-            data : {USER_ID: $(this).attr('id'),
+            data : {Tname: $(this).attr('id'),
                     csrfmiddlewaretoken : '{{ csrf_token }}' },
             success : function(result){
                 alert("삭제 완료");
             }
         });
-        $(this).parent().remove();
+        $(this).parent().parent().remove();
 });
 </script>
 {% endblock %}

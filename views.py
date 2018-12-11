@@ -205,7 +205,7 @@ def myteam(request):
     else:
         form = MakeTeamForm()
         with connection.cursor() as cursor:
-            #start of 내가 속한 팀 조회 코드
+            # start of 내가 속한 팀 조회 코드
             cursor.execute("SELECT Tname FROM PARTICIPATE_IN WHERE Fid = '" + request.session['id'] + "'")
             myteams = cursor.fetchall()
             tmpTeamInfo = []
@@ -229,7 +229,8 @@ def myteam(request):
             for i in range(len(myteams)):
                 teamInfo.append((tmpTeamInfo[i][0], tmpTeamInfo[i][1], teamMateNr[i], teamMates[i]))
             print(teamInfo)
-            #end of 내가 속한 팀 조회 코드
+            # end of 내가 속한 팀 조회 코드
+
             # start of 내가 만든 팀 관리 코드
             cursor.execute("SELECT Tname FROM TEAMS WHERE LEADER = '" + request.session['id'] + "'")
             teamNames = cursor.fetchall()
@@ -243,6 +244,7 @@ def myteam(request):
             teamInfoLeader = []
             for i in range(len(teamNames)):
                 teamInfoLeader.append((teamNames[i], teamMateNr_L[i], tmpTeammates2[i]))
+            # end of 내가 만든 팀 관리 코드
         return render(request, 'mypage/myteam.html', {'form': form, 'teamInfo': teamInfo, 'teamInfoLeader': teamInfoLeader})
 
 def myrequest(request):
@@ -303,12 +305,22 @@ def tName_check(request):
         else:
             return HttpResponse("Fail")
 
-def remove_teammate(request):
+def remove_member(request):
     with connection.cursor() as cursor:
         print(request.POST)
         if 'USER_ID' in request.POST:
-            uid = request.POST['USER_ID']
+            uid = request.POST['USER_ID'].split(',')
             cursor.execute("DELETE FROM PARTICIPATE_IN WHERE Tname = '" + uid[0] + "' AND Fid='" + uid[1] + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def remove_team(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'Tname' in request.POST:
+            tname = request.POST['Tname']
+            cursor.execute("DELETE FROM TEAMS WHERE Tname = '" + tname + "'")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
