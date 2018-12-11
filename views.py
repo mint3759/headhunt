@@ -231,6 +231,16 @@ def admin_account(request):
         print(rows)
     return render(request, 'administrator/admin_account.html', {'accounts': rows})
 
+def remove_account(request):
+    with connection.cursor() as cursor:
+        print(request.POST)
+        if 'USER_ID' in request.POST:
+            uid = request.POST['USER_ID']
+            cursor.execute("DELETE FROM USERS WHERE ID='" + uid + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
 def admin_req(request):
     return render(request, 'administrator/admin_req.html', {})
 

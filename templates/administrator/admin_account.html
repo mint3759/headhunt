@@ -1,5 +1,49 @@
 {% extends 'administrator/admin_base.html' %}
 
 {% block innercontent %}
+        <h1>계정 관리</h1>
+        <h3>계정 목록</h3>
+        <table>
+            <tbody id="userlist">
+            <tr>
+                <th>Id</th>
+                <th>Password</th>
+                <th>UserName</th>
+                <th>Phone</th>
+                <th>Rating</th>
+                <th>UserType</th>
+            </tr>
+        {% for account in accounts %}
+        <tr>
+            <td>{{ account.0 }}</td>
+            <td>{{ account.1 }}</td>
+            <td>{{ account.2 }}</td>
+            <td>{{ account.3 }}</td>
+            <td>{{ account.4 }}</td>
+            <td>{{ account.5 }}</td>
+            <td>
+                <button type = "button" id = "{{account.0}}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
+            </td>
+        </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}
 
+{% block javascript_tail %}
+<script type="text/javascript">
+   $(document).on("click", "button[name=removing]", function(){
+           $.ajax({
+                type: 'POST',
+                url : '../remove_account/',
+                data : {USER_ID: $(this).attr('id'),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("삭제 완료");
+                }
+            });
+            $(this).parent.parent.remove();
+    });
+
+</script>
 {% endblock %}
