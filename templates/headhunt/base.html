@@ -26,13 +26,13 @@
                 {% else %}
                 <li class="{{show_request}}"><a href="#">의뢰 수락</a></li>
                 {% endif %}
-                {% if request.session.login and request.session.user_type == "a" %}
-                <li class="{{admin_account}}"><a href="{% url 'admin_account' %}">관리자 페이지</a></li>
-                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% if request.session.login %}
+                {% if request.session.login and request.session.user_type != 'a'%}
                 <li><a href= "{% url 'mypage' %}"><span class="glyphicon glyphicon-user"></span>{{request.session.id}}</a></li>
+                <li><a href = "{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                {% elif request.session.login and request.session.user_type == 'a'%}
+                <li><a href= "{% url 'admin_account' %}"><span class="glyphicon glyphicon-user"></span>{{request.session.id}}</a></li>
                 <li><a href = "{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
                 {% else %}
                 <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Register</a></li>
