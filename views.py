@@ -389,4 +389,9 @@ def remove_request_rej(request):
             return HttpResponse("Fail")
 
 def admin_team(request):
-    return render(request, 'administrator/admin_team.html', {})
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from teams")
+        rows = cursor.fetchall()
+        cursor.execute("Select * from t_contracts")
+        rows2 = cursor.fetchall()
+    return render(request, 'administrator/admin_team.html', {'teams':rows})
