@@ -9,6 +9,8 @@ import base64
 import hashlib
 import decimal
 import os
+import datetime
+from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 
 # Create your views here.
