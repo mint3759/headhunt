@@ -226,9 +226,17 @@ def update_freelancer(request):
 
 def myrequest_client(request):
     with connection.cursor() as cursor:
-        cursor.execute("Select * from request")
+        cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
-    return render(request, 'mypage/myrequest_client.html', {'myrequest': rows})
+        myRequest = []
+        for i in range(len(rows)):
+            cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'")
+            tmp_myRequest = cursor.fetchall()
+            for j in range(len(tmp_myRequest)):
+                myRequest.append((tmp_myRequest[j], 'X'))
+                print(myRequest)
+                # нужно продолжение
+    return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest})
 
 def remove_myrequest_client(request):
     with connection.cursor() as cursor:
@@ -239,13 +247,46 @@ def remove_myrequest_client(request):
         else:
             return HttpResponse("Fail")
 
-def show_freelancer(request):
+def show_freelancer(request, pk):
     with connection.cursor() as cursor:
-        cursor.execute("Select * from Freelancers")
+        cursor.execute("Select * from Request_ask WHERE Rid = '" + pk + "'")
         rows = cursor.fetchall()
         print(rows)
+        # rows[i][1] is fid
+        freeInfo = []
+        for i in range(len(rows)):
+            cursor.execute("Select * from Freelancers WHERE Id = '" + rows[i][1] + "'")
+            r = cursor.fetchall()
+            freeInfo.append(r[0])
+        print(freeInfo)
+        # freeInfo[0][0] is fid
+        users = []
+        for i in range(len(rows)):
+            cursor.execute("Select * from Users WHERE Id = '" + freeInfo[i][0] + "'")
+            r = cursor.fetchall()
+            users.append(r[0])
+        print(users)
+        print(rows)
+        info = []
+        for i in range(len(users)):
+            info.append((freeInfo[i], users[i]))
+        print(info)
+        print(info[0][0])
     context = {"show_freelancer": "active"}
-    return render(request, 'mypage/show_freelancer.html', {'Freelancer': rows}, context)
+    return render(request, 'mypage/show_freelancer.html', {'info': info}, context)
+
+
+def select_requestAsk_client(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 2 WHERE Req_id = '" + req_id + "'")
+            cursor.execute("DELETE from REQUEST_ASK WHERE Rid = '" + req_id + "'")
+            # cursor.execute("INSERT CONTRACTS (Rid, Cid, Fid) VALUES ('" + req_id + "', '" + request.session['id'] + "', '" + freelancer1')")
+
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
 
 def myrequest_freelancer(request):
     with connection.cursor() as cursor:

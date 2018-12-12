@@ -1,20 +1,51 @@
 {% extends 'mypage/mypage_base.html' %}
 
 {% block content %}
-    <h1>의뢰를 수락한 프리렌서들</h1>
+    <h1>의뢰를 수락한 프리랜서들</h1>
         <table border="'1">
             <tr>
-                <th>나이(세):</th>
-                <th>경력(년):</th>
-                <th>전공:</th>
+                <th>아이디</th>
+                <th>이름</th>
+                <th>전화번호</th>
+                <th>평점</th>
+                <th>나이(세)</th>
+                <th>경력(년)</th>
+                <th>전공</th>
+                <th>선택</th>
             </tr>
-            {% for free in Freelancer %}
+            {% for free in info %}
             <tr>
-                <td>{{ free.1 }}</td>
-                <td>{{ free.2 }}</td>
-                <td>{{ free.3 }}</td>
+                <td>{{ free.1.0 }}</td>
+                <td>{{ free.1.2 }}</td>
+                <td>{{ free.1.3 }}</td>
+                <td>{{ free.1.4 }}</td>
+                <td>{{ free.0.1 }}</td>
+                <td>{{ free.0.2 }}</td>
+                <td>{{ free.0.3 }}</td>
+                <td>
+                    <button type = "button" id = "{{free.1.0.0 }}" name = "selecting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">선택</button>
+                </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </table>
 
+{% endblock %}
+
+{% block javascript_tail %}
+<script type="text/javascript">
+   $(document).on("click", "button[name=selecting]", function(){
+
+           $.ajax({
+                type: 'POST',
+                url : '../select_requestAsk_client/',
+                data : {REQ_ID: $(this).parent.attr('name'),
+                        FREE_ID: $(this).attr('id'),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("의뢰 요청 선택 완료");
+                }
+            });
+    });
+
+</script>
 {% endblock %}
