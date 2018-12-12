@@ -239,6 +239,9 @@ def mypage(request):
             print(f_info)
             cursor.execute("SELECT * from F_PROFICIENCY WHERE Fid = '" + str(request.session['id']) + "'")
             proficiency = cursor.fetchall()
+        else:
+            f_info = []
+            proficiency = []
     return render(request, 'mypage/mypage.html', {'rating': rating, 'info': info, 'f_info': f_info, 'proficiency' : proficiency})
 
 def update_client(request):
@@ -372,6 +375,7 @@ def refuse_completeAsk(request):
 
 def accept_completeAsk(request):
     with connection.cursor() as cursor:
+        print(request.POST)
         if 'REQ_ID' in request.POST:
             req_id = request.POST['REQ_ID']
             cursor.execute("UPDATE REQUEST SET State = 4 WHERE Req_id = '" + req_id + "'")
@@ -399,8 +403,9 @@ def update_freerating(request):
             for i in range(len(rows)):
                 cursor.execute("SELECT Frating FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND State = 4")
                 tmpRating = cursor.fetchall()
-                rating = rating + tmpRating[0][0]
-                tmpCnt = tmpCnt + 1
+                if tmpRating:
+                    rating = rating + tmpRating[0][0]
+                    tmpCnt = tmpCnt + 1
             average = rating / decimal.Decimal(tmpCnt)
 
             cursor.execute("UPDATE USERS SET Rating = '" + str(average) + "' WHERE Id = '" + fid + "'")
