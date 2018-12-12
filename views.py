@@ -166,7 +166,6 @@ def make_request(request):
             tmplangList = form.cleaned_data['language'].split(", ")
             langName = []
             rating = []
-
             for langs in tmplangList:
                 if langs == 'dummy':
                     break
@@ -232,7 +231,15 @@ def mypage(request):
             rating = rating[1]
         cursor.execute("SELECT UName, Phone_num from USERS WHERE Id = '" + str(request.session['id']) + "'")
         info = cursor.fetchall()
-    return render(request, 'mypage/mypage.html', {'rating': rating, 'info': info})
+        cursor.execute("SELECT User_type from USERS WHERE Id = '" + str(request.session['id']) + "'")
+        user_type = cursor.fetchone()
+        if(user_type[0]=='f'):
+            cursor.execute("SELECT Age, Exp, Major from FREELANCERS WHERE Id = '" + str(request.session['id']) + "'")
+            f_info = cursor.fetchall()
+            print(f_info)
+            cursor.execute("SELECT * from F_PROFICIENCY WHERE Fid = '" + str(request.session['id']) + "'")
+            proficiency = cursor.fetchall()
+    return render(request, 'mypage/mypage.html', {'rating': rating, 'info': info, 'f_info': f_info, 'proficiency' : proficiency})
 
 def update_client(request):
     if request.method == "POST":
@@ -255,7 +262,26 @@ def update_client(request):
     return render(request, 'mypage/update_client.html', {'form': form, 'info': info})
 
 def update_freelancer(request):
-    return render(request, 'mypage/update_freelancer.html', {})
+    if request.method == "POST":
+        form = UpdateFreelancerForm(request.POST)
+        if form.is_valid():
+            # id = request.session['id']
+            # pw, uname, phone_num_0~2
+            with connection.cursor() as cursor:
+                encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
+                phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
+                cursor.execute("UPDATE USERS SET Pw = '" + str(encrypt_pw) + "', UName = '" + str(form.cleaned_data['uname']
+                               + "', Phone_num = '" + str(phone_num)) + "' WHERE Id = '" + request.session['id'] + "'")
+                rows = cursor.fetchall()
+                cursor.execute("UPDATE FREELANCERS SET Age = " + form.cleaned_data['age'] + ", Exp = " + form.cleaned_data['exp'] +
+                              "Major = '" + form.cleaned_data['major'] + "' WHERE Id = '" + request.session['id'] + "'")
+            return redirect('/mypage/mypage')
+    else:
+        form = UpdateFreelancerForm()
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT UName, Phone_num from USERS WHERE Id = '" + str(request.session['id']) + "'")
+            info = cursor.fetchall()
+    return render(request, 'mypage/update_freelancer.html', {'form': form, 'info': info})
 
 def myrequest_client(request):
     with connection.cursor() as cursor:

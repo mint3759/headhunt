@@ -31,6 +31,27 @@
                 <h3>개인정보 조회</h3>
                 <p>UserName: {{ info.0.0 }}</p>
                 <p>Phon_num: {{ info.0.1 }}</p>
+                <p>나이 : {{ f_info.0.0 }}</p>
+                <p>경력 : {{ f_info.0.1 }}</p>
+                <p>전공 : {{ f_info.0.2 }}</p>
+                <p>언어 능숙도:</p>
+                <table class="table">
+                    <thead>
+                    <tr></tr>
+                    <tr>
+                    <th>Language</th>
+                    <th>Proficiency</th>
+                    </tr>
+                    </thead>
+                    {% for p in proficiency %}
+                    <tbody>
+                    <tr>
+                    <td>{{ p.0 }}</td>
+                    <td>{{ p.1 }}</td>
+                    </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
                 <a href="{%url 'update_freelancer'%}"><button type="button" class="btn btn-default btn-lg">개인정보 수정</button></a>
             </div>
             <p></p>
