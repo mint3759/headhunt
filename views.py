@@ -269,12 +269,12 @@ def update_freelancer(request):
             # pw, uname, phone_num_0~2
             with connection.cursor() as cursor:
                 encrypt_pw = base64.b64encode(hashlib.sha256(form.cleaned_data['pw'].encode()).digest()).decode()
-                phone_num = form.cleaned_data['phone_num_0'] + form.cleaned_data['phone_num_1'] + form.cleaned_data['phone_num_2']
+                phone_num = str(form.cleaned_data['phone_num_0']) + str(form.cleaned_data['phone_num_1']) + str(form.cleaned_data['phone_num_2'])
                 cursor.execute("UPDATE USERS SET Pw = '" + str(encrypt_pw) + "', UName = '" + str(form.cleaned_data['uname']
-                               + "', Phone_num = '" + str(phone_num)) + "' WHERE Id = '" + request.session['id'] + "'")
+                               + "', Phone_num = '" + str(phone_num)) + "' WHERE Id = '" + str(request.session['id']) + "'")
                 rows = cursor.fetchall()
-                cursor.execute("UPDATE FREELANCERS SET Age = " + form.cleaned_data['age'] + ", Exp = " + form.cleaned_data['exp'] +
-                              "Major = '" + form.cleaned_data['major'] + "' WHERE Id = '" + request.session['id'] + "'")
+                cursor.execute("UPDATE FREELANCERS SET Age = " + str(form.cleaned_data['age']) + ", Exp = " + str(form.cleaned_data['exp']) +
+                              ", Major = '" + str(form.cleaned_data['major']) + "' WHERE Id = '" + str(request.session['id']) + "'")
             return redirect('/mypage/mypage')
     else:
         form = UpdateFreelancerForm()
