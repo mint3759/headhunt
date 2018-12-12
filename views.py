@@ -522,8 +522,15 @@ def remove_team(request):
         else:
             return HttpResponse("Fail")
 
-def show_request(request):
+def show_request(request, pk):
     with connection.cursor() as cursor:
+        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND DESC")
+        rows = cursor.fetchall()
+        print(rows)
+        cursor.execute(
+            "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND ASC")
+        rows = cursor.fetchall()
+        print(rows)
         cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0")
         rows = cursor.fetchall()
         print(rows)

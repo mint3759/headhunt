@@ -22,7 +22,7 @@
                 <li class="{{make_request}}"><a href="#">의뢰 작성</a></li>
                 {% endif %}
                 {% if request.session.login and request.session.user_type == "f" %}
-                <li class="{{show_request}}"><a href="{% url 'show_request' %}">의뢰 수락</a></li>
+                <li class="{{show_request}}"><a href="{% url 'show_request' 0%}">의뢰 수락</a></li>
                 {% else %}
                 <li class="{{show_request}}"><a href="#">의뢰 수락</a></li>
                 {% endif %}
