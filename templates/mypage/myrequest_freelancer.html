@@ -16,13 +16,13 @@
     </tr>
 {% for req in myRequestAsk %}
 <tr>
+    <td>{{ req.0.12 }}</td>
     <td>{{ req.0.1 }}</td>
     <td>{{ req.0.2 }}</td>
     <td>{{ req.0.3 }}</td>
     <td>{{ req.0.4 }}</td>
     <td>{{ req.0.5 }}</td>
     <td>{{ req.0.6 }}</td>
-    <td>{{ req.0.7 }}</td>
     <td>
         <button type = "button" id = "{{req.0.0 }}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
     </td>
@@ -48,13 +48,13 @@
     </tr>
 {% for req in myWorkingRequest %}
 <tr>
+    <td>{{ req.0.12 }}</td>
     <td>{{ req.0.1 }}</td>
     <td>{{ req.0.2 }}</td>
     <td>{{ req.0.3 }}</td>
     <td>{{ req.0.4 }}</td>
     <td>{{ req.0.5 }}</td>
     <td>{{ req.0.6 }}</td>
-    <td>{{ req.0.7 }}</td>
     <td>
         {% if req.2 == 'Yes' %}
             <button type = "button" id = "{{req.3}}" name = "msgCheck" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">메시지 확인하기</button>
@@ -84,13 +84,13 @@
     </tr>
 {% for req in myCompleteAsk %}
 <tr>
+    <td>{{ req.0.12 }}</td>
     <td>{{ req.0.1 }}</td>
     <td>{{ req.0.2 }}</td>
     <td>{{ req.0.3 }}</td>
     <td>{{ req.0.4 }}</td>
     <td>{{ req.0.5 }}</td>
     <td>{{ req.0.6 }}</td>
-    <td>{{ req.0.7 }}</td>
     <td>
         <!--<button type = "button" id = "{{req.0.0 }}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>-->
     </td>
@@ -117,13 +117,13 @@
     </tr>
 {% for req in myCompleteRequest %}
 <tr>
+    <td>{{ req.0.12 }}</td>
     <td>{{ req.0.1 }}</td>
     <td>{{ req.0.2 }}</td>
     <td>{{ req.0.3 }}</td>
     <td>{{ req.0.4 }}</td>
     <td>{{ req.0.5 }}</td>
     <td>{{ req.0.6 }}</td>
-    <td>{{ req.0.7 }}</td>
     <td id = {{req.0.0}}{{req.2}}>{{ req.2 }}</td>
     {% if req.2 == 'X' %}
     <td>

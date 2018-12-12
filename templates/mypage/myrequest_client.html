@@ -121,7 +121,7 @@
             <td>
             {%if req.0.8 != 4 %}
                 <button type = "button" id = "{{req.0.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
-                <button type = "button" id = "{{req.0.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수락</button>
+                <button type = "button" id = "{{req.0.0}}" name = "accepting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수락</button>
             {% endif %}
             </td>
         </tr>
@@ -140,8 +140,9 @@
                 <th>Min_freelancer</th>
                 <th>Max_freelancer</th>
                 <th>Fund</th>
+                <th>평가히가</th>
             </tr>
-        {% for req in CompletedReqest %}
+        {% for req in CompletedRequest %}
         <tr>
             <td>{{ req.0.12 }}</td>
             <td>{{ req.0.2 }}</td>
@@ -150,6 +151,26 @@
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
             <td>{{ req.0.1 }}</td>
+            <td>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="frating" value="1.0"checked>★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="frating" value="2.0">★★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="frating" value="3.0">★★★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="frating" value="4.0">★★★★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="frating" value="5.0">★★★★★</label>
+        </div>
+        <a href = "{% url 'myrequest_client' %}">
+            <button type = "button" id = "{{req.0.0 }}" name = "Frating" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">평가하기</button>
+        </a>
+    </td>
         </tr>
         {% endfor %}
             </tbody>
@@ -172,6 +193,47 @@
             });
 
             $(this).parent().parent().remove();
+    });
+
+    $(document).on("click", "button[name=reqaccepting]", function(){
+
+            $.ajax({
+                type: 'POST',
+                url : '../cl_acc_request/',
+                data : {REQ_ID: $(this).attr('id'),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("의뢰 요청 수락을 하셨습니다");
+                }
+            });
+    });
+
+    $(document).on("click", "button[name=accepting]", function(){
+
+            $.ajax({
+                type: 'POST',
+                url : '../accept_req_fromfree/',
+                data : {REQ_ID: $(this).attr('id'),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("의뢰에 대한 응답을 받으셨습니다.");
+                }
+            });
+    });
+
+    $(document).on("click", "button[name=Frating]", function(){
+            var frating = document.querySelector('input[name="frating"]:checked').value;
+            alert(frating);
+            $.ajax({
+                type: 'POST',
+                url : '../update_freerating/',
+                data : {REQ_ID: $(this).attr('id'),
+                        Frating: frating,
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("프리랜서 평가 완료");
+                }
+            });
     });
 
 </script>

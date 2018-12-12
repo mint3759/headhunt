@@ -234,14 +234,14 @@ def myrequest_client(request):
             if rows[i] == None:
                 'Error. Not existed request'
             else:
-                cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'")
+                cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "' AND STATE=0")
                 tmp_myRequest = cursor.fetchall()
                 for j in range(len(tmp_myRequest)):
                     myRequest.append((tmp_myRequest[j], 'X'))
+                    print("my Request")
                     print(myRequest)
 
     #수락 요청중인
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         AnswerForRequest = []
@@ -253,7 +253,6 @@ def myrequest_client(request):
                 print("answer for request")
                 print(AnswerForRequest)
     #진행중인
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         WorkingRequest = []
@@ -262,9 +261,9 @@ def myrequest_client(request):
             tmp_WorkingRequest = cursor.fetchall()
             for j in range(len(tmp_WorkingRequest)):
                 WorkingRequest.append((tmp_WorkingRequest[j], 'X'))
+                print("working Request")
                 print(WorkingRequest)
     #완료 요청
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         CompletedRequestW = []
@@ -273,9 +272,9 @@ def myrequest_client(request):
             tmp_CompletedRequestW = cursor.fetchall()
             for j in range(len(tmp_CompletedRequestW)):
                 CompletedRequestW.append((tmp_CompletedRequestW[j], 'X'))
+                print("Completed W Request")
                 print(CompletedRequestW)
     #완료
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         CompletedRequest = []
@@ -284,8 +283,13 @@ def myrequest_client(request):
             tmp_CompletedRequest = cursor.fetchall()
             for j in range(len(tmp_CompletedRequest)):
                 CompletedRequest.append((tmp_CompletedRequest[j], 'X'))
+                print("Completet Request")
                 print(CompletedRequest)
-    return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest, 'AnswerForRequest': AnswerForRequest, 'WorkingRequest': WorkingRequest, 'CompletedRequestW': CompletedRequestW, 'CompletedRequest':CompletedRequest})
+    return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest,
+                                                            'AnswerForRequest': AnswerForRequest,
+                                                            'WorkingRequest': WorkingRequest,
+                                                            'CompletedRequestW': CompletedRequestW,
+                                                            'CompletedRequest': CompletedRequest})
 
 def remove_myrequest_client(request):
     with connection.cursor() as cursor:
@@ -295,6 +299,45 @@ def remove_myrequest_client(request):
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
+
+def cl_acc_request(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 2 WHERE Req_id = '" + req_id + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def accept_req_fromfree(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 4 WHERE Req_id = '" + req_id + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def update_freerating(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST and 'Frating' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 4 WHERE Req_id = '" + req_id + "'")
+            Frating = request.POST['Frating']
+            cursor.execute("UPDATE REQUEST SET Frating = '" + Frating + "' WHERE Req_id = '" + str(req_id) + "'")
+            cursor.execute("SELECT Cid FROM CONTRACTS WHERE Rid = '" + str(req_id) + "'")
+            rows = cursor.fetchall()
+            cid = rows[0][0]
+            cursor.execute("SELECT Frating FROM REQUEST WHERE Cid = '" + cid + "' AND State = 4")
+            rows = cursor.fetchall()
+            rating = rows[0][0]
+            for i in range(len(rows)):
+                if i == 0:
+                    continue
+                rating = rating + rows[i][0]
+            average = rating / decimal.Decimal(len(rows))
+            cursor.execute("UPDATE USERS SET Rating = '" + str(average) + "' WHERE Id = '" + cid + "'")
+            return HttpResponse("True")
 
 def show_freelancer(request, pk):
     with connection.cursor() as cursor:
