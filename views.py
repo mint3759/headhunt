@@ -447,12 +447,16 @@ def askComplete(request):
         else:
             return HttpResponse("Fail")
 
-def update_rating(request):
+def update_Crating(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST and 'Crating' in request.POST:
             req_id = request.POST['REQ_ID']
             Crating = request.POST['Crating']
+
+            #평가하기
             cursor.execute("UPDATE REQUEST SET Crating = '" + Crating + "' WHERE Req_id = '" + str(req_id) + "'")
+
+            #클라이언트 평점 업데이트
             cursor.execute("SELECT Cid FROM CONTRACTS WHERE Rid = '" + str(req_id) + "'")
             rows = cursor.fetchall()
             cid = rows[0][0]
@@ -465,10 +469,35 @@ def update_rating(request):
                 rating = rating + rows[i][0]
             average = rating / decimal.Decimal(len(rows))
             cursor.execute("UPDATE USERS SET Rating = '" + str(average) + "' WHERE Id = '" + cid + "'")
+
+            #내부 포트폴리오 추가
+            cursor.execute("SELECT MAX(req_id) FROM PORTFOLIO")
+            rows = cursor.fetchone()
+            print(rows)
+            if rows[0] is None:
+                port_id = 1
+            else:
+                port_id = rows[0] + 1
+            cursor.execute("INSERT PORTFOLIO (Id, Fid, Class, Req_id) VALUES ('" + str(port_id) + "', '" + request.session['id'] + "', 'I', '" + req_id + "')")
             return HttpResponse("True")
         
 def myportfolio(request):
-    return render(request, 'mypage/myportfolio.html', {})
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM PortFolio WHERE Class = 'I' AND Fid = '" + request.session['id'] + "'")
+        tmpPortI = cursor.fetchall()
+        print(tmpPortI)
+        portI = []
+        for i in range(len(tmpPortI)):
+            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(tmpPortI[i][5]) + "'")
+            rows = cursor.fetchall()
+            print(rows)
+            portI.append((rows[0], tmpPortI[i]))
+        print(portI)
+        cursor.execute("SELECT * FROM PortFolio WHERE Class = 'E' AND Fid = '" + request.session['id'] + "'")
+        tmpPortE = cursor.fetchall()
+        portE = []
+        print(portE)
+    return render(request, 'mypage/myportfolio.html', {'portI': portI, 'portE': portE})
 
 def myteam(request):
     if request.method == "POST":

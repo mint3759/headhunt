@@ -57,7 +57,7 @@
     <td>{{ req.0.7 }}</td>
     <td>
         {% if req.2 == 'Yes' %}
-            <button type = "button" id = "{{req.0.0}}Msg" name = "msgCheck" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">메시지 확인하기</button>
+            <button type = "button" id = "{{req.3}}" name = "msgCheck" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">메시지 확인하기</button>
         {% endif %}
     </td>
     <td>
@@ -101,6 +101,7 @@
 
 <h3>완료된 의뢰</h3>
 <!--request.state == 4-->
+<h5>*평가를 하셔야 내부 포트폴리오에 반영이 됩니다.</h5>
 <table class="table table-hover">
     <tbody id="myreqlist4">
     <tr>
@@ -172,7 +173,7 @@
     });
 
     $(document).on("click", "button[name=msgCheck]", function(){
-
+            alert($(this).attr('id'));
     });
 
     $(document).on("click", "button[name=askComplete]", function(){
@@ -193,7 +194,7 @@
             alert(crating);
             $.ajax({
                 type: 'POST',
-                url : '../update_rating/',
+                url : '../update_Crating/',
                 data : {REQ_ID: $(this).attr('id'),
                         Crating: crating,
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
