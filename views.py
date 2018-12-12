@@ -225,6 +225,7 @@ def update_freelancer(request):
     return render(request, 'mypage/update_freelancer.html', {})
 
 def myrequest_client(request):
+    #구인대기중인
     with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
@@ -235,7 +236,52 @@ def myrequest_client(request):
             for j in range(len(tmp_myRequest)):
                 myRequest.append((tmp_myRequest[j], 'X'))
                 print(myRequest)
-                # нужно продолжение
+
+    #수락 요청중인
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
+        rows = cursor.fetchall()
+        AnswerForRequest = []
+        for i in range(len(rows)):
+            cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=1")
+            tmp_AnswerForRequest = cursor.fetchall()
+            for j in range(len(tmp_AnswerForRequest)):
+                myRequest.append((tmp_AnswerForRequest[j], 'X'))
+                print(AnswerForRequest)
+    #진행중인
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
+        rows = cursor.fetchall()
+        WorkingRequest = []
+        for i in range(len(rows)):
+            cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=2")
+            tmp_WorkingRequest = cursor.fetchall()
+            for j in range(len(tmp_WorkingRequest)):
+                myRequest.append((tmp_WorkingRequest[j], 'X'))
+                print(WorkingRequest)
+    #완료 요청
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
+        rows = cursor.fetchall()
+        CompletedRequestW = []
+        for i in range(len(rows)):
+            cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=3")
+            tmp_CompletedRequestW = cursor.fetchall()
+            for j in range(len(tmp_CompletedRequestW)):
+                myRequest.append((tmp_CompletedRequestW[j], 'X'))
+                print(CompletedRequestW)
+    #완료
+    with connection.cursor() as cursor:
+        cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
+        rows = cursor.fetchall()
+        CompletedRequest = []
+        for i in range(len(rows)):
+            cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=4")
+            tmp_CompletedRequest = cursor.fetchall()
+            for j in range(len(tmp_CompletedRequest)):
+                myRequest.append((tmp_CompletedRequest[j], 'X'))
+                print(CompletedRequest)
+    #None일때
     return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest})
 
 def remove_myrequest_client(request):
