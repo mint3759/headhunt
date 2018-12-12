@@ -389,23 +389,24 @@ def myrequest_freelancer(request):
         #rows[i][0]은 해당하는 request의 req_id
         myRequestAsk = []
         for i in range(len(rows)):
-            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid" +
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
                             "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
             tmp_myRequestAsk = cursor.fetchall()
             for j in range(len(tmp_myRequestAsk)):
                 myRequestAsk.append((tmp_myRequestAsk[j], 'X'))
         print(myRequestAsk)
         #팀
-        cursor.execute("SELECT * FROM TEAMS WHERE Leader = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Tname FROM TEAMS WHERE Leader = '" + request.session['id'] + "'")
         teams = cursor.fetchall()
         print(teams)
         for i in range(len(teams)):
             tName = teams[i][0]
-            cursor.execute("SELECT * FROM REQUEST_TEAM_ASK WHERE Tname = '" + tName + "'")
+            cursor.execute("SELECT Rid FROM REQUEST_TEAM_ASK WHERE Tname = '" + tName + "'")
             rows = cursor.fetchall()
             # rows[i][0]은 해당하는 request의 req_id
             for j in range(len(rows)):
-                cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
+                cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
                 tmp_myRequestAsk = cursor.fetchall()
                 for k in range(len(tmp_myRequestAsk)):
                     myRequestAsk.append((tmp_myRequestAsk[k], 'O', tName))
@@ -413,14 +414,15 @@ def myrequest_freelancer(request):
 
         #진행 중인 의뢰
         #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         #rows[i][0]는 원하는 req_id
         myWorkingRequest = []
         msgCheck = []
         message = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 2")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 2")
             tmp_myWorkingRequest = cursor.fetchall()
             cursor.execute("SELECT Message FROM MESSAGE WHERE Rid = '" + str(rows[i][0]) + "'")
             tmpMsg = cursor.fetchall()
@@ -439,12 +441,13 @@ def myrequest_freelancer(request):
 
         #완료 요청 중인 의뢰
         #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         # rows[i][0]는 원하는 req_id
         myCompleteAsk = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 3")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 3")
             tmp_myCompleteAsk = cursor.fetchall()
             for j in range(len(tmp_myCompleteAsk)):
                 myCompleteAsk.append((tmp_myCompleteAsk[j], 'X'))
@@ -452,12 +455,13 @@ def myrequest_freelancer(request):
 
         #완료된 의뢰
         #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         # rows[i][0]는 원하는 req_id
         myCompleteRequest = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 4")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 4")
             tmp_myCompleteRequest = cursor.fetchall()
             for j in range(len(tmp_myCompleteRequest)):
                 if tmp_myCompleteRequest[j][11] is None:
