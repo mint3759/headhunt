@@ -229,11 +229,11 @@ def myrequest_client(request):
     with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
-        if rows[i] == None:
-            'Error. Not existed request'
-        else:
-            myRequest = []
-            for i in range(len(rows)):
+        myRequest = []
+        for i in range(len(rows)):
+            if rows[i] == None:
+                'Error. Not existed request'
+            else:
                 cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'")
                 tmp_myRequest = cursor.fetchall()
                 for j in range(len(tmp_myRequest)):
@@ -250,6 +250,7 @@ def myrequest_client(request):
             tmp_AnswerForRequest = cursor.fetchall()
             for j in range(len(tmp_AnswerForRequest)):
                 AnswerForRequest.append((tmp_AnswerForRequest[j], 'X'))
+                print("answer for request")
                 print(AnswerForRequest)
     #진행중인
     with connection.cursor() as cursor:
@@ -284,8 +285,7 @@ def myrequest_client(request):
             for j in range(len(tmp_CompletedRequest)):
                 CompletedRequest.append((tmp_CompletedRequest[j], 'X'))
                 print(CompletedRequest)
-    #None일때
-    return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest})
+    return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest, 'AnswerForRequest': AnswerForRequest, 'WorkingRequest': WorkingRequest, 'CompletedRequestW': CompletedRequestW, 'CompletedRequest':CompletedRequest})
 
 def remove_myrequest_client(request):
     with connection.cursor() as cursor:

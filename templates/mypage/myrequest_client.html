@@ -20,19 +20,19 @@
             </tr>
         {% for req in myRequest %}
         <tr>
-            <td>{{ req.12 }}</td>
-            <td>{{ req.2 }}</td>
-            <td>{{ req.3 }}</td>
-            <td>{{ req.4 }}</td>
-            <td>{{ req.5 }}</td>
-            <td>{{ req.6 }}</td>
-            <td>{{ req.1 }}</td>
+            <td>{{ req.0.12 }}</td>
+            <td>{{ req.0.2 }}</td>
+            <td>{{ req.0.3 }}</td>
+            <td>{{ req.0.4 }}</td>
+            <td>{{ req.0.5 }}</td>
+            <td>{{ req.0.6 }}</td>
+            <td>{{ req.0.1 }}</td>
             <td>
-                <button type = "button" id = "{{req.1}}" name = "editing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수정</button>
+                <button type = "button" id = "{{req.0.0}}" name = "editing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수정</button>
             </td>
             <td>
-            {%if req.8 != 2 %}
-                <button type = "button" id = "{{req.0}}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
+            {%if req.0.8 != 2 %}
+                <button type = "button" id = "{{req.0.0}}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
             </td>
             {% endif %}
         </tr>
@@ -54,7 +54,6 @@
             </tr>
         {% for req in AnswerForRequest %}
         <tr>
-            {{req.0.0}}
             <td> <a href="{%url 'show_freelancer' req.0.0 %}">{{ req.0.12 }}</a></td>
             <td>{{ req.0.2 }}</td>
             <td>{{ req.0.3 }}</td>
@@ -63,8 +62,8 @@
             <td>{{ req.0.6 }}</td>
             <td>{{ req.0.1 }}</td>
             <td>
-            {%if req.8 != 2 %}
-                <button type = "button" id = "{{req.0}}" name = "reqaccepting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">요청 수락</button>
+            {%if req.0.8 != 2 %}
+                <button type = "button" id = "{{req.0.0}}" name = "reqaccepting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">요청 수락</button>
             {% endif %}
             </td>
         </tr>
@@ -112,17 +111,17 @@
             </tr>
         {% for req in CompletedRequestW %}
         <tr>
-            <td>{{ req.12 }}</td>
-            <td>{{ req.2 }}</td>
-            <td>{{ req.3 }}</td>
-            <td>{{ req.4 }}</td>
-            <td>{{ req.5 }}</td>
-            <td>{{ req.6 }}</td>
-            <td>{{ req.1 }}</td>
+            <td>{{ req.0.12 }}</td>
+            <td>{{ req.0.2 }}</td>
+            <td>{{ req.0.3 }}</td>
+            <td>{{ req.0.4 }}</td>
+            <td>{{ req.0.5 }}</td>
+            <td>{{ req.0.6 }}</td>
+            <td>{{ req.0.1 }}</td>
             <td>
-            {%if req.8 != 4 %}
-                <button type = "button" id = "{{req.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
-                <button type = "button" id = "{{req.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수락</button>
+            {%if req.0.8 != 4 %}
+                <button type = "button" id = "{{req.0.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
+                <button type = "button" id = "{{req.0.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수락</button>
             {% endif %}
             </td>
         </tr>
@@ -144,13 +143,13 @@
             </tr>
         {% for req in CompletedReqest %}
         <tr>
-            <td>{{ req.12 }}</td>
-            <td>{{ req.2 }}</td>
-            <td>{{ req.3 }}</td>
-            <td>{{ req.4 }}</td>
-            <td>{{ req.5 }}</td>
-            <td>{{ req.6 }}</td>
-            <td>{{ req.1 }}</td>
+            <td>{{ req.0.12 }}</td>
+            <td>{{ req.0.2 }}</td>
+            <td>{{ req.0.3 }}</td>
+            <td>{{ req.0.4 }}</td>
+            <td>{{ req.0.5 }}</td>
+            <td>{{ req.0.6 }}</td>
+            <td>{{ req.0.1 }}</td>
         </tr>
         {% endfor %}
             </tbody>
