@@ -384,12 +384,13 @@ def myrequest_freelancer(request):
     with connection.cursor() as cursor:
         #수락 요청 중인 의뢰
         #개인
-        cursor.execute("SELECT * FROM REQUEST_ASK WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM REQUEST_ASK WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         #rows[i][0]은 해당하는 request의 req_id
         myRequestAsk = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid" +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
             tmp_myRequestAsk = cursor.fetchall()
             for j in range(len(tmp_myRequestAsk)):
                 myRequestAsk.append((tmp_myRequestAsk[j], 'X'))
