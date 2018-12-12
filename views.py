@@ -232,14 +232,17 @@ def myrequest_client(request):
         rows = cursor.fetchall()
         myRequest = []
         for i in range(len(rows)):
-            cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'")
-            tmp_myRequest = cursor.fetchall()
-            for j in range(len(tmp_myRequest)):
-                myRequest.append((tmp_myRequest[j], 'X'))
-                print(myRequest)
+            if rows[i] == None:
+                'Error. Not existed request'
+            else:
+                cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "' AND STATE=0")
+                tmp_myRequest = cursor.fetchall()
+                for j in range(len(tmp_myRequest)):
+                    myRequest.append((tmp_myRequest[j], 'X'))
+                    print("my Request")
+                    print(myRequest)
 
     #수락 요청중인
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         AnswerForRequest = []
@@ -247,10 +250,10 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=1")
             tmp_AnswerForRequest = cursor.fetchall()
             for j in range(len(tmp_AnswerForRequest)):
-                myRequest.append((tmp_AnswerForRequest[j], 'X'))
+                AnswerForRequest.append((tmp_AnswerForRequest[j], 'X'))
+                print("answer for request")
                 print(AnswerForRequest)
     #진행중인
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         WorkingRequest = []
@@ -258,10 +261,10 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=2")
             tmp_WorkingRequest = cursor.fetchall()
             for j in range(len(tmp_WorkingRequest)):
-                myRequest.append((tmp_WorkingRequest[j], 'X'))
+                WorkingRequest.append((tmp_WorkingRequest[j], 'X'))
+                print("working Request")
                 print(WorkingRequest)
     #완료 요청
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         CompletedRequestW = []
@@ -269,10 +272,10 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=3")
             tmp_CompletedRequestW = cursor.fetchall()
             for j in range(len(tmp_CompletedRequestW)):
-                myRequest.append((tmp_CompletedRequestW[j], 'X'))
+                CompletedRequestW.append((tmp_CompletedRequestW[j], 'X'))
+                print("Completed W Request")
                 print(CompletedRequestW)
     #완료
-    with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         CompletedRequest = []
@@ -280,10 +283,14 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=4")
             tmp_CompletedRequest = cursor.fetchall()
             for j in range(len(tmp_CompletedRequest)):
-                myRequest.append((tmp_CompletedRequest[j], 'X'))
+                CompletedRequest.append((tmp_CompletedRequest[j], 'X'))
+                print("Completet Request")
                 print(CompletedRequest)
-    #None일때
-    return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest})
+    return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest,
+                                                            'AnswerForRequest': AnswerForRequest,
+                                                            'WorkingRequest': WorkingRequest,
+                                                            'CompletedRequestW': CompletedRequestW,
+                                                            'CompletedRequest': CompletedRequest})
 
 def remove_myrequest_client(request):
     with connection.cursor() as cursor:
@@ -293,6 +300,45 @@ def remove_myrequest_client(request):
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
+
+def cl_acc_request(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 2 WHERE Req_id = '" + req_id + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def accept_req_fromfree(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 4 WHERE Req_id = '" + req_id + "'")
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def update_freerating(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST and 'Frating' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 4 WHERE Req_id = '" + req_id + "'")
+            Frating = request.POST['Frating']
+            cursor.execute("UPDATE REQUEST SET Frating = '" + Frating + "' WHERE Req_id = '" + str(req_id) + "'")
+            cursor.execute("SELECT Cid FROM CONTRACTS WHERE Rid = '" + str(req_id) + "'")
+            rows = cursor.fetchall()
+            cid = rows[0][0]
+            cursor.execute("SELECT Frating FROM REQUEST WHERE Cid = '" + cid + "' AND State = 4")
+            rows = cursor.fetchall()
+            rating = rows[0][0]
+            for i in range(len(rows)):
+                if i == 0:
+                    continue
+                rating = rating + rows[i][0]
+            average = rating / decimal.Decimal(len(rows))
+            cursor.execute("UPDATE USERS SET Rating = '" + str(average) + "' WHERE Id = '" + cid + "'")
+            return HttpResponse("True")
 
 def show_freelancer(request, pk):
     with connection.cursor() as cursor:
@@ -339,27 +385,29 @@ def myrequest_freelancer(request):
     with connection.cursor() as cursor:
         #수락 요청 중인 의뢰
         #개인
-        cursor.execute("SELECT * FROM REQUEST_ASK WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM REQUEST_ASK WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         #rows[i][0]은 해당하는 request의 req_id
         myRequestAsk = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
             tmp_myRequestAsk = cursor.fetchall()
             for j in range(len(tmp_myRequestAsk)):
                 myRequestAsk.append((tmp_myRequestAsk[j], 'X'))
         print(myRequestAsk)
         #팀
-        cursor.execute("SELECT * FROM TEAMS WHERE Leader = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Tname FROM TEAMS WHERE Leader = '" + request.session['id'] + "'")
         teams = cursor.fetchall()
         print(teams)
         for i in range(len(teams)):
             tName = teams[i][0]
-            cursor.execute("SELECT * FROM REQUEST_TEAM_ASK WHERE Tname = '" + tName + "'")
+            cursor.execute("SELECT Rid FROM REQUEST_TEAM_ASK WHERE Tname = '" + tName + "'")
             rows = cursor.fetchall()
             # rows[i][0]은 해당하는 request의 req_id
             for j in range(len(rows)):
-                cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
+                cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'")
                 tmp_myRequestAsk = cursor.fetchall()
                 for k in range(len(tmp_myRequestAsk)):
                     myRequestAsk.append((tmp_myRequestAsk[k], 'O', tName))
@@ -367,24 +415,40 @@ def myrequest_freelancer(request):
 
         #진행 중인 의뢰
         #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         #rows[i][0]는 원하는 req_id
         myWorkingRequest = []
+        msgCheck = []
+        message = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 2")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 2")
             tmp_myWorkingRequest = cursor.fetchall()
+            cursor.execute("SELECT Message FROM MESSAGE WHERE Rid = '" + str(rows[i][0]) + "'")
+            tmpMsg = cursor.fetchall()
+            if not tmpMsg:
+                msgCheck.append('None')
+                message.append('None')
+            else:
+                msgCheck.append('True')
+                message.append(tmpMsg[0][0])
             for j in range(len(tmp_myWorkingRequest)):
-                myWorkingRequest.append((tmp_myWorkingRequest[j], 'X'))
+                if not tmpMsg:
+                    myWorkingRequest.append((tmp_myWorkingRequest[j], 'X', 'None', 'None'))
+                else:
+                    myWorkingRequest.append((tmp_myWorkingRequest[j], 'X', 'Yes', tmpMsg[0][0]))
         print(myWorkingRequest)
+
         #완료 요청 중인 의뢰
         #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         # rows[i][0]는 원하는 req_id
         myCompleteAsk = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 3")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 3")
             tmp_myCompleteAsk = cursor.fetchall()
             for j in range(len(tmp_myCompleteAsk)):
                 myCompleteAsk.append((tmp_myCompleteAsk[j], 'X'))
@@ -392,20 +456,25 @@ def myrequest_freelancer(request):
 
         #완료된 의뢰
         #개인
-        cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
+        cursor.execute("SELECT Rid FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
         # rows[i][0]는 원하는 req_id
         myCompleteRequest = []
         for i in range(len(rows)):
-            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 4")
+            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+                            "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 4")
             tmp_myCompleteRequest = cursor.fetchall()
-            print(tmp_myCompleteRequest[0])
             for j in range(len(tmp_myCompleteRequest)):
                 if tmp_myCompleteRequest[j][11] is None:
                     myCompleteRequest.append((tmp_myCompleteRequest[j], 'X', 'X'))
                 else:
                     myCompleteRequest.append((tmp_myCompleteRequest[j], 'X', 'O'))
-    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk, 'myWorkingRequest': myWorkingRequest, 'myCompleteAsk': myCompleteAsk, 'myCompleteRequest': myCompleteRequest})
+    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk,
+                                                                'myWorkingRequest': myWorkingRequest,
+                                                                'myCompleteAsk': myCompleteAsk,
+                                                                'myCompleteRequest': myCompleteRequest,
+                                                                'msgCheck': msgCheck,
+                                                                'message': message})
 
 def remove_requestAsk_freelancer(request):
     with connection.cursor() as cursor:
@@ -417,12 +486,26 @@ def remove_requestAsk_freelancer(request):
         else:
             return HttpResponse("Fail")
 
-def update_rating(request):
+def askComplete(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 3 WHERE Req_id = '" + req_id + "'")
+            #파일첨부해야함
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+def update_Crating(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST and 'Crating' in request.POST:
             req_id = request.POST['REQ_ID']
             Crating = request.POST['Crating']
+
+            #평가하기
             cursor.execute("UPDATE REQUEST SET Crating = '" + Crating + "' WHERE Req_id = '" + str(req_id) + "'")
+
+            #클라이언트 평점 업데이트
             cursor.execute("SELECT Cid FROM CONTRACTS WHERE Rid = '" + str(req_id) + "'")
             rows = cursor.fetchall()
             cid = rows[0][0]
@@ -435,10 +518,35 @@ def update_rating(request):
                 rating = rating + rows[i][0]
             average = rating / decimal.Decimal(len(rows))
             cursor.execute("UPDATE USERS SET Rating = '" + str(average) + "' WHERE Id = '" + cid + "'")
+
+            #내부 포트폴리오 추가
+            cursor.execute("SELECT MAX(req_id) FROM PORTFOLIO")
+            rows = cursor.fetchone()
+            print(rows)
+            if rows[0] is None:
+                port_id = 1
+            else:
+                port_id = rows[0] + 1
+            cursor.execute("INSERT PORTFOLIO (Id, Fid, Class, Req_id) VALUES ('" + str(port_id) + "', '" + request.session['id'] + "', 'I', '" + req_id + "')")
             return HttpResponse("True")
         
 def myportfolio(request):
-    return render(request, 'mypage/myportfolio.html', {})
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM PortFolio WHERE Class = 'I' AND Fid = '" + request.session['id'] + "'")
+        tmpPortI = cursor.fetchall()
+        print(tmpPortI)
+        portI = []
+        for i in range(len(tmpPortI)):
+            cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(tmpPortI[i][5]) + "'")
+            rows = cursor.fetchall()
+            print(rows)
+            portI.append((rows[0], tmpPortI[i]))
+        print(portI)
+        cursor.execute("SELECT * FROM PortFolio WHERE Class = 'E' AND Fid = '" + request.session['id'] + "'")
+        tmpPortE = cursor.fetchall()
+        portE = []
+        print(portE)
+    return render(request, 'mypage/myportfolio.html', {'portI': portI, 'portE': portE})
 
 def myteam(request):
     if request.method == "POST":
@@ -571,18 +679,28 @@ def remove_team(request):
 
 def show_request(request, pk):
     with connection.cursor() as cursor:
-        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND DESC")
+        if pk == '1':  # 날짜순 정렬 DESC
+            print(pk + ': 1')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY Start_date DESC")
+        elif pk == '2':  # 날짜순 정렬 ASC
+            print(pk + ': 2')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY Start_date ASC")
+        elif pk == '3':  # 금액순 정렬 DESC
+            print(pk + ': 3')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND DESC")
+        elif pk == '4':  # 금액순 정렬 ASC
+            print(pk + ': 4')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND ASC")
+        else:  # 기본 보여주기
+            print(pk + ': 0')
+            cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0")
         rows = cursor.fetchall()
-        print(rows)
-        cursor.execute(
-            "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND ASC")
-        rows = cursor.fetchall()
-        print(rows)
-        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0")
-        rows = cursor.fetchall()
-        print(rows)
     context = {"show_request": "active"}
-    return render(request, 'request/show_request.html', {'myRequest': rows}, context)
+    return render(request, 'request/show_request.html', {'myRequest': rows, 'pk': pk}, context)
 
 def request_accept(request):
     return render(request, 'request/request_accept.html', {})
