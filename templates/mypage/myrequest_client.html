@@ -8,7 +8,7 @@
 
 <h3>구인 대기중인 의뢰 목록</h3>
 <table class="table table-hover">
-            <tbody id="myreqlist">
+            <tbody id="myreqlist0">
             <tr>
                 <th>Req_title</th>
                 <th onclick="sortTable(0)">Start</th>
@@ -18,7 +18,7 @@
                 <th>Max_freelancer</th>
                 <th onclick="sortTable(1)">Fund</th>
             </tr>
-        {% for req in myrequest %}
+        {% for req in myRequest %}
         <tr>
             <td>{{ req.12 }}</td>
             <td>{{ req.2 }}</td>
@@ -42,7 +42,7 @@
 
 <h3>수락 요청중인 의뢰</h3>
 <table class="table table-hover">
-            <tbody id="myreqlist">
+            <tbody id="myreqlist1">
             <tr>
                 <th>Req_title</th>
                 <th>Start</th>
@@ -52,7 +52,7 @@
                 <th>Max_freelancer</th>
                 <th>Fund</th>
             </tr>
-        {% for req in myRequest %}
+        {% for req in AnswerForRequest %}
         <tr>
             {{req.0.0}}
             <td> <a href="{%url 'show_freelancer' req.0.0 %}">{{ req.0.12 }}</a></td>
@@ -74,7 +74,7 @@
 
 <h3>진행중인 의뢰</h3>
 <table class="table table-hover">
-            <tbody id="myreqlist">
+            <tbody id="myreqlist2">
             <tr>
                 <th>Req_title</th>
                 <th>Start</th>
@@ -84,7 +84,7 @@
                 <th>Max_freelancer</th>
                 <th>Fund</th>
             </tr>
-        {% for req in myRequest %}
+        {% for req in WorkingRequest %}
         <tr>
             <td>{{ req.0.12 }}</td>
             <td>{{ req.0.2 }}</td>
@@ -100,7 +100,7 @@
 
 <h3>완료 요청이 온 의뢰</h3>
 <table class="table table-hover">
-            <tbody id="myreqlist">
+            <tbody id="myreqlist3">
             <tr>
                 <th>Req_title</th>
                 <th>Start</th>
@@ -110,7 +110,7 @@
                 <th>Max_freelancer</th>
                 <th>Fund</th>
             </tr>
-        {% for req in myRequest %}
+        {% for req in CompletedRequestW %}
         <tr>
             <td>{{ req.12 }}</td>
             <td>{{ req.2 }}</td>
@@ -132,7 +132,7 @@
 
 <h3>완료된 의뢰</h3>
 <table class="table table-hover">
-            <tbody id="myreqlist">
+            <tbody id="myreqlist4">
             <tr>
                 <th>Req_title</th>
                 <th>Start</th>
@@ -142,7 +142,7 @@
                 <th>Max_freelancer</th>
                 <th>Fund</th>
             </tr>
-        {% for req in myRequest %}
+        {% for req in CompletedReqest %}
         <tr>
             <td>{{ req.12 }}</td>
             <td>{{ req.2 }}</td>

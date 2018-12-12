@@ -229,13 +229,16 @@ def myrequest_client(request):
     with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
-        myRequest = []
-        for i in range(len(rows)):
-            cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'")
-            tmp_myRequest = cursor.fetchall()
-            for j in range(len(tmp_myRequest)):
-                myRequest.append((tmp_myRequest[j], 'X'))
-                print(myRequest)
+        if rows[i] == None:
+            'Error. Not existed request'
+        else:
+            myRequest = []
+            for i in range(len(rows)):
+                cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'")
+                tmp_myRequest = cursor.fetchall()
+                for j in range(len(tmp_myRequest)):
+                    myRequest.append((tmp_myRequest[j], 'X'))
+                    print(myRequest)
 
     #수락 요청중인
     with connection.cursor() as cursor:
@@ -246,7 +249,7 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=1")
             tmp_AnswerForRequest = cursor.fetchall()
             for j in range(len(tmp_AnswerForRequest)):
-                myRequest.append((tmp_AnswerForRequest[j], 'X'))
+                AnswerForRequest.append((tmp_AnswerForRequest[j], 'X'))
                 print(AnswerForRequest)
     #진행중인
     with connection.cursor() as cursor:
@@ -257,7 +260,7 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=2")
             tmp_WorkingRequest = cursor.fetchall()
             for j in range(len(tmp_WorkingRequest)):
-                myRequest.append((tmp_WorkingRequest[j], 'X'))
+                WorkingRequest.append((tmp_WorkingRequest[j], 'X'))
                 print(WorkingRequest)
     #완료 요청
     with connection.cursor() as cursor:
@@ -268,7 +271,7 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=3")
             tmp_CompletedRequestW = cursor.fetchall()
             for j in range(len(tmp_CompletedRequestW)):
-                myRequest.append((tmp_CompletedRequestW[j], 'X'))
+                CompletedRequestW.append((tmp_CompletedRequestW[j], 'X'))
                 print(CompletedRequestW)
     #완료
     with connection.cursor() as cursor:
@@ -279,7 +282,7 @@ def myrequest_client(request):
             cursor.execute("Select * from Request where Req_id = '" + str(rows[i][0]) + "'AND STATE=4")
             tmp_CompletedRequest = cursor.fetchall()
             for j in range(len(tmp_CompletedRequest)):
-                myRequest.append((tmp_CompletedRequest[j], 'X'))
+                CompletedRequest.append((tmp_CompletedRequest[j], 'X'))
                 print(CompletedRequest)
     #None일때
     return render(request, 'mypage/myrequest_client.html', {'myRequest': myRequest})
