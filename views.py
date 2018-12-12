@@ -370,12 +370,26 @@ def myrequest_freelancer(request):
         rows = cursor.fetchall()
         #rows[i][0]는 원하는 req_id
         myWorkingRequest = []
+        msgCheck = []
+        message = []
         for i in range(len(rows)):
             cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 2")
             tmp_myWorkingRequest = cursor.fetchall()
+            cursor.execute("SELECT Message FROM MESSAGE WHERE Rid = '" + str(rows[i][0]) + "'")
+            tmpMsg = cursor.fetchall()
+            if not tmpMsg:
+                msgCheck.append('None')
+                message.append('None')
+            else:
+                msgCheck.append('True')
+                message.append(tmpMsg[0][0])
             for j in range(len(tmp_myWorkingRequest)):
-                myWorkingRequest.append((tmp_myWorkingRequest[j], 'X'))
+                if not tmpMsg:
+                    myWorkingRequest.append((tmp_myWorkingRequest[j], 'X', 'None', 'None'))
+                else:
+                    myWorkingRequest.append((tmp_myWorkingRequest[j], 'X', 'Yes', tmpMsg[0][0]))
         print(myWorkingRequest)
+
         #완료 요청 중인 의뢰
         #개인
         cursor.execute("SELECT * FROM CONTRACTS WHERE Fid = '" + request.session['id'] + "'")
@@ -398,13 +412,17 @@ def myrequest_freelancer(request):
         for i in range(len(rows)):
             cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 4")
             tmp_myCompleteRequest = cursor.fetchall()
-            print(tmp_myCompleteRequest[0])
             for j in range(len(tmp_myCompleteRequest)):
                 if tmp_myCompleteRequest[j][11] is None:
                     myCompleteRequest.append((tmp_myCompleteRequest[j], 'X', 'X'))
                 else:
                     myCompleteRequest.append((tmp_myCompleteRequest[j], 'X', 'O'))
-    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk, 'myWorkingRequest': myWorkingRequest, 'myCompleteAsk': myCompleteAsk, 'myCompleteRequest': myCompleteRequest})
+    return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk,
+                                                                'myWorkingRequest': myWorkingRequest,
+                                                                'myCompleteAsk': myCompleteAsk,
+                                                                'myCompleteRequest': myCompleteRequest,
+                                                                'msgCheck': msgCheck,
+                                                                'message': message})
 
 def remove_requestAsk_freelancer(request):
     with connection.cursor() as cursor:
@@ -425,7 +443,7 @@ def askComplete(request):
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
-        
+
 def update_rating(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST and 'Crating' in request.POST:
