@@ -43,6 +43,7 @@
         <th>Min_exp</th>
         <th>Min_freelancer</th>
         <th>Max_freelancer</th>
+        <th>메시지 확인</th>
         <th>완료요청</th>
     </tr>
 {% for req in myWorkingRequest %}
@@ -54,6 +55,11 @@
     <td>{{ req.0.5 }}</td>
     <td>{{ req.0.6 }}</td>
     <td>{{ req.0.7 }}</td>
+    <td>
+        {% if req.2 == 'Yes' %}
+            <button type = "button" id = "{{req.0.0}}Msg" name = "msgCheck" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">메시지 확인하기</button>
+        {% endif %}
+    </td>
     <td>
         <a href = "{% url 'myrequest_freelancer' %}">
             <button type = "button" id = "{{req.0.0 }}" name = "askComplete" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">요청하기</button>
@@ -163,6 +169,10 @@
             });
 
             $(this).parent().parent().remove();
+    });
+
+    $(document).on("click", "button[name=msgCheck]", function(){
+
     });
 
     $(document).on("click", "button[name=askComplete]", function(){
