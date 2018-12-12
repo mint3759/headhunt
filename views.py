@@ -394,11 +394,9 @@ def myrequest_freelancer(request):
             tmp_myRequestAsk = cursor.fetchall()
             for j in range(len(tmp_myRequestAsk)):
                 myRequestAsk.append((tmp_myRequestAsk[j], 'X'))
-        print(myRequestAsk)
         #팀
         cursor.execute("SELECT Tname FROM TEAMS WHERE Leader = '" + request.session['id'] + "'")
         teams = cursor.fetchall()
-        print(teams)
         for i in range(len(teams)):
             tName = teams[i][0]
             cursor.execute("SELECT Rid FROM REQUEST_TEAM_ASK WHERE Tname = '" + tName + "'")
@@ -410,7 +408,6 @@ def myrequest_freelancer(request):
                 tmp_myRequestAsk = cursor.fetchall()
                 for k in range(len(tmp_myRequestAsk)):
                     myRequestAsk.append((tmp_myRequestAsk[k], 'O', tName))
-        print(myRequestAsk)
 
         #진행 중인 의뢰
         #개인
@@ -437,7 +434,6 @@ def myrequest_freelancer(request):
                     myWorkingRequest.append((tmp_myWorkingRequest[j], 'X', 'None', 'None'))
                 else:
                     myWorkingRequest.append((tmp_myWorkingRequest[j], 'X', 'Yes', tmpMsg[0][0]))
-        print(myWorkingRequest)
 
         #완료 요청 중인 의뢰
         #개인
@@ -451,7 +447,6 @@ def myrequest_freelancer(request):
             tmp_myCompleteAsk = cursor.fetchall()
             for j in range(len(tmp_myCompleteAsk)):
                 myCompleteAsk.append((tmp_myCompleteAsk[j], 'X'))
-        print(myCompleteAsk)
 
         #완료된 의뢰
         #개인
