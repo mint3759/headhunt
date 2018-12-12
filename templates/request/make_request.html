@@ -1,8 +1,11 @@
 {% extends "headhunt/base.html" %}
 
+{% block javascript_head %}
+{% endblock %}
+
 {% block content %}
     <h1>Make request</h1>
-    <form class="form-horizontal" method = "POST">
+    <form class="form-horizontal" method = "POST" id="reqform">
         {% csrf_token %}
         <div class="form-group">
             <label class="control-label col-sm-2">제목</label>
@@ -123,6 +126,14 @@
         </div>
         <div class="form-group" id = "hidden">
         </div>
+        <div class="form-group" id="pfolios">
+            <label class="control-label col-sm-2">의뢰 문서</label>
+            <div class="col-sm-2">
+                <input type="file" id="portfoliofile" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" onchange='uploadfile()' multiple>
+            </div>
+        </div>
+
+
         <!--
         <div class="form-group" id="rdocs">
             <label class="control-label col-sm-2">의뢰 문서</label>
@@ -130,14 +141,10 @@
               <input type="file" id="reqdoc" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" multiple>
             </div>
         </div>
-
-        <form enctype="multipart/form-data" method = "post">
-            <input type="file" id="file" name="file[]" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" multiple>
-        </form>
-        -->
+-->
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" onclick='before_submit()'>등록</button>
+                <button type="button" id='register' class="btn btn-default">등록</button>
             </div>
         </div>
     </form>
@@ -216,54 +223,93 @@ function remove_lang(obj){
     document.getElementById('langchoice').removeChild(obj.parentNode.parentNode.parentNode);
 }
 
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+
+$(document).ready(function() {
+$('#register').click(function(){
+    var langstr = '';
+    for (lang in langdict) {
+        langstr = langstr + lang + ':' + langdict[lang] + ', ';
+    }
+    langstr = langstr + 'dummy';
+    html = "<input type='hidden' name='language' value ='" + langstr + "'>"
+    $("#hidden").append(html);
+   var datalist = new FormData();
+
+
+   //datalist.append('csrfmiddlewaretoken', $('meta[name="csrf-token"]').attr('content'));
+
+   for (var i=0; i<rfiles.length; i++){
+        datalist.append("FILE_" + i, rfiles[i]);
+   }
+
+    for (var pair of datalist.entries()) {
+        alert(pair[0]+ ', ' + pair[1]);
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '../upload_request_doc/',
+        data: datalist,
+        processData: false,
+        contentType: false,
+        success: function(result){
+            if(result=="True"){
+                alert("성공");
+            }
+            else{
+                alert("실패");
+            }
+        },
+        always: function() {
+               $("#reqform").submit();
+         }
+
+    });//end ajax
+});//end click
+});//end rdy
+
+function uploadfile(){
+    var x = document.getElementById('portfoliofile');
+    var newfiles = [];
+    if ('files' in x) {
+        if (x.files.length == 0) {
+            txt = "Select one or more files.";
+        }
+        else {
+            var dup = false;
+            for (var i = 0; i < x.files.length; i++) {
+               for (var j=0; j<rfiles.length; j++){
+                    if(x.files[i].name==rfiles[j].name){
+                        dup = true;
+                        alert("이름이 같은 파일이 존재합니다.")
+                    }
+               }
+               if (dup==false){
+                    var txt = "";
+                    rfiles.push(x.files[i]);
+                    var div = document.createElement('div');
+                    div.setAttribute("class", "col-sm-offset-2 col-sm-10");
+                    div.setAttribute("style", "margin-top:5px;");
+                    txt += "<div class = 'col-sm-3'>" + x.files[i].name + "</div>";
+                    txt += "<div class = 'col-sm-1'><input type='button' class='btn btn-default btn-xs'  style='margin-top: 1px; margin-left:20px;' value='삭제' onclick='remove_file(this)'></div>";
+                    div.innerHTML = txt;
+                    document.getElementById('pfolios').appendChild(div);
+                }
+             }
+         }
+    }
+}
+
+function remove_file(obj){
+    // obj.parentNode 를 이용하여 삭제
+    var file = obj.parentNode.parentNode.childNodes[0].innerHTML;
+    const idx = rfiles.findIndex(function(item) {return item.name === file})
+    if (idx > -1) rfiles.splice(idx, 1);
+    document.getElementById('pfolios').removeChild(obj.parentNode.parentNode);
 }
 
 /*
-function uploadFile() {
-    var form_data = new FormData();
-    jQuery.each(jQuery('#file')[0].files, function(i, file) {
-        form_data.append('file-'+i, file);
-    });
-    $.ajax({
-        type: 'POST',
-        url: '',
-        data: {
-            form_data: form_data,
-            csrfmiddlewaretoken : '{{ csrf_token }}',
-        },
-
-        success: function(result){
-            alert("wow");
-            before_submit();
-        }
-    });
-}*/
-
-function uploadFile() {
-
-    $.ajax({
-        type: 'POST',
-        url: '',
-        data: function() {
-            var data = new FormData();
-            data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-            jQuery.each(jQuery('#file')[0].files, function(i, file) {
-                form_data.append('file-'+i, file);
-            });
-            return data;
-        },
-        success: function(result){
-            alert("wow");
-            before_submit();
-        }
-    });
-}
-
 function before_submit() {
-    alert("저도요");
     var param = document.getElementById('hidden');
     var langs = document.createElement('input');
     langs.type='hidden';
@@ -277,12 +323,7 @@ function before_submit() {
     param.appendChild(langs);
     return true;
 }
-
-$(document).on("click", "#add_lang", function(){
-           alert("실행됨");
-    });
-
-
+*/
 
 </script>
 {% endblock %}
