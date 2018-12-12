@@ -4,7 +4,7 @@
 <h1>의뢰 관리</h1>
 <h3>수락 요청 중인 의뢰</h3>
 <table class="table table-hover">
-    <tbody id="myreqlist">
+    <tbody id="myreqlist1">
     <tr>
         <th>Req_title</th>
         <th>Fund</th>
@@ -34,7 +34,7 @@
 <h3>진행 중인 의뢰</h3>
 <!--request.state == 2-->
 <table class="table table-hover">
-    <tbody id="myreqlist">
+    <tbody id="myreqlist2">
     <tr>
         <th>Req_title</th>
         <th>Fund</th>
@@ -62,15 +62,94 @@
 </table>
 <h3>완료 요청 중인 의뢰</h3>
 <!--request.state == 3-->
+<table class="table table-hover">
+    <tbody id="myreqlist3">
+    <tr>
+        <th>Req_title</th>
+        <th>Fund</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Min_exp</th>
+        <th>Min_freelancer</th>
+        <th>Max_freelancer</th>
+    </tr>
+{% for req in myCompleteAsk %}
+<tr>
+    <td>{{ req.0.1 }}</td>
+    <td>{{ req.0.2 }}</td>
+    <td>{{ req.0.3 }}</td>
+    <td>{{ req.0.4 }}</td>
+    <td>{{ req.0.5 }}</td>
+    <td>{{ req.0.6 }}</td>
+    <td>{{ req.0.7 }}</td>
+    <td>
+        <!--<button type = "button" id = "{{req.0.0 }}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>-->
+    </td>
+</tr>
+{% endfor %}
+    </tbody>
+</table>
+
 <h3>완료된 의뢰</h3>
 <!--request.state == 4-->
+<table class="table table-hover">
+    <tbody id="myreqlist4">
+    <tr>
+        <th>Req_title</th>
+        <th>Fund</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Min_exp</th>
+        <th>Min_freelancer</th>
+        <th>Max_freelancer</th>
+        <th>의뢰자 평가 여부</th>
+        <th>평가하기</th>
+    </tr>
+{% for req in myCompleteRequest %}
+<tr>
+    <td>{{ req.0.1 }}</td>
+    <td>{{ req.0.2 }}</td>
+    <td>{{ req.0.3 }}</td>
+    <td>{{ req.0.4 }}</td>
+    <td>{{ req.0.5 }}</td>
+    <td>{{ req.0.6 }}</td>
+    <td>{{ req.0.7 }}</td>
+    <td id = {{req.0.0}}{{req.2}}>{{ req.2 }}</td>
+    {% if req.2 == 'X' %}
+    <td>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="crating" value="1.0"checked>★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="crating" value="2.0">★★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="crating" value="3.0">★★★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="crating" value="4.0">★★★★</label>
+        </div>
+        <div class="col-sm-1">
+            <label class="radio-inline"><input type="radio" name="crating" value="5.0">★★★★★</label>
+        </div>
+        <a href = "{% url 'myrequest_freelancer' %}">
+            <button type = "button" id = "{{req.0.0 }}" name = "Crating" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">평가하기</button>
+        </a>
+    </td>
+    {% else %}
+    <td></td>
+    {% endif %}
+</tr>
+{% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
 {% block javascript_tail %}
 <script type="text/javascript">
-   $(document).on("click", "button[name=removing]", function(){
+    $(document).on("click", "button[name=removing]", function(){
 
-           $.ajax({
+            $.ajax({
                 type: 'POST',
                 url : '../remove_requestAsk_freelancer/',
                 data : {REQ_ID: $(this).attr('id'),
@@ -81,6 +160,36 @@
             });
 
             $(this).parent().parent().remove();
+    });
+
+    $(document).on("click", "button[name=askComplete]", function(){
+
+            $.ajax({
+                type: 'POST',
+                url : '../remove_requestAsk_freelancer/',
+                data : {REQ_ID: $(this).attr('id'),
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("의뢰 완료 요청 완료");
+                }
+            });
+
+            $(this).parent().parent().remove();
+    });
+
+    $(document).on("click", "button[name=Crating]", function(){
+            var crating = document.querySelector('input[name="crating"]:checked').value;
+            alert(crating);
+            $.ajax({
+                type: 'POST',
+                url : '../update_rating/',
+                data : {REQ_ID: $(this).attr('id'),
+                        Crating: crating,
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    alert("의뢰자 평가 완료");
+                }
+            });
     });
 
 </script>

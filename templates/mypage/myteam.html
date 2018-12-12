@@ -188,7 +188,7 @@ $(document).on("click", "#idCheck", function(){
     }
 });
 
-$(document).on("click", "#memberCheck", "button[name={{]", function(){
+$(document).on("click", "#memberCheck", function(){
     if($("#id_memberId").val() != ""){
         $.ajax({
             type: 'POST',

@@ -352,9 +352,12 @@ def myrequest_freelancer(request):
         for i in range(len(rows)):
             cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE = 4")
             tmp_myCompleteRequest = cursor.fetchall()
+            print(tmp_myCompleteRequest[0])
             for j in range(len(tmp_myCompleteRequest)):
-                myCompleteRequest.append((tmp_myCompleteRequest[j], 'X'))
-        print(myCompleteRequest)
+                if tmp_myCompleteRequest[j][11] is None:
+                    myCompleteRequest.append((tmp_myCompleteRequest[j], 'X', 'X'))
+                else:
+                    myCompleteRequest.append((tmp_myCompleteRequest[j], 'X', 'O'))
     return render(request, 'mypage/myrequest_freelancer.html', {'myRequestAsk': myRequestAsk, 'myWorkingRequest': myWorkingRequest, 'myCompleteAsk': myCompleteAsk, 'myCompleteRequest': myCompleteRequest})
 
 def remove_requestAsk_freelancer(request):
@@ -369,9 +372,10 @@ def remove_requestAsk_freelancer(request):
 
 def update_rating(request):
     with connection.cursor() as cursor:
-        if ['req_id'] in request.POST:
-            req_id = request.POST['req_id']
-            cursor.execute("UPDATE REQUEST SET Crating = 5.0 WHERE Req_id = '" + str(req_id) + "'")
+        if 'REQ_ID' in request.POST and 'Crating' in request.POST:
+            req_id = request.POST['REQ_ID']
+            Crating = request.POST['Crating']
+            cursor.execute("UPDATE REQUEST SET Crating = '" + Crating + "' WHERE Req_id = '" + str(req_id) + "'")
             cursor.execute("SELECT Cid FROM CONTRACTS WHERE Rid = '" + str(req_id) + "'")
             rows = cursor.fetchall()
             cid = rows[0][0]
