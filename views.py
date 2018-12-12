@@ -47,7 +47,7 @@ def register(request):
 
 def register_freelancer(request):
     if request.method == "POST":
-        form = FreelancerForm(request.POST)
+        form = FreelancerForm(request.POST, request.FILES)
         if form.is_valid():
             #id, pw, uname, phone_num_0~2, age, exp, major, lanauage
             tmplangList = form.cleaned_data['language'].split(", ")
@@ -74,7 +74,18 @@ def register_freelancer(request):
                     cursor.execute("INSERT INTO F_PROFICIENCY (Language, Star_rating, Fid) VALUES ('"
                                    + str(langName[i]) + "', '" + str(rating[i]) + "', '" + str(
                         form.cleaned_data['id']) + "')")
-            return redirect('/registration/register_portfolio')
+                cursor.execute("SELECT MAX(pid) FROM PORTFOLIO")
+                rows = cursor.fetchone()
+                if rows[0] is None:
+                    doc_id = 1
+                else:
+                    doc_id = rows[0] + 1
+                doc = request.FILES['portfolio']
+                doc_path = 'headhunt/media/' + dname(doc) + str(doc_id) + extension(doc)
+                handle_uploaded_file(doc, doc_path)
+                cursor.execute("INSERT INTO PORTFOLIO (Fid, class, file_name, file_path, pid) VALUES( %s, %s, %s, %s, %s)",
+                               [form.cleaned_data['id'], 'e', doc.name, doc_path, doc_id])
+            return redirect('/registration/register_success')
     else:
         form = FreelancerForm()
     return render(request, 'registration/register_freelancer.html', {'form': form})
@@ -92,8 +103,6 @@ def id_dup_check(request):
         else:
             return HttpResponse("Fail")
 
-def register_portfolio(request):
-    return render(request, 'registration/register_portfolio.html', {})
 def register_success(request):
     return render(request, 'registration/register_success.html', {})
 

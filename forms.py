@@ -193,6 +193,12 @@ class FreelancerForm(forms.Form):
             })
     )
     language = forms.CharField()
+    portfolio = forms.FileField(
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+            })
+    )
 
 class updateClientForm(forms.Form):
     pw = forms.CharField(

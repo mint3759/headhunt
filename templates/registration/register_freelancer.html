@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Registration</h1>
     <h2>프리랜서로 가입</h2>
-    <form class="form-horizontal" id="mainform" method = "POST">
+    <form class="form-horizontal" id="mainform" method = "POST" enctype = "multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
             <label class="control-label col-sm-2">ID</label>
@@ -150,6 +150,12 @@
             </div>
         </div>
         -->
+        <div class="form-group" id="pfolios">
+            <label class="control-label col-sm-2">의뢰 문서</label>
+            <div class="col-sm-2">
+                {{ form.portfolio }}
+            </div>
+        </div>
         <div class="form-group" id="register-button">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" id = "register" class="btn btn-success btn-md" onclick='before_submit()'>Register</button>
