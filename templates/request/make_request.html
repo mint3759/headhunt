@@ -5,7 +5,7 @@
 
 {% block content %}
     <h1>Make request</h1>
-    <form class="form-horizontal" method = "POST" id="reqform">
+    <form class="form-horizontal" method = "POST" id="reqform" enctype = "multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
             <label class="control-label col-sm-2">제목</label>
@@ -129,7 +129,7 @@
         <div class="form-group" id="pfolios">
             <label class="control-label col-sm-2">의뢰 문서</label>
             <div class="col-sm-2">
-                <input type="file" id="portfoliofile" style="margin-top:5px;" accept=".doc, .docx,.ppt, .pptx,.txt,.pdf" onchange='uploadfile()' multiple>
+                {{ form.req_doc }}
             </div>
         </div>
 
@@ -144,7 +144,7 @@
 -->
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="button" id='register' class="btn btn-default">등록</button>
+                <button type="submit" id='register' class="btn btn-default">등록</button>
             </div>
         </div>
     </form>
@@ -233,38 +233,7 @@ $('#register').click(function(){
     langstr = langstr + 'dummy';
     html = "<input type='hidden' name='language' value ='" + langstr + "'>"
     $("#hidden").append(html);
-   var datalist = new FormData();
 
-
-   //datalist.append('csrfmiddlewaretoken', $('meta[name="csrf-token"]').attr('content'));
-
-   for (var i=0; i<rfiles.length; i++){
-        datalist.append("FILE_" + i, rfiles[i]);
-   }
-
-    for (var pair of datalist.entries()) {
-        alert(pair[0]+ ', ' + pair[1]);
-    }
-
-    $.ajax({
-        type: 'POST',
-        url: '../upload_request_doc/',
-        data: datalist,
-        processData: false,
-        contentType: false,
-        success: function(result){
-            if(result=="True"){
-                alert("성공");
-            }
-            else{
-                alert("실패");
-            }
-        },
-        always: function() {
-               $("#reqform").submit();
-         }
-
-    });//end ajax
 });//end click
 });//end rdy
 

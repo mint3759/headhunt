@@ -113,6 +113,13 @@ class MakeRequestForm(forms.Form):
 
             })
     )
+    req_doc = forms.FileField(
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+            })
+    )
+
     language = forms.CharField()
 
 class FreelancerForm(forms.Form):

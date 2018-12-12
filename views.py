@@ -8,7 +8,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 import base64
 import hashlib
 import decimal
-from django.views.decorators.csrf import csrf_exempt
+import os
+from django.core.files.storage import default_storage
 
 # Create your views here.
 
@@ -135,16 +136,30 @@ def logout(request):
     del request.session['user_type']
     return render(request, 'registration/logout.html', {})
 
+def handle_uploaded_file(f, path):
+    with open(path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+def dname(doc):
+    name, extension = os.path.splitext(doc.name)
+    return name
+
+def extension(doc):
+    name, extension = os.path.splitext(doc.name)
+    return extension
+
 def make_request(request):
     context = {"make_request": "active"}
     if request.method == "POST":
-        form = MakeRequestForm(request.POST)
+        form = MakeRequestForm(request.POST, request.FILES)
         print(request.POST)
+        print(request.FILES)
         if form.is_valid():
-            #reqtitle, fund, min_exp, min_fre, max_fre
             tmplangList = form.cleaned_data['language'].split(", ")
             langName = []
             rating = []
+
             for langs in tmplangList:
                 if langs == 'dummy':
                     break
@@ -162,11 +177,22 @@ def make_request(request):
                 cid = request.session['id']
                 if form.cleaned_data['min_fre'] >= 2:
                     team_only = 1
+                cursor.execute("SELECT MAX(req_id) FROM REQUEST")
+                rows = cursor.fetchone()
+                if rows[0] is None:
+                    doc_id = 1
+                else:
+                    doc_id = rows[0] + 1
+                doc = request.FILES['req_doc']
+                doc_path = 'headhunt/media/' + dname(doc) + str(doc_id) + extension(doc)
+                handle_uploaded_file(doc, doc_path)
                 cursor.execute("INSERT INTO REQUEST (Req_title, Req_id, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Team_only, State, Cid) VALUES ('"
                                + str(form.cleaned_data['reqtitle']) + "', '" + str(req_id) + "', '" + str(form.cleaned_data['fund']) + "', '"
                                + str(form.cleaned_data['min_exp']) + "', '" + str(form.cleaned_data['min_fre']) + "', '"
                                + str(form.cleaned_data['max_fre']) + "', '" + str(form.cleaned_data['start_date']) + "', '"
                                + str(form.cleaned_data['end_date']) + "', '" + str(team_only) + "', '0', '" + str(cid) + "')")
+                cursor.execute("INSERT INTO REQUEST_DOC (doc_id, doc_name, doc_path, req_id) VALUES( %s, %s, %s, %s)",
+                               [doc_id, doc.name, doc_path, req_id])
                 for i in range(len(langName)):
                     cursor.execute("INSERT INTO R_PROFICIENCY (Language, Star_rating, Req_id) VALUES ('"
                                    + str(langName[i]) + "', '" + str(rating[i]) + "', '" + str(
@@ -812,10 +838,3 @@ def check_accept_req(request):
         else:
             return HttpResponse("Fail")
 
-@csrf_exempt
-def upload_request_doc(request):
-    print(request.POST)
-    if 'FILE_0' in request.POST:
-        return HttpResponse("True")
-    else:
-        return HttpResponse("Fail")
