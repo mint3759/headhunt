@@ -808,35 +808,45 @@ def check_accept_req(request):
         if 'REQ_ID' in request.POST:
             rid = request.POST['REQ_ID']
             fid = request.POST['F_ID']
+            cursor.execute("SELECT exp from Freelancer where id='" + fid + "')")
+            exp1 = cursor.fetchone() # 프리랜서의 경력
+            cursor.execute("SELECT min_exp from REQUEST where req_id='" + rid + "')")
+            exp2 = cursor.fetchone() #요구되는 경력
             cursor.execute("SELECT * from R_PROFICIENCY where req_id='" + rid + "' and EXISTS (SELECT * from REQUEST WHERE Request.req_id=R_proficiency.req_id)")
-            req_rows=cursor.fetchall()
-            if not req_rows: #제약조건이 없는 경우
-                string = "INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "');"
-                cursor.execute("INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "')")
-                cursor.execute("UPDATE REQUEST SET State=1 WHERE Req_id=" +rid + "")
-
-                return HttpResponse("True")
-            else:
-                cursor.execute("SELECT * from F_PROFICIENCY WHERE fid = '" + fid + "'")
-                fre_rows = cursor.fetchall()
-                if fre_rows is None:
-                    return HttpResponse("False")
-                for rr in req_rows:
-                    is_found = False
-                    for fr in fre_rows:
-                        if rr[0] == fr[0]:
-                            if rr[1] <= fr[1]:
-                                is_found = True
-                                break
-                            else:
-                                return HttpResponse("False")
-                    if is_found is False:
-                        return HttpResponse("False")
+            req_rows = cursor.fetchall() #요구되는 수준
+            cursor.execute("SELECT * from F_PROFICIENCY WHERE fid = '" + fid + "'")
+            fre_rows = cursor.fetchall() #프리랜서의 수준
+            if exp2: #경력이 요구됨
+               if exp2[0] > exp1[0]: #내가 경력이 딸림
+                   return HttpResponse("False")
+               elif req_rows: #수준이 요구됨
+                   for rr in req_rows:
+                       is_found = False
+                       for fr in fre_rows:
+                           if rr[0] == fr[0]:
+                               if rr[1] <= fr[1]:
+                                   is_found = True
+                                   break
+                               else:
+                                   return HttpResponse("False")
+                       if is_found is False:
+                           return HttpResponse("False")
+               cursor.execute("INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "')")
+               cursor.execute("UPDATE REQUEST SET State=1 WHERE Req_id=" + rid + "")
+               return HttpResponse("True")
+            else: #경력이 요구되지 않음
+                if req_rows:  # 수준이 요구됨
+                    for rr in req_rows:
+                        is_found = False
+                        for fr in fre_rows:
+                            if rr[0] == fr[0]:
+                                if rr[1] <= fr[1]:
+                                    is_found = True
+                                    break
+                                else:
+                                    return HttpResponse("False")
+                        if is_found is False:
+                            return HttpResponse("False")
                 cursor.execute("INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "')")
                 cursor.execute("UPDATE REQUEST SET State=1 WHERE Req_id=" + rid + "")
-
                 return HttpResponse("True")
-
-        else:
-            return HttpResponse("Fail")
-
