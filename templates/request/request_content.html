@@ -31,6 +31,28 @@
                 </tbody>
                 {% endfor %}
             </table>
-            <a href="{%url 'request_accept'%}"><button type="button" class="btn btn-default btn-xs">수락</button></a>
+             <button type="button" name ="accept" class="btn btn-default btn-xs">수락</button>
         </div>
+{% endblock %}
+
+{% block javascript_tail %}
+<script>
+    $(document).on("click", "button[name=accept]", function(){
+           $.ajax({
+                type: 'POST',
+                url : '../../check_accept_req/',
+                data : {REQ_ID: {{ req.0 }},
+                        F_ID: '{{request.session.id}}',
+                        csrfmiddlewaretoken : '{{ csrf_token }}' },
+                success : function(result){
+                    if(result=="True"){
+                        window.location.href = "{%url 'request_accept'%}";
+                    }
+                    else{
+                        alert("언어 능숙도 조건을 만족하지 않습니다.");
+                    }
+                }
+            });
+    });
+</script>
 {% endblock %}

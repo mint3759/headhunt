@@ -535,7 +535,6 @@ def request_content(request, pk):
         rows = cursor.fetchall()
         cursor.execute("Select Language, Star_rating from R_PROFICIENCY WHERE req_id = '" + pk + "'")
         rows2 = cursor.fetchall()
-        print(rows2)
         #Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id
     context = {"request_content": "active"}
     return render(request, 'request/request_content.html', {'req': rows[0], 'proficiency': rows2}, context)
@@ -598,5 +597,41 @@ def remove_team_admin(request):
             tname = request.POST['TEAM_NAME']
             cursor.execute("DELETE FROM TEAMS WHERE Tname='" + tname + "'")
             return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+
+
+def check_accept_req(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            rid = request.POST['REQ_ID']
+            fid = request.POST['F_ID']
+            cursor.execute("SELECT * from R_PROFICIENCY where req_id='" + rid + "' and EXISTS (SELECT * from REQUEST WHERE Request.req_id=R_proficiency.req_id)")
+            req_rows=cursor.fetchall()
+            if not req_rows: #제약조건이 없는 경우
+                string = "INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "');"
+                print(string)
+                cursor.execute("INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "')")
+                cursor.execute("UPDATE REQUEST SET State=1 WHERE Req_id=" +rid + "")
+                return HttpResponse("True")
+            else:
+                cursor.execute("SELECT * from F_PROFICIENCY WHERE fid = '" + fid + "'")
+                fre_rows = cursor.fetchall()
+                if fre_rows is None:
+                    return HttpResponse("False")
+                for rr in req_rows:
+                    is_found = False
+                    for fr in fre_rows:
+                        if rr[0] == fr[0]:
+                            if rr[1] <= fr[1]:
+                                is_found = True
+                                break
+                            else:
+                                return HttpResponse("False")
+                    if is_found is False:
+                        return HttpResponse("False")
+                cursor.execute("INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "')")
+                cursor.execute("UPDATE REQUEST SET State=1 WHERE Req_id=" + rid + "")
+                return HttpResponse("True")
         else:
             return HttpResponse("Fail")

@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^mypage/select_requestAsk_client/$', views.select_requestAsk_client, name='select_requestAsk_client'),
     url(r'^request/request_accept/$', views.request_accept, name = 'request_accept'),
     url(r'^request/request_content/(?P<pk>\d+)/$', views.request_content, name = 'request_content'),
+    url(r'^request/check_accept_req/$', views.check_accept_req, name = 'check_accept_req'),
     url(r'^administrator/admin_account/$', views.admin_account, name = 'admin_account'),
     url(r'^administrator/admin_req/$', views.admin_req, name = 'admin_req'),
     url(r'^administrator/admin_team/$', views.admin_team, name = 'admin_team'),
