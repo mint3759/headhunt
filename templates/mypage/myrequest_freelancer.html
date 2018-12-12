@@ -43,6 +43,7 @@
         <th>Min_exp</th>
         <th>Min_freelancer</th>
         <th>Max_freelancer</th>
+        <th>완료요청</th>
     </tr>
 {% for req in myWorkingRequest %}
 <tr>
@@ -54,7 +55,9 @@
     <td>{{ req.0.6 }}</td>
     <td>{{ req.0.7 }}</td>
     <td>
-        <!--<button type = "button" id = "{{req.0.0 }}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>-->
+        <a href = "{% url 'myrequest_freelancer' %}">
+            <button type = "button" id = "{{req.0.0 }}" name = "askComplete" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">요청하기</button>
+        </a>
     </td>
 </tr>
 {% endfor %}
@@ -166,15 +169,13 @@
 
             $.ajax({
                 type: 'POST',
-                url : '../remove_requestAsk_freelancer/',
+                url : '../askComplete/',
                 data : {REQ_ID: $(this).attr('id'),
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){
                     alert("의뢰 완료 요청 완료");
                 }
             });
-
-            $(this).parent().parent().remove();
     });
 
     $(document).on("click", "button[name=Crating]", function(){

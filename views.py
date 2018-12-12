@@ -416,6 +416,16 @@ def remove_requestAsk_freelancer(request):
         else:
             return HttpResponse("Fail")
 
+def askComplete(request):
+    with connection.cursor() as cursor:
+        if 'REQ_ID' in request.POST:
+            req_id = request.POST['REQ_ID']
+            cursor.execute("UPDATE REQUEST SET State = 3 WHERE Req_id = '" + req_id + "'")
+            #파일첨부해야함
+            return HttpResponse("True")
+        else:
+            return HttpResponse("Fail")
+        
 def update_rating(request):
     with connection.cursor() as cursor:
         if 'REQ_ID' in request.POST and 'Crating' in request.POST:
@@ -570,18 +580,28 @@ def remove_team(request):
 
 def show_request(request, pk):
     with connection.cursor() as cursor:
-        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND DESC")
+        if pk == '1':  # 날짜순 정렬 DESC
+            print(pk + ': 1')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY Start_date DESC")
+        elif pk == '2':  # 날짜순 정렬 ASC
+            print(pk + ': 2')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY Start_date ASC")
+        elif pk == '3':  # 금액순 정렬 DESC
+            print(pk + ': 3')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND DESC")
+        elif pk == '4':  # 금액순 정렬 ASC
+            print(pk + ': 4')
+            cursor.execute(
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND ASC")
+        else:  # 기본 보여주기
+            print(pk + ': 0')
+            cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0")
         rows = cursor.fetchall()
-        print(rows)
-        cursor.execute(
-            "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND ASC")
-        rows = cursor.fetchall()
-        print(rows)
-        cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0")
-        rows = cursor.fetchall()
-        print(rows)
     context = {"show_request": "active"}
-    return render(request, 'request/show_request.html', {'myRequest': rows}, context)
+    return render(request, 'request/show_request.html', {'myRequest': rows, 'pk': pk}, context)
 
 def request_accept(request):
     return render(request, 'request/request_accept.html', {})
