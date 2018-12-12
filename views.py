@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 import base64
 import hashlib
 import decimal
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -805,3 +806,11 @@ def check_accept_req(request):
                 return HttpResponse("True")
         else:
             return HttpResponse("Fail")
+
+@csrf_exempt
+def upload_request_doc(request):
+    print(request.POST)
+    if 'FILE_0' in request.POST:
+        return HttpResponse("True")
+    else:
+        return HttpResponse("Fail")
