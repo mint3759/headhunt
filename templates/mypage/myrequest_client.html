@@ -61,11 +61,6 @@
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
             <td>{{ req.0.1 }}</td>
-            <td>
-            {%if req.0.8 != 2 %}
-                <button type = "button" id = "{{req.0.0}}" name = "reqaccepting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">요청 수락</button>
-            {% endif %}
-            </td>
         </tr>
         {% endfor %}
             </tbody>
@@ -193,19 +188,6 @@
             });
 
             $(this).parent().parent().remove();
-    });
-
-    $(document).on("click", "button[name=reqaccepting]", function(){
-
-            $.ajax({
-                type: 'POST',
-                url : '../cl_acc_request/',
-                data : {REQ_ID: $(this).attr('id'),
-                        csrfmiddlewaretoken : '{{ csrf_token }}' },
-                success : function(result){
-                    alert("의뢰 요청 수락을 하셨습니다");
-                }
-            });
     });
 
     $(document).on("click", "button[name=accepting]", function(){
