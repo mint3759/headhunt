@@ -13,6 +13,24 @@
             <p>최대 인원(명): {{ req.6 }}</p>
             <p>모집 시작 날짜: {{ req.2 }}</p>
             <p>모집 마감 날짜: {{ req.3 }}</p>
+            <p>언어 능숙도 조건:</p>
+            <table class="table">
+                <thead>
+                <tr></tr>
+                <tr>
+                <th>Language</th>
+                <th>Proficiency</th>
+                </tr>
+                </thead>
+                {% for p in proficiency %}
+                <tbody>
+                <tr>
+                <td>{{ p.0 }}</td>
+                <td>{{ p.1 }}</td>
+                </tr>
+                </tbody>
+                {% endfor %}
+            </table>
             <a href="{%url 'request_accept'%}"><button type="button" class="btn btn-default btn-lg">수락</button></a>
         </div>
 {% endblock %}

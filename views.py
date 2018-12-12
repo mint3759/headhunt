@@ -447,10 +447,12 @@ def request_content(request, pk):
     with connection.cursor() as cursor:
         cursor.execute("Select * from Request where Req_id = '" + pk + "'")
         rows = cursor.fetchall()
-        print(rows)
+        cursor.execute("Select Language, Star_rating from R_PROFICIENCY WHERE req_id = '" + pk + "'")
+        rows2 = cursor.fetchall()
+        print(rows2)
         #Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id
     context = {"request_content": "active"}
-    return render(request, 'request/request_content.html', {'req': rows[0]}, context)
+    return render(request, 'request/request_content.html', {'req': rows[0], 'proficiency': rows2}, context)
 
 def admin_account(request):
     with connection.cursor() as cursor:
