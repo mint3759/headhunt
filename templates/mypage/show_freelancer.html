@@ -23,7 +23,10 @@
                 <td>{{ free.0.2 }}</td>
                 <td>{{ free.0.3 }}</td>
                 <td>
-                    <button type = "button" id = "{{free.0.0}}" name = "selecting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">선택</button></td>
+                    <a href = "{%url 'myrequest_client' %}">
+                        <button type = "button" id = "{{free.0.0}}" name = "selecting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">선택</button>
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -37,8 +40,9 @@
 
             $.ajax({
                 type: 'POST',
-                url : '../cl_acc_request/',
-                data : {REQ_ID: $(this).attr('id'),
+                url : '../../select_requestAsk_client/',
+                data : {REQ_ID: {{pk}},
+                        FREE_ID: $(this).attr('id'),
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){
                     alert("의뢰 요청 수락을 하셨습니다");

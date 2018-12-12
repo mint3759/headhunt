@@ -18,15 +18,15 @@
                 <th>Max_freelancer</th>
                 <th onclick="sortTable(1)">Fund</th>
             </tr>
-        {% for req in myRequest %}
+        {% for req in request0 %}
         <tr>
-            <td>{{ req.0.12 }}</td>
+            <td>{{ req.0.1 }}</td>
             <td>{{ req.0.2 }}</td>
             <td>{{ req.0.3 }}</td>
             <td>{{ req.0.4 }}</td>
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
-            <td>{{ req.0.1 }}</td>
+            <td>{{ req.0.7 }}</td>
             <td>
                 <button type = "button" id = "{{req.0.0}}" name = "editing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수정</button>
             </td>
@@ -52,15 +52,15 @@
                 <th>Max_freelancer</th>
                 <th>Fund</th>
             </tr>
-        {% for req in AnswerForRequest %}
+        {% for req in request1 %}
         <tr>
-            <td> <a href="{%url 'show_freelancer' req.0.0 %}">{{ req.0.12 }}</a></td>
+            <td> <a href="{%url 'show_freelancer' req.0.0 %}">{{ req.0.1 }}</a></td>
             <td>{{ req.0.2 }}</td>
             <td>{{ req.0.3 }}</td>
             <td>{{ req.0.4 }}</td>
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
-            <td>{{ req.0.1 }}</td>
+            <td>{{ req.0.7 }}</td>
         </tr>
         {% endfor %}
             </tbody>
@@ -78,15 +78,15 @@
                 <th>Max_freelancer</th>
                 <th>Fund</th>
             </tr>
-        {% for req in WorkingRequest %}
+        {% for req in request2 %}
         <tr>
-            <td>{{ req.0.12 }}</td>
+            <td>{{ req.0.1 }}</td>
             <td>{{ req.0.2 }}</td>
             <td>{{ req.0.3 }}</td>
             <td>{{ req.0.4 }}</td>
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
-            <td>{{ req.0.1 }}</td>
+            <td>{{ req.0.7 }}</td>
         </tr>
         {% endfor %}
             </tbody>
@@ -104,19 +104,23 @@
                 <th>Max_freelancer</th>
                 <th>Fund</th>
             </tr>
-        {% for req in CompletedRequestW %}
+        {% for req in request3 %}
         <tr>
-            <td>{{ req.0.12 }}</td>
+            <td> <a href="{%url 'completeAsk_content' req.0.0 %}">{{ req.0.1 }}</a></td>
             <td>{{ req.0.2 }}</td>
             <td>{{ req.0.3 }}</td>
             <td>{{ req.0.4 }}</td>
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
-            <td>{{ req.0.1 }}</td>
-            <td>
+            <td>{{ req.0.7 }}</td>
+            <a>
             {%if req.0.8 != 4 %}
+                <a href = "{% url 'myrequest_client' %}">
                 <button type = "button" id = "{{req.0.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
+                </a>
+                <a href = "{% url 'myrequest_client' %}">
                 <button type = "button" id = "{{req.0.0}}" name = "accepting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수락</button>
+                </a>
             {% endif %}
             </td>
         </tr>
@@ -126,46 +130,51 @@
 
 <h3>완료된 의뢰</h3>
 <table class="table table-hover">
-            <tbody id="myreqlist4">
-            <tr>
-                <th>Req_title</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Min_exp</th>
-                <th>Min_freelancer</th>
-                <th>Max_freelancer</th>
-                <th>Fund</th>
-                <th>평가히가</th>
-            </tr>
-        {% for req in CompletedRequest %}
+    <tbody id="myreqlist4">
         <tr>
-            <td>{{ req.0.12 }}</td>
+            <th>Req_title</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Min_exp</th>
+            <th>Min_freelancer</th>
+            <th>Max_freelancer</th>
+            <th>Fund</th>
+            <th>평가히가</th>
+        </tr>
+        {% for req in request4 %}
+        <tr>
+            <td>{{ req.0.1 }}</td>
             <td>{{ req.0.2 }}</td>
             <td>{{ req.0.3 }}</td>
             <td>{{ req.0.4 }}</td>
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
-            <td>{{ req.0.1 }}</td>
+            <td>{{ req.0.7 }}</td>
+            <td id = {{req.0.0}}{{req.2}}>{{ req.2 }}</td>
+            {% if req.2 == 'X' %}
             <td>
-        <div class="col-sm-1">
-            <label class="radio-inline"><input type="radio" name="frating" value="1.0"checked>★</label>
-        </div>
-        <div class="col-sm-1">
-            <label class="radio-inline"><input type="radio" name="frating" value="2.0">★★</label>
-        </div>
-        <div class="col-sm-1">
-            <label class="radio-inline"><input type="radio" name="frating" value="3.0">★★★</label>
-        </div>
-        <div class="col-sm-1">
-            <label class="radio-inline"><input type="radio" name="frating" value="4.0">★★★★</label>
-        </div>
-        <div class="col-sm-1">
-            <label class="radio-inline"><input type="radio" name="frating" value="5.0">★★★★★</label>
-        </div>
-        <a href = "{% url 'myrequest_client' %}">
-            <button type = "button" id = "{{req.0.0 }}" name = "Frating" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">평가하기</button>
-        </a>
-    </td>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="frating" value="1.0"checked>★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="frating" value="2.0">★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="frating" value="3.0">★★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="frating" value="4.0">★★★★</label>
+                </div>
+                <div class="col-sm-1">
+                    <label class="radio-inline"><input type="radio" name="frating" value="5.0">★★★★★</label>
+                </div>
+            <a href = "{% url 'myrequest_client' %}">
+                <button type = "button" id = "{{req.0.0 }}" name = "Frating" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">평가하기</button>
+            </a>
+            </td>
+            {% else %}
+            <td></td>
+            {% endif %}
         </tr>
         {% endfor %}
             </tbody>
@@ -188,19 +197,6 @@
             });
 
             $(this).parent().parent().remove();
-    });
-
-    $(document).on("click", "button[name=accepting]", function(){
-
-            $.ajax({
-                type: 'POST',
-                url : '../accept_req_fromfree/',
-                data : {REQ_ID: $(this).attr('id'),
-                        csrfmiddlewaretoken : '{{ csrf_token }}' },
-                success : function(result){
-                    alert("의뢰에 대한 응답을 받으셨습니다.");
-                }
-            });
     });
 
     $(document).on("click", "button[name=Frating]", function(){

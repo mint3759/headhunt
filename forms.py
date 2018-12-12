@@ -249,3 +249,12 @@ class MakeTeamForm(forms.Form):
     )
 
     teammate = forms.CharField()
+
+class MessageForm(forms.Form):
+    message = forms.CharField(
+        max_length = 1000,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            })
+    )
