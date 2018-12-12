@@ -264,7 +264,7 @@ def myrequest_client(request):
         rows = cursor.fetchall()
         request0 = []
         for i in range(len(rows)):
-            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+            cursor.execute("SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
                 "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND STATE=0")
             tmp_reqeust0 = cursor.fetchall()
             for j in range(len(tmp_reqeust0)):
@@ -275,7 +275,7 @@ def myrequest_client(request):
         rows = cursor.fetchall()
         request1 = []
         for i in range(len(rows)):
-            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+            cursor.execute("SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
                 "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'AND STATE=1")
             tmp_reqeust1 = cursor.fetchall()
             for j in range(len(tmp_reqeust1)):
@@ -285,7 +285,7 @@ def myrequest_client(request):
         rows = cursor.fetchall()
         request2 = []
         for i in range(len(rows)):
-            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+            cursor.execute("SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
                 "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'AND STATE=2")
             tmp_reqeust2 = cursor.fetchall()
             for j in range(len(tmp_reqeust2)):
@@ -295,7 +295,7 @@ def myrequest_client(request):
         rows = cursor.fetchall()
         request3 = []
         for i in range(len(rows)):
-            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+            cursor.execute("SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
                 "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'AND STATE=3")
             tmp_reqeust3 = cursor.fetchall()
             for j in range(len(tmp_reqeust3)):
@@ -305,7 +305,7 @@ def myrequest_client(request):
         rows = cursor.fetchall()
         request4 = []
         for i in range(len(rows)):
-            cursor.execute("SELECT Req_id, Req_title, fund, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, State, Frating, Crating, Cid " +
+            cursor.execute("SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
                 "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'AND STATE=4")
             tmp_reqeust4 = cursor.fetchall()
             for j in range(len(tmp_reqeust4)):
@@ -418,20 +418,18 @@ def select_requestAsk_client(request):
             return HttpResponse("Fail")
 
 def completeAsk_content(request, pk):
-    if request.method == "POST":
-        form = MessageForm(request.POST)
-        if form.is_Valid():
-            print(form)
     with connection.cursor() as cursor:
-        cursor.execute("SELECT Cid, Req_title, fund, Min_exp, Min_fre, Max_fre, Start_date, End_date " +
-                            "FROM REQUEST WHERE Req_id = '" + str(pk) + "'")
-        rows = cursor.fetchall()
-        cursor.execute("Select Language, Star_rating from R_PROFICIENCY WHERE req_id = '" + pk + "'")
-        rows2 = cursor.fetchall()
-        #Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id
-        print(rows[0])
-    form = MessageForm(request.POST)
-    return render(request, 'mypage/completeAsk_content.html', {'req': rows[0], 'proficiency': rows2, 'form': form})
+        if request.method == "POST":
+            cursor.execute("DELETE FROM MESSAGE WHERE Rid = '" + str(pk) + "' AND Cid = '" + request.session['id'] + "'")
+            cursor.execute("INSERT MESSAGE (Rid, Cid, Message) VALUES ('" + str(pk) + "', '" + request.session['id'] + "', '" + str(request.POST['message']) + "')")
+            cursor.execute("UPDATE REQUEST SET State = 2 WHERE Req_id = '" + str(pk) + "'")
+            return myrequest_client(request)
+        else:
+            cursor.execute("SELECT Req_title, Cid, fund, Min_exp, Min_fre, Max_fre, Start_date, End_date " +
+                                "FROM REQUEST WHERE Req_id = '" + str(pk) + "'")
+            rows = cursor.fetchall()
+            form = MessageForm(request.POST)
+            return render(request, 'mypage/completeAsk_content.html', {'req': rows[0], 'pk': pk, 'form': form})
 
 def myrequest_freelancer(request):
     with connection.cursor() as cursor:

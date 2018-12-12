@@ -113,15 +113,6 @@
             <td>{{ req.0.5 }}</td>
             <td>{{ req.0.6 }}</td>
             <td>{{ req.0.7 }}</td>
-            <a>
-            {%if req.0.8 != 4 %}
-                <a href = "{% url 'myrequest_client' %}">
-                <button type = "button" id = "{{req.0.0}}" name = "refusing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
-                </a>
-                <a href = "{% url 'myrequest_client' %}">
-                <button type = "button" id = "{{req.0.0}}" name = "accepting" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">수락</button>
-                </a>
-            {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -132,14 +123,15 @@
 <table class="table table-hover">
     <tbody id="myreqlist4">
         <tr>
-            <th>Req_title</th>
+            <th>제목</th>
             <th>Start</th>
             <th>End</th>
-            <th>Min_exp</th>
-            <th>Min_freelancer</th>
-            <th>Max_freelancer</th>
+            <th>최소경력</th>
+            <th>최소인원</th>
+            <th>최대인원</th>
             <th>Fund</th>
-            <th>평가히가</th>
+            <th>의뢰자 평가 여부</th>
+            <th>평가하기</th>
         </tr>
         {% for req in request4 %}
         <tr>

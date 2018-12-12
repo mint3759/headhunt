@@ -3,38 +3,95 @@
 {% block content %}
     <h1>의뢰 상세 정보</h1>
         <div>
-            <p>의뢰자: {{ req.0 }}</p>
-            <p>제목: {{ req.1 }} </p>
-            <p>의뢰 금액(원): {{ req.2 }} </p>
-            <p>최소 경력(년): {{ req.3 }}</p>
-            <p>최소 인원(명): {{ req.4 }}</p>
-            <p>최대 인원(명): {{ req.5 }}</p>
-            <p>모집 시작 날짜: {{ req.6 }}</p>
-            <p>모집 마감 날짜: {{ req.7 }}</p>
             <form class="form-horizontal" id="mainform" method = "POST">
             {% csrf_token %}
+            <div class="form-group">
+                <label class="control-label col-sm-2">제목</label>
+                <div class="col-sm-10">
+                  {{ req.0 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">의뢰자</label>
+                <div class="col-sm-10">
+                  {{ req.1 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">의뢰 금액(원)</label>
+                <div class="col-sm-10">
+                  {{ req.2 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">최소 경력(년)</label>
+                <div class="col-sm-10">
+                  {{ req.3 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">최소 인원(명)</label>
+                <div class="col-sm-10">
+                  {{ req.4 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">최대 인원(명)</label>
+                <div class="col-sm-10">
+                  {{ req.5 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">모집 시작 날짜</label>
+                <div class="col-sm-10">
+                  {{ req.6 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">모집 마감 날짜</label>
+                <div class="col-sm-10">
+                  {{ req.7 }}
+                </div>
+            </div>
+            <div class="form-group" id = "hidden">
+            </div>
             <div class="form-group">
                 <label class="control-label col-sm-2">거부 메시지 입력</label>
                 <div class="col-sm-10">
                   {{ form.message }}
                 </div>
             </div>
-            <a href = "{% url 'myrequest_client' %}">
-                <button type = "button" id = "{{req.0.0}}" name = "refusing" class="btn btn-default btn-md"  style="margin-top:1px; margin-bottom: 1px;">거부</button>
-            </a>
-                <a href = "{% url 'myrequest_client' %}">
-                <button type = "button" id = "{{req.0.0}}" name = "accepting" class="btn btn-default btn-md"  style="margin-top:1px; margin-bottom: 1px;">수락</button>
-            </a>
+            <div class="form-group" id="register-button">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a href = "{% url 'myrequest_client' %}">
+                        <button type = "button" name = "accepting" class="btn btn-success btn-md">수락</button>
+                    </a>
+                    <div class = "col-sm-2">
+                        <button type="submit" class="btn btn-fail btn-md" onclick="before_submit()">거부</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 {% endblock %}
 
 {% block javascript_tail %}
 <script>
+
+function before_submit() {
+    var param = document.getElementById('hidden');
+    var pk = document.createElement('pk');
+    pk.type='hidden';
+    pk.name='pk';
+    pk.value = {{ pk }};
+    param.appendChild(pk);
+    return true;
+}
     $(document).on("click", "button[name=refusting]", function(){
 
             $.ajax({
                 type: 'POST',
-                url : '../refuse_completeAsk/',
+                url : '../../refuse_completeAsk/',
                 data : {REQ_ID: $(this).attr('id'),
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){
@@ -46,8 +103,8 @@
 
             $.ajax({
                 type: 'POST',
-                url : '../accept_completeAsk/',
-                data : {REQ_ID: $(this).attr('id'),
+                url : '../../accept_completeAsk',
+                data : {REQ_ID: {{ pk }},
                         csrfmiddlewaretoken : '{{ csrf_token }}' },
                 success : function(result){
                     alert("의뢰 완료 요청을 수락하셨습니다.");
