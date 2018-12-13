@@ -289,10 +289,11 @@ def update_freelancer(request):
                     doc_id = 1
                 else:
                     doc_id = rows[0] + 1
-                doc = request.FILES['portfolio']
-                doc_path = 'headhunt/media/' + dname(doc) + str(doc_id) + extension(doc)
-                handle_uploaded_file(doc, doc_path)
-                cursor.execute("UPDATE PORTFOLIO SET File_name = %s, File_path = %s, pid = %s WHERE Fid = %s",  [doc.name, doc_path, doc_id, request.session['id']])
+                if(request.FILES):
+                    doc = request.FILES['portfolio']
+                    doc_path = 'headhunt/media/' + dname(doc) + str(doc_id) + extension(doc)
+                    handle_uploaded_file(doc, doc_path)
+                    cursor.execute("UPDATE PORTFOLIO SET File_name = %s, File_path = %s, pid = %s WHERE Fid = %s",  [doc.name, doc_path, doc_id, request.session['id']])
             return redirect('/mypage/mypage')
     else:
         form = UpdateFreelancerForm()
