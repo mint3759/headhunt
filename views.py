@@ -239,6 +239,9 @@ def mypage(request):
             print(f_info)
             cursor.execute("SELECT * from F_PROFICIENCY WHERE Fid = '" + str(request.session['id']) + "'")
             proficiency = cursor.fetchall()
+        else:
+            f_info = []
+            proficiency = []
     return render(request, 'mypage/mypage.html', {'rating': rating, 'info': info, 'f_info': f_info, 'proficiency' : proficiency})
 
 def update_client(request):
@@ -311,7 +314,8 @@ def myrequest_client(request):
         rows = cursor.fetchall()
         request2 = []
         for i in range(len(rows)):
-            cursor.execute("SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
+            cursor.execute(
+                "SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
                 "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'AND STATE=2")
             tmp_reqeust2 = cursor.fetchall()
             for j in range(len(tmp_reqeust2)):
@@ -371,6 +375,7 @@ def refuse_completeAsk(request):
 
 def accept_completeAsk(request):
     with connection.cursor() as cursor:
+        print(request.POST)
         if 'REQ_ID' in request.POST:
             req_id = request.POST['REQ_ID']
             cursor.execute("UPDATE REQUEST SET State = 4 WHERE Req_id = '" + req_id + "'")
@@ -398,8 +403,9 @@ def update_freerating(request):
             for i in range(len(rows)):
                 cursor.execute("SELECT Frating FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "' AND State = 4")
                 tmpRating = cursor.fetchall()
-                rating = rating + tmpRating[0][0]
-                tmpCnt = tmpCnt + 1
+                if tmpRating:
+                    rating = rating + tmpRating[0][0]
+                    tmpCnt = tmpCnt + 1
             average = rating / decimal.Decimal(tmpCnt)
 
             cursor.execute("UPDATE USERS SET Rating = '" + str(average) + "' WHERE Id = '" + fid + "'")
@@ -437,8 +443,9 @@ def select_requestAsk_client(request):
             free_id = request.POST['FREE_ID']
             cursor.execute("UPDATE REQUEST SET State = 2 WHERE Req_id = '" + req_id + "'")
             cursor.execute("DELETE from REQUEST_ASK WHERE Rid = '" + req_id + "'")
-            cursor.execute("INSERT CONTRACTS (Rid, Cid, Fid) VALUES ('" + req_id + "', '" + request.session['id'] + "', '" + free_id + "')")
-
+            AskTime = datetime.datetime.now()
+            cursor.execute("INSERT CONTRACTS (Rid, Cid, Fid, Asktime) VALUES ('" + req_id + "', '"
+                           + request.session['id'] + "', '" + free_id + "', '" + Asktime + "')")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
@@ -832,45 +839,39 @@ def check_accept_req(request):
         if 'REQ_ID' in request.POST:
             rid = request.POST['REQ_ID']
             fid = request.POST['F_ID']
-            cursor.execute("SELECT exp from Freelancer where id='" + fid + "')")
+
+            cursor.execute("SELECT Min_fre, Max_fre, Team_only from REQUEST WHERE req_id = '" + rid + "'")
+            popNr = cursor.fetchall()
+            minNr = popNr[0][0]
+            maxNr = popNr[0][1]
+            team_only = popNr[0][2]
+            #개인
+            if minNr > 1:
+                return HttpResponse("noPeople")
+            cursor.execute("SELECT exp from FreelancerS where id='" + fid + "'")
             exp1 = cursor.fetchone() # 프리랜서의 경력
-            cursor.execute("SELECT min_exp from REQUEST where req_id='" + rid + "')")
+            cursor.execute("SELECT min_exp from REQUEST where req_id='" + rid + "'")
             exp2 = cursor.fetchone() #요구되는 경력
+            if exp2: #경력이 요구됨
+                if exp2[0] > exp1[0]:  # 내가 경력이 딸림
+                    return HttpResponse("noExp")
+
             cursor.execute("SELECT * from R_PROFICIENCY where req_id='" + rid + "' and EXISTS (SELECT * from REQUEST WHERE Request.req_id=R_proficiency.req_id)")
             req_rows = cursor.fetchall() #요구되는 수준
             cursor.execute("SELECT * from F_PROFICIENCY WHERE fid = '" + fid + "'")
             fre_rows = cursor.fetchall() #프리랜서의 수준
-            if exp2: #경력이 요구됨
-               if exp2[0] > exp1[0]: #내가 경력이 딸림
-                   return HttpResponse("False")
-               elif req_rows: #수준이 요구됨
-                   for rr in req_rows:
-                       is_found = False
-                       for fr in fre_rows:
-                           if rr[0] == fr[0]:
-                               if rr[1] <= fr[1]:
-                                   is_found = True
-                                   break
-                               else:
-                                   return HttpResponse("False")
-                       if is_found is False:
-                           return HttpResponse("False")
-               cursor.execute("INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "')")
-               cursor.execute("UPDATE REQUEST SET State=1 WHERE Req_id=" + rid + "")
-               return HttpResponse("True")
-            else: #경력이 요구되지 않음
-                if req_rows:  # 수준이 요구됨
-                    for rr in req_rows:
-                        is_found = False
-                        for fr in fre_rows:
-                            if rr[0] == fr[0]:
-                                if rr[1] <= fr[1]:
-                                    is_found = True
-                                    break
-                                else:
-                                    return HttpResponse("False")
-                        if is_found is False:
-                            return HttpResponse("False")
+            if req_rows: #수준이 요구됨
+                for rr in req_rows:
+                    is_found = False
+                    for fr in fre_rows:
+                        if rr[0] == fr[0]:
+                            if rr[1] <= fr[1]:
+                                is_found = True
+                                break
+                            else:
+                                return HttpResponse("False")
+                    if is_found is False:
+                        return HttpResponse("False")
                 cursor.execute("INSERT INTO REQUEST_ASK (Rid, Fid) VALUES ('" + rid + "','" + fid + "')")
                 cursor.execute("UPDATE REQUEST SET State=1 WHERE Req_id=" + rid + "")
-                return HttpResponse("True")
+            return HttpResponse("True")

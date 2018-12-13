@@ -48,6 +48,12 @@
                     if(result=="True"){
                         window.location.href = "{%url 'request_accept'%}";
                     }
+                    else if (result == "noExp") {
+                        alert("경력이 충분하지 않습니다.");
+                    }
+                    else if (result == "noPeople") {
+                        alert("인원이 부족합니다. 팀으로 수락하시거나 팀원을 추가하시기 바랍니다.");
+                    }
                     else{
                         alert("언어 능숙도 조건을 만족하지 않습니다.");
                     }
