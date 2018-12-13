@@ -79,21 +79,23 @@ class MakeRequestForm(forms.Form):
         min_value=0,
         widget=forms.TextInput(
             attrs={
-                "class": "form-control"
+                "class": "form-control",
             })
     )
     min_fre = forms.IntegerField(
         min_value=0,
         widget=forms.TextInput(
             attrs={
-                "class": "form-control"
+                "class": "form-control",
+                "onchange": "mincheck()"
             })
     )
     max_fre = forms.IntegerField(
         min_value=0,
         widget=forms.TextInput(
             attrs={
-                "class": "form-control"
+                "class": "form-control",
+                "onchange": "maxcheck()"
             })
     )
     start_date = forms.DateField(

@@ -156,6 +156,29 @@
 var rfiles = [];
 var datecheck = false;
 var langdict = {}
+var maxmincheck = false;
+
+function maxcheck(){
+    var min = document.getElementById('id_min_fre').value;
+    var max= document.getElementById('id_max_fre').value;
+    if(min!=""){
+        maxmincheck = min <= max;
+        if(!maxmincheck){
+            alert("최대 인원 수는 최대 인원 수보다 커야 합니다.");
+        }
+    }
+}
+
+function mincheck(){
+    var min = document.getElementById('id_min_fre').value;
+    var max= document.getElementById('id_max_fre').value;
+    if(max!=""){
+        maxmincheck = min <= max;
+        if(!maxmincheck){
+            alert("최소 인원 수는 최대 인원 수보다 작아야 합니다.");
+        }
+    }
+}
 
 function todatecheck(){
     datecheck = false;
