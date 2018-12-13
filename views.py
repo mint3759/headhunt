@@ -461,9 +461,9 @@ def select_requestAsk_client(request):
             free_id = request.POST['FREE_ID']
             cursor.execute("UPDATE REQUEST SET State = 2 WHERE Req_id = '" + req_id + "'")
             cursor.execute("DELETE from REQUEST_ASK WHERE Rid = '" + req_id + "'")
-            AskTime = datetime.datetime.now()
-            cursor.execute("INSERT CONTRACTS (Rid, Cid, Fid, Asktime) VALUES ('" + req_id + "', '"
-                           + request.session['id'] + "', '" + free_id + "', '" + Asktime + "')")
+            #Asktime = datetime.datetime.now()
+            cursor.execute("INSERT CONTRACTS (Rid, Cid, Fid) VALUES ('" + req_id + "', '"
+                           + request.session['id'] + "', '" + free_id + "')")
             return HttpResponse("True")
         else:
             return HttpResponse("Fail")
@@ -607,22 +607,23 @@ def update_Crating(request):
             cid = rows[0][0]
             cursor.execute("SELECT Crating FROM REQUEST WHERE Cid = '" + cid + "' AND State = 4")
             rows = cursor.fetchall()
-            rating = rows[0][0]
+            rating = decimal.Decimal(rows[0][0])
             for i in range(len(rows)):
                 if i == 0:
                     continue
-                rating = rating + rows[i][0]
+                if rows[i][0]:
+                    rating = rating + rows[i][0]
             average = rating / decimal.Decimal(len(rows))
             cursor.execute("UPDATE USERS SET Rating = '" + str(average) + "' WHERE Id = '" + cid + "'")
 
             #내부 포트폴리오 추가
-            cursor.execute("SELECT MAX(req_id) FROM PORTFOLIO")
+            cursor.execute("SELECT MAX(pid) FROM PORTFOLIO")
             rows = cursor.fetchone()
             if rows[0] is None:
                 port_id = 1
             else:
                 port_id = rows[0] + 1
-            cursor.execute("INSERT PORTFOLIO (Id, Fid, Class, Req_id) VALUES ('" + str(port_id) + "', '" + request.session['id'] + "', 'I', '" + req_id + "')")
+            cursor.execute("INSERT PORTFOLIO (Pid, Fid, Class, Req_id) VALUES ('" + str(port_id) + "', '" + request.session['id'] + "', 'I', '" + req_id + "')")
             return HttpResponse("True")
         
 def myportfolio(request):
@@ -634,7 +635,8 @@ def myportfolio(request):
             cursor.execute("SELECT * FROM REQUEST WHERE Req_id = '" + str(tmpPortI[i][5]) + "'")
             rows = cursor.fetchall()
             portI.append((rows[0], tmpPortI[i]))
-        cursor.execute("SELECT * FROM PortFolio WHERE Class = 'E' AND Fid = '" + request.session['id'] + "'")
+        print(portI)
+        cursor.execute("SELECT Pid, Fid, File_name FROM PortFolio WHERE Class = 'E' AND Fid = '" + request.session['id'] + "'")
         tmpPortE = cursor.fetchall()
     return render(request, 'mypage/myportfolio.html', {'portI': portI, 'portE': tmpPortE})
 
@@ -762,18 +764,18 @@ def show_request(request, pk):
     with connection.cursor() as cursor:
         if pk == '1':  # 날짜순 정렬 DESC
             cursor.execute(
-                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY Start_date DESC")
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 or state=1 ORDER BY Start_date DESC")
         elif pk == '2':  # 날짜순 정렬 ASC
             cursor.execute(
-                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY Start_date ASC")
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 or state=1 ORDER BY Start_date ASC")
         elif pk == '3':  # 금액순 정렬 DESC
             cursor.execute(
-                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND DESC")
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 or state = 1 ORDER BY FUND DESC")
         elif pk == '4':  # 금액순 정렬 ASC
             cursor.execute(
-                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 ORDER BY FUND ASC")
+                "Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 or state=1 ORDER BY FUND ASC")
         else:  # 기본 보여주기
-            cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0")
+            cursor.execute("Select Req_title, Fund, Min_exp, Min_fre, Max_fre, Start_date, End_date, Crating, Req_id from Request WHERE state=0 or state = 1")
         rows = cursor.fetchall()
     context = {"show_request": "active"}
     return render(request, 'request/show_request.html', {'myRequest': rows, 'pk': pk}, context)
@@ -808,9 +810,9 @@ def remove_account(request):
 
 def admin_req(request):
     with connection.cursor() as cursor:
-        cursor.execute("Select * from request")
+        cursor.execute("Select Req_Id, Req_title, Cid, State, Start_date, End_date, Min_exp, Min_fre, Max_fre, Team_only, Fund, Frating, Crating from request")
         rows = cursor.fetchall()
-        cursor.execute("SELECT * from Message")
+        cursor.execute("SELECT Rid, Message, Cid from Message")
         rows2 = cursor.fetchall()
     return render(request, 'administrator/admin_req.html', {'requests' : rows, 'rej_requests' : rows2}, )
 

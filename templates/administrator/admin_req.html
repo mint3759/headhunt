@@ -27,9 +27,7 @@
         {% for req in requests %}
         <tr>
             <td>{{ req.0 }}</td>
-            <td>{{ req.12 }}</td>
-            <td>{{ req.11 }}</td>
-            <td>{{ req.8 }}</td>
+            <td>{{ req.1 }}</td>
             <td>{{ req.2 }}</td>
             <td>{{ req.3 }}</td>
             <td>{{ req.4 }}</td>
@@ -39,6 +37,8 @@
             <td>{{ req.8 }}</td>
             <td>{{ req.9 }}</td>
             <td>{{ req.10 }}</td>
+            <td>{{ req.11 }}</td>
+            <td>{{ req.12 }}</td>
             <td>
             {%if req.8 != 2 %}
                 <button type = "button" id = "{{req.0}}" name = "removing" class="btn btn-default btn-xs"  style="margin-top:1px; margin-bottom: 1px;">삭제</button>
