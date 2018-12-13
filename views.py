@@ -304,7 +304,7 @@ def update_freelancer(request):
             info2 = cursor.fetchall()
     return render(request, 'mypage/update_freelancer.html', {'form': form, 'info': info, 'info2': info2})
 
-def myrequest_client(request):
+def myrequest_client(request, pk):
     with connection.cursor() as cursor:
         # 구인대기중인
         cursor.execute("Select Req_id from Request where Cid = '" + request.session['id'] + "'")
@@ -328,16 +328,33 @@ def myrequest_client(request):
             for j in range(len(tmp_reqeust1)):
                 request1.append((tmp_reqeust1[j], 'X'))
         #진행중인
-        cursor.execute("Select Req_id from Request where Cid = '" + request.session['id'] + "'")
-        rows = cursor.fetchall()
+        #cursor.execute("Select Req_id from Request where Cid = '" + request.session['id'] + "'")
+        #rows = cursor.fetchall()
         request2 = []
-        for i in range(len(rows)):
+        if pk == '1':  # 날짜순 정렬 DESC
             cursor.execute(
                 "SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
-                "FROM REQUEST WHERE Req_id = '" + str(rows[i][0]) + "'AND STATE=2")
-            tmp_reqeust2 = cursor.fetchall()
-            for j in range(len(tmp_reqeust2)):
-                request2.append((tmp_reqeust2[j], 'X'))
+                "FROM REQUEST WHERE Cid= '" + request.session['id'] + "'AND STATE=2 order by start_date desc")
+        elif pk == '2':  # 날짜순 정렬 ASC
+            cursor.execute(
+                "SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
+                "FROM REQUEST WHERE Cid= '" + request.session['id'] + "'AND STATE=2 order by start_date asc")
+        elif pk == '3':  # 금액순 정렬 DESC
+            cursor.execute(
+                "SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
+                "FROM REQUEST WHERE Cid= '" + request.session['id'] + "'AND STATE=2 order by fund desc")
+        elif pk == '4':  # 금액순 정렬 ASC
+            cursor.execute(
+                "SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
+                "FROM REQUEST WHERE Cid= '" + request.session['id'] + "'AND STATE=2 order by fund asc")
+        else:  # 기본 보여주기
+            cursor.execute(
+                "SELECT Req_id, Req_title, Start_date, End_date, Min_exp, Min_fre, Max_fre, fund, Team_only, State, Frating, Crating, Cid " +
+                "FROM REQUEST WHERE Cid= '" + request.session['id'] + "'AND STATE=2")
+        tmp_reqeust2 = cursor.fetchall()
+        print(tmp_reqeust2)
+        for j in range(len(tmp_reqeust2)):
+            request2.append((tmp_reqeust2[j], 'X'))
         #완료 요청
         cursor.execute("Select Req_id from Request where Cid = '" + request.session['id'] + "'")
         rows = cursor.fetchall()
@@ -362,7 +379,7 @@ def myrequest_client(request):
                 else:
                     request4.append((tmp_reqeust4[j], 'X', 'O'))
 
-        return render(request, 'mypage/myrequest_client.html', {'request0': request0, 'request1': request1, 'request2': request2, 'request3': request3, 'request4': request4})
+        return render(request, 'mypage/myrequest_client.html', {'request0': request0, 'request1': request1, 'request2': request2, 'request3': request3, 'request4': request4, 'pk': pk})
 
 def remove_myrequest_client(request):
     with connection.cursor() as cursor:

@@ -64,6 +64,24 @@
         </table>
 
 <h3>진행중인 의뢰</h3>
+        {% if pk == '1' %}
+             <a href="{% url 'myrequest_client' 2%}">
+                <button id="sort_date" type="submit"class="btn btn-default btn-sm">날짜순 정렬</button>
+            </a>
+        {% else %}
+            <a href="{% url 'myrequest_client' 1%}">
+                <button id="sort_date" type="submit" class="btn btn-default btn-sm">날짜순 정렬</button>
+            </a>
+        {% endif %}
+        {% if pk == '3' %}
+            <a href="{% url 'myrequest_client' 4%}">
+                <button id="sort_fund" type="submit" class="btn btn-default btn-sm">금액순 정렬</button>
+            </a>
+        {% else %}
+            <a href="{% url 'myrequest_client' 3%}">
+                <button id="sort_fund" type="submit" class="btn btn-default btn-sm">금액순 정렬</button>
+            </a>
+        {% endif %}
 <table class="table table-hover">
             <tbody id="myreqlist2">
             <tr>
