@@ -86,7 +86,7 @@ def register_freelancer(request):
                 doc_path = 'headhunt/media/' + dname(doc) + str(doc_id) + extension(doc)
                 handle_uploaded_file(doc, doc_path)
                 cursor.execute("INSERT INTO PORTFOLIO (Fid, class, file_name, file_path, pid) VALUES( %s, %s, %s, %s, %s)",
-                               [form.cleaned_data['id'], 'e', doc.name, doc_path, doc_id])
+                               [form.cleaned_data['id'], 'E', doc.name, doc_path, doc_id])
             return redirect('/registration/register_success')
     else:
         form = FreelancerForm()
@@ -95,7 +95,8 @@ def register_freelancer(request):
 def id_dup_check(request):
     with connection.cursor() as cursor:
         if 'USER_ID' in request.POST:
-            uid = request.POST['USER_ID']
+            uid = request.POST['USE' \
+                               'R_ID']
             cursor.execute("SELECT * FROM USERS WHERE ID='" + uid + "'")
             rows = cursor.fetchone()
             if rows is None:
@@ -236,7 +237,6 @@ def mypage(request):
         if(user_type[0]=='f'):
             cursor.execute("SELECT Age, Exp, Major from FREELANCERS WHERE Id = '" + str(request.session['id']) + "'")
             f_info = cursor.fetchall()
-            print(f_info)
             cursor.execute("SELECT * from F_PROFICIENCY WHERE Fid = '" + str(request.session['id']) + "'")
             proficiency = cursor.fetchall()
         else:
@@ -266,7 +266,12 @@ def update_client(request):
 
 def update_freelancer(request):
     if request.method == "POST":
-        form = UpdateFreelancerForm(request.POST)
+        form = UpdateFreelancerForm(request.POST, request.FILES)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT UName, Phone_num from USERS WHERE Id = '" + str(request.session['id']) + "'")
+            info = cursor.fetchall()
+            cursor.execute("SELECT Age, Exp, Major from FREELANCERS WHERE Id = '" + str(request.session['id']) + "'")
+            info2 = cursor.fetchall()
         if form.is_valid():
             # id = request.session['id']
             # pw, uname, phone_num_0~2
@@ -278,13 +283,25 @@ def update_freelancer(request):
                 rows = cursor.fetchall()
                 cursor.execute("UPDATE FREELANCERS SET Age = " + str(form.cleaned_data['age']) + ", Exp = " + str(form.cleaned_data['exp']) +
                               ", Major = '" + str(form.cleaned_data['major']) + "' WHERE Id = '" + str(request.session['id']) + "'")
+                cursor.execute("SELECT MAX(pid) FROM PORTFOLIO")
+                rows = cursor.fetchone()
+                if rows[0] is None:
+                    doc_id = 1
+                else:
+                    doc_id = rows[0] + 1
+                doc = request.FILES['portfolio']
+                doc_path = 'headhunt/media/' + dname(doc) + str(doc_id) + extension(doc)
+                handle_uploaded_file(doc, doc_path)
+                cursor.execute("UPDATE PORTFOLIO SET File_name = %s, File_path = %s, pid = %s WHERE Fid = %s",  [doc.name, doc_path, doc_id, request.session['id']])
             return redirect('/mypage/mypage')
     else:
         form = UpdateFreelancerForm()
         with connection.cursor() as cursor:
             cursor.execute("SELECT UName, Phone_num from USERS WHERE Id = '" + str(request.session['id']) + "'")
             info = cursor.fetchall()
-    return render(request, 'mypage/update_freelancer.html', {'form': form, 'info': info})
+            cursor.execute("SELECT Age, Exp, Major from FREELANCERS WHERE Id = '" + str(request.session['id']) + "'")
+            info2 = cursor.fetchall()
+    return render(request, 'mypage/update_freelancer.html', {'form': form, 'info': info, 'info2': info2})
 
 def myrequest_client(request):
     with connection.cursor() as cursor:
@@ -618,8 +635,7 @@ def myportfolio(request):
             portI.append((rows[0], tmpPortI[i]))
         cursor.execute("SELECT * FROM PortFolio WHERE Class = 'E' AND Fid = '" + request.session['id'] + "'")
         tmpPortE = cursor.fetchall()
-        portE = []
-    return render(request, 'mypage/myportfolio.html', {'portI': portI, 'portE': portE})
+    return render(request, 'mypage/myportfolio.html', {'portI': portI, 'portE': tmpPortE})
 
 def myteam(request):
     if request.method == "POST":

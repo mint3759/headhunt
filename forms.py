@@ -308,7 +308,6 @@ class UpdateFreelancerForm(forms.Form):
                 "class": "form-control"
             })
     )
-    language = forms.CharField()
     portfolio = forms.FileField(
         required=False,
         widget=forms.FileInput(

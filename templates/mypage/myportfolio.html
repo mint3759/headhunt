@@ -23,8 +23,13 @@
 </table>
 
 <h3>외부 포트폴리오</h3>
-
-
+{% for p in portE %}
+<table class="table table-hover">
+<tr>
+    <td>{{ p.2}}</td>
+</tr>
+{% endfor %}
+</table>
 {% endblock %}
 
 {% block bye %}

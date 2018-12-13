@@ -3,7 +3,7 @@
 {% block innercontent %}
     <h1>개인정보 수정</h1>
     <h2>프리랜서 정보 수정</h2>
-    <form class="form-horizontal" id="mainform" method = "POST">
+    <form class="form-horizontal" id="mainform" method = "POST" enctype = "multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
             <label class="control-label col-sm-2">ID</label>
@@ -70,7 +70,7 @@
         </div>
         <div class="form-group" id="register-button">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-success btn-md" onclick='before_submit()'>Register</button>
+                <button type="submit" class="btn btn-success btn-md">수정</button>
             </div>
         </div>
     </form>
@@ -79,31 +79,40 @@
 {% block javascript_tail %}
 <script type="text/javascript">
 var pwconfirmcheck=false;
-var iddupcheck = false;
 var agecheck = false;
 var expcheck = false;
-var langdict = {}
-var pfiles = [];
 
-$(document).on("click", "#idcheck", function(){
-        if($("#id_id").val() != ""){
-            $.ajax({
-                type: 'POST',
-                url : "register_check.py",
-                data : {"USER_ID": $('#userid').val()},
-                success : function(result){
-                    if(result==true){
-                        alert("이미 존재하는 아이디입니다.");
-                        iddupcheck = false;
-                    }
-                    else{
-                        alert("사용 가능한 아이디입니다.");
-                        iddupcheck = true;
-                    }
-                }
-            });
+$(function(){
+    var uname = "{{info.0.0}}";
+    var age = "{{info2.0.0}}";
+    var exp = "{{info2.0.1}}";
+    var major = "{{info2.0.2}}";
+    $("#id_uname").val(uname);
+    var phone = "{{info.0.1}}";
+    phone1 = phone.substr(0,3);
+    phone2 = phone.substr(3,4);
+    phone3 = phone.substr(7,4);
+    $("#id_phone_num_0").val(phone1);
+    $("#id_phone_num_1").val(phone2);
+    $("#id_phone_num_2").val(phone3);
+    $("#id_age").val(age);
+    $("#id_exp").val(exp);
+    $("#id_major").val(major);
+});
+
+$(document).on("change", "#pwconfirm", function(){ //비밀번호 일치 검사
+        var userPW = $("#id_pw").val();
+        var pwConfirm = $("#pwconfirm").val();
+        if(pwConfirm.localeCompare(userPW)!=0){
+            document.getElementById("pwconfirmerror").innerHTML="입력된 비밀번호가 일치하지 않습니다.";
+            pwconfirmcheck=false;
+        }
+        else{
+            document.getElementById("pwconfirmerror").innerHTML="";
+            pwconfirmcheck=true;
         }
     });
+
 
 $(document).on("change", "#pwconfirm", function(){ //비밀번호 일치 검사
         var userPW = $("#id_pw").val();
